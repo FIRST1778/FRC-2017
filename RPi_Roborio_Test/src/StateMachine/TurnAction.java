@@ -3,25 +3,31 @@ package StateMachine;
 import java.util.prefs.Preferences;
 
 import Systems.CANDriveAssembly;
+import Systems.NavXSensor;
 
 public class TurnAction extends Action {
 	
 	private double angleToTurn = 0.0;
 	private double speedToTurn = 0.3;
+	private boolean resetGyro = true;
+	
+	private double initialAngle = 0.0;
 		
-	public TurnAction(double angleToTurn, double speed)
+	public TurnAction(double angleToTurn, boolean resetGyro, double speed)
 	{
 		this.name = "<Turn Action>";
 		this.angleToTurn = angleToTurn;
+		this.resetGyro = resetGyro;
 		this.speedToTurn = speed;
 				
 		CANDriveAssembly.initialize();
 	}
 	
-	public TurnAction(String name, double angleToTurn, double speed)
+	public TurnAction(String name, double angleToTurn, boolean resetGyro, double speed)
 	{
 		this.name =  name;
 		this.angleToTurn = angleToTurn;
+		this.resetGyro = resetGyro;
 		this.speedToTurn = speed;
 		
 		CANDriveAssembly.initialize();
@@ -29,9 +35,15 @@ public class TurnAction extends Action {
 	
 	// action entry
 	public void initialize() {
-		// do some drivey initialization
 		
-		CANDriveAssembly.autoInit();
+		// if we're not resetting the gyro, we'll want to see what angle it is to start
+		if (!resetGyro)
+			initialAngle = NavXSensor.getAngle();
+		else
+			initialAngle = 0.0;
+		
+		// initialize motor assembly for auto
+		CANDriveAssembly.autoInit(resetGyro);
 		
 		super.initialize();
 	}
@@ -39,9 +51,11 @@ public class TurnAction extends Action {
 	// called periodically
 	public void process()  {
 		
-		// do some drivey stuff
-				
-		if (angleToTurn > 0.0)
+		// check the difference from our initial angle
+		double angleDiff = angleToTurn - initialAngle;
+			
+		// rotate to close the gap
+		if (angleDiff > 0.0)
 			CANDriveAssembly.rotateRight(speedToTurn);
 		else
 			CANDriveAssembly.rotateLeft(speedToTurn);

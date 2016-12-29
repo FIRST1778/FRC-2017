@@ -9,19 +9,22 @@ public class DriveForwardAction extends Action {
 	
 	private String name;
 	private double speed = 0.0;
+	private boolean resetGyro = true;
 	
-	public DriveForwardAction(double speed)
+	public DriveForwardAction(double speed, boolean resetGyro)
 	{
 		this.name = "<Drive Forward Action>";		
 		this.speed = speed;
+		this.resetGyro = resetGyro;
 
 		CANDriveAssembly.initialize();
 	}
 	
-	public DriveForwardAction(String name, double speed)
+	public DriveForwardAction(String name, double speed, boolean resetGyro)
 	{
 		this.name =  name;
 		this.speed = speed;
+		this.resetGyro = resetGyro;
 				
 		CANDriveAssembly.initialize();
 	}
@@ -30,7 +33,7 @@ public class DriveForwardAction extends Action {
 	public void initialize() {
 		// do some drivey initialization
 		
-		CANDriveAssembly.autoInit();
+		CANDriveAssembly.autoInit(resetGyro);
 		
 		super.initialize();
 	}

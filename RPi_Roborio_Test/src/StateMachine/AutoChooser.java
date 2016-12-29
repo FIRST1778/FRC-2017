@@ -9,8 +9,10 @@ public class AutoChooser {
 	public static final int DRIVE_FORWARD_SLOW = 2;
 	public static final int DRIVE_FORWARD_FOREVER = 3;
 	public static final int COMPLEX_DRIVE_NETWORK = 4;
-	public static final int SPINNY_NETWORK = 5;
-	public static final int TEST_NETWORK = 6;
+	public static final int ABSOLUTE_COMPLEX_DRIVE_NETWORK = 5;
+	public static final int PACING_FOREVER_NETWORK = 6;
+	public static final int SPINNY_NETWORK = 7;
+	public static final int TEST_NETWORK = 8;
 	
 	int mode;
 	private SendableChooser chooser;
@@ -23,6 +25,8 @@ public class AutoChooser {
 		chooser.addObject("DRIVE_FORWARD_SLOW", DRIVE_FORWARD_SLOW);
 		chooser.addObject("DRIVE_FORWARD_FOREVER", DRIVE_FORWARD_FOREVER);
 		chooser.addObject("COMPLEX_DRIVE_NETWORK", COMPLEX_DRIVE_NETWORK);
+		chooser.addObject("ABSOLUTE_COMPLEX_DRIVE_NETWORK", ABSOLUTE_COMPLEX_DRIVE_NETWORK);
+		chooser.addObject("PACING_FOREVER_NETWORK", PACING_FOREVER_NETWORK);
 		chooser.addObject("SPINNY_NETWORK", SPINNY_NETWORK);
 		chooser.addObject("TEST_NETWORK", TEST_NETWORK);
 		SmartDashboard.putData("Auto_Mode_Chooser", chooser);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.prefs.Preferences;
 
 import NetworkComm.InputOutputComm;
+import Systems.NavXSensor;
 
 public class AutoStateMachine {
 		
@@ -53,6 +54,10 @@ public class AutoStateMachine {
 				currentNetwork.enter();
 			}
 		}
+		
+		// must initialize the gyro class and reset the angle to our initial position
+		NavXSensor.initialize();
+		NavXSensor.reset();
 		
 	}
 	

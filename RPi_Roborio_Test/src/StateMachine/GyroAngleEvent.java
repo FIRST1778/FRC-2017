@@ -4,8 +4,6 @@ import java.util.prefs.Preferences;
 
 import NetworkComm.InputOutputComm;
 import Systems.NavXSensor;
-import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.Utility;
 
 // event triggered when gyro gets to a certain predetermined angle
 public class GyroAngleEvent extends Event {
@@ -18,12 +16,14 @@ public class GyroAngleEvent extends Event {
 	private double angleToTurn = 0.0;
 	private double accuracyDeg = 5.0;
 	private AnglePolarity polarity;
+	private boolean resetGyro = true;
 	
-	public GyroAngleEvent(double angleToTurn, AnglePolarity polarity)
+	public GyroAngleEvent(double angleToTurn, boolean resetGyro, AnglePolarity polarity)
 	{
 		this.name = "<Gyro Angle Event>";
 		
 		this.angleToTurn = angleToTurn;
+		this.resetGyro = resetGyro;
 		this.polarity = polarity;
 		
 		NavXSensor.initialize();
@@ -33,7 +33,9 @@ public class GyroAngleEvent extends Event {
 	public void initialize()
 	{
 		//System.out.println("GyroAngleEvent initialized!");
-		NavXSensor.reset();
+		if (resetGyro)
+			NavXSensor.reset();
+		
 		super.initialize();
 	}
 	
