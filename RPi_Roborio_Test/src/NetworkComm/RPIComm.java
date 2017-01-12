@@ -24,7 +24,8 @@ public class RPIComm {
         
 	public static boolean targetCentered = false;
 	
-	public static double numTargets, deltaX, deltaY, targetArea, targetDistance;
+	public static double numTargets, targetX, targetY, targetArea, targetDistance;
+	private static double desiredX, desiredY;
 	
 	// Robot drive output
 	private static double driveLeft;
@@ -51,10 +52,18 @@ public class RPIComm {
     	lateralMovement = lateralFlag;
     }
     
+    public static void setDesired(double x, double y)
+    {
+    	desiredX = x;
+    	desiredY = y;
+    }
+    
     public static void autoInit() {
     	numTargets = 0;
-    	deltaX = 0;
-    	deltaY = 0;
+    	desiredX = frameWidth/2;
+    	desiredY = frameHeight/2;
+    	targetX = frameWidth/2;
+    	targetY = frameHeight/2;
     	targetArea = 0;
     	targetDistance = 0;
     	
@@ -65,8 +74,10 @@ public class RPIComm {
     
     public static void teleopInit() {
     	numTargets = 0;
-    	deltaX = 0;
-    	deltaY = 0;
+    	desiredX = frameWidth/2;
+    	desiredY = frameHeight/2;
+    	targetX = frameWidth/2;
+    	targetY = frameHeight/2;
     	targetArea = 0;
     	targetDistance = 0;
     	
@@ -101,15 +112,21 @@ public class RPIComm {
 		
 		// Pull data from grip
 		numTargets = table.getNumber("targets", defaultDoubleVal);
-		deltaX = table.getNumber("targetX", defaultDoubleVal);
-		deltaY = table.getNumber("targetY", defaultDoubleVal);
+		targetX = table.getNumber("targetX", defaultDoubleVal);
+		targetY = table.getNumber("targetY", defaultDoubleVal);
 		targetArea = table.getNumber("targetArea",defaultDoubleVal);
 		targetDistance = table.getNumber("targetDistance",defaultDoubleVal);
-
+		
+		Timer.delay(0.02);
+    }
+    
+    public static void targetProcessing() {
 		if (numTargets > 0) {
 			
 			// Debug only - print out values read from network table
 			//System.out.println("Time_ms= " + System.currentTimeMillis() + " targets = " + numTargets + ", delta = (" + deltaX + ", " + deltaY + ")");
+			double deltaX = targetX - desiredX;
+			double deltaY = targetY - desiredY;
 			
 			// do something with position information
 	    	// if a valid target exists (one that meets filter criteria)
@@ -191,6 +208,30 @@ public class RPIComm {
 	// Returns true if the target is visible, returns false otherwise
 	public static boolean hasTarget() {
 		return (numTargets > 0);
+	}
+	
+	public static double getFrameWidth() {
+		return frameWidth;
+	}
+	
+	public static double getFrameHeight() {
+		return frameHeight;
+	}
+	
+	// returns delta from current desired X position
+	public static double getDeltaX() {
+		if (!hasTarget())
+			return 0;
+		
+		return (targetX - desiredX);
+	}
+	
+	// returns delta from current desired Y position
+	public static double getDeltaY() {
+		if (!hasTarget())
+			return 0;
+		
+		return (targetY - desiredY);
 	}
 	
 	// Returns true if the catapult is ready to shoot, returns false otherwise

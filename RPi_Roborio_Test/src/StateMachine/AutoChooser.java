@@ -5,14 +5,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoChooser {
 	public static final int DO_NOTHING = 0;
-	public static final int TARGET_FOLLOW = 1;
-	public static final int DRIVE_FORWARD_SLOW = 2;
-	public static final int DRIVE_FORWARD_FOREVER = 3;
-	public static final int COMPLEX_DRIVE_NETWORK = 4;
-	public static final int ABSOLUTE_COMPLEX_DRIVE_NETWORK = 5;
-	public static final int PACING_FOREVER_NETWORK = 6;
-	public static final int SPINNY_NETWORK = 7;
-	public static final int TEST_NETWORK = 8;
+	public static final int DRIVE_FORWARD = 1;
+	public static final int DEPOSIT_GEAR_LEFT = 2;
+	public static final int DEPOSIT_GEAR_CENTER = 3;
+	public static final int DEPOSIT_GEAR_RIGHT = 4;
+	public static final int DRIVE_AND_SHOOT_BLUE_LEFT = 5;
+	public static final int DRIVE_AND_SHOOT_BLUE_CENTER = 6;
+	public static final int DRIVE_AND_SHOOT_BLUE_RIGHT = 7;
+	public static final int DRIVE_AND_SHOOT_RED_LEFT = 8;
+	public static final int DRIVE_AND_SHOOT_RED_CENTER = 9;
+	public static final int DRIVE_AND_SHOOT_RED_RIGHT = 10;
+	public static final int SHOOT_THE_MOON_BLUE_LEFT = 11;
+	public static final int SHOOT_THE_MOON_BLUE_RIGHT = 12;
+	public static final int SHOOT_THE_MOON_RED_LEFT = 13;
+	public static final int SHOOT_THE_MOON_RED_RIGHT = 14;
 	
 	int mode;
 	private SendableChooser chooser;
@@ -21,14 +27,21 @@ public class AutoChooser {
 		chooser = new SendableChooser();
 		
 		chooser.addDefault("DO_NOTHING", DO_NOTHING);
-		chooser.addObject("TARGET_FOLLOW", TARGET_FOLLOW);
-		chooser.addObject("DRIVE_FORWARD_SLOW", DRIVE_FORWARD_SLOW);
-		chooser.addObject("DRIVE_FORWARD_FOREVER", DRIVE_FORWARD_FOREVER);
-		chooser.addObject("COMPLEX_DRIVE_NETWORK", COMPLEX_DRIVE_NETWORK);
-		chooser.addObject("ABSOLUTE_COMPLEX_DRIVE_NETWORK", ABSOLUTE_COMPLEX_DRIVE_NETWORK);
-		chooser.addObject("PACING_FOREVER_NETWORK", PACING_FOREVER_NETWORK);
-		chooser.addObject("SPINNY_NETWORK", SPINNY_NETWORK);
-		chooser.addObject("TEST_NETWORK", TEST_NETWORK);
+		chooser.addObject("DRIVE_FORWARD", DRIVE_FORWARD);
+		chooser.addObject("DEPOSIT_GEAR_LEFT", DEPOSIT_GEAR_LEFT);
+		chooser.addObject("DEPOSIT_GEAR_CENTER", DEPOSIT_GEAR_CENTER);
+		chooser.addObject("DEPOSIT_GEAR_RIGHT", DEPOSIT_GEAR_RIGHT);
+		chooser.addObject("DRIVE_AND_SHOOT_BLUE_LEFT", DRIVE_AND_SHOOT_BLUE_LEFT);
+		chooser.addObject("DRIVE_AND_SHOOT_BLUE_CENTER", DRIVE_AND_SHOOT_BLUE_CENTER);
+		chooser.addObject("DRIVE_AND_SHOOT_BLUE_RIGHT", DRIVE_AND_SHOOT_BLUE_RIGHT);
+		chooser.addObject("DRIVE_AND_SHOOT_RED_LEFT", DRIVE_AND_SHOOT_RED_LEFT);
+		chooser.addObject("DRIVE_AND_SHOOT_RED_CENTER", DRIVE_AND_SHOOT_RED_CENTER);
+		chooser.addObject("DRIVE_AND_SHOOT_RED_RIGHT", DRIVE_AND_SHOOT_RED_RIGHT);
+		chooser.addObject("SHOOT_THE_MOON_BLUE_LEFT", SHOOT_THE_MOON_BLUE_LEFT);
+		chooser.addObject("SHOOT_THE_MOON_BLUE_RIGHT", SHOOT_THE_MOON_BLUE_RIGHT);
+		chooser.addObject("SHOOT_THE_MOON_RED_LEFT", SHOOT_THE_MOON_RED_LEFT);
+		chooser.addObject("SHOOT_THE_MOON_RED_RIGHT", SHOOT_THE_MOON_RED_RIGHT);
+		
 		SmartDashboard.putData("Auto_Mode_Chooser", chooser);
 	}
 	

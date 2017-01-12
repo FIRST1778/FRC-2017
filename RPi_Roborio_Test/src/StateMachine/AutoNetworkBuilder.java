@@ -53,15 +53,21 @@ public class AutoNetworkBuilder {
 		}
 		
 		// create networks
-		autoNets.add(0, createDoNothingNetwork());	
-		autoNets.add(1, createTargetFollowerNetwork());	
-		autoNets.add(2, createDriveForwardNetwork_Slow());	
-		autoNets.add(3, createDriveForwardForeverNetwork());	
-		autoNets.add(4, createComplexDrivingNetwork());	
-		autoNets.add(5, createAbsoluteComplexDrivingNetwork());	
-		autoNets.add(6, createPacingForeverNetwork());	
-		autoNets.add(7, createSpinnyNetwork());	
-		autoNets.add(8, createTestNetwork());
+		autoNets.add(AutoChooser.DO_NOTHING, createDoNothingNetwork());	
+		autoNets.add(AutoChooser.DRIVE_FORWARD, createDriveForward());	
+		autoNets.add(AutoChooser.DEPOSIT_GEAR_LEFT, createDepositGearLeft());	
+		autoNets.add(AutoChooser.DEPOSIT_GEAR_CENTER, createDepositGearCenter());	
+		autoNets.add(AutoChooser.DEPOSIT_GEAR_RIGHT, createDepositGearRight());	
+		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_BLUE_LEFT, createDriveAndShootBlueLeft());	
+		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_BLUE_CENTER, createDriveAndShootBlueCenter());	
+		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_BLUE_RIGHT, createDriveAndShootBlueRight());	
+		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_RED_LEFT, createDriveAndShootRedLeft());	
+		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_RED_CENTER, createDriveAndShootRedCenter());	
+		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_RED_RIGHT, createDriveAndShootRedRight());	
+		autoNets.add(AutoChooser.SHOOT_THE_MOON_BLUE_LEFT, createShootTheMoonBlueLeft());
+		autoNets.add(AutoChooser.SHOOT_THE_MOON_BLUE_RIGHT, createShootTheMoonBlueRight());
+		autoNets.add(AutoChooser.SHOOT_THE_MOON_RED_LEFT, createShootTheMoonRedLeft());
+		autoNets.add(AutoChooser.SHOOT_THE_MOON_RED_RIGHT, createShootTheMoonRedRight());
 		
 		// add the networks to the prefs object
 		int counter = 0;
@@ -100,6 +106,380 @@ public class AutoNetworkBuilder {
 		return autoNet;
 	}
 
+	// **** MOVE FORWARD Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) go back to idle and stay there 
+	private static AutoNetwork createDriveForward() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Drive Forward Network>");
+		
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
+		
+		AutoState idleState2 = new AutoState("<Idle State 2>");
+		IdleAction deadEnd = new IdleAction("<Dead End Action>");
+		idleState2.addAction(deadEnd);
+				
+		// connect each event with a state to move to
+		idleState.associateNextState(driveState);
+		driveState.associateNextState(idleState2);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState);
+		autoNet.addState(idleState2);
+				
+		return autoNet;
+	}
+
+	// **** DEPOSIT GEAR LEFT SIDE Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn RIGHT a number of degrees
+	// 4) drive forward, using camera feedback to steer then stop
+	// 5) go back to idle and stay there 
+	private static AutoNetwork createDepositGearLeft() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear (left side) Network>");
+		
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
+		
+		AutoState turnRightState = new AutoState("<Turn Right State +45 deg>");
+		TurnAction turnRightAction = new TurnAction("<Turn right action>",45, true, 0.5);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(45, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		turnRightState.addAction(turnRightAction);
+		turnRightState.addEvent(gyroRight);
+		
+		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5);
+		UltrasonicEvent ultra1 = new UltrasonicEvent(2.0);  // ultrasonic event triggers at 2 inches
+		driveToTargetState.addAction(driveToTarget);
+		driveToTargetState.addEvent(ultra1);
+		
+		AutoState idleState2 = new AutoState("<Idle State 2>");
+		IdleAction deadEnd = new IdleAction("<Dead End Action>");
+		idleState2.addAction(deadEnd);
+				
+		// connect each event with a state to move to
+		idleState.associateNextState(driveState);
+		driveState.associateNextState(turnRightState);
+		turnRightState.associateNextState(driveToTargetState);
+		driveToTargetState.associateNextState(idleState2);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState);
+		autoNet.addState(turnRightState);
+		autoNet.addState(driveToTargetState);
+		autoNet.addState(idleState2);
+				
+		return autoNet;
+	}
+	
+	// **** DEPOSIT GEAR CENTER Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) drive forward, using camera feedback to steer then stop
+	// 4) go back to idle and stay there 
+	private static AutoNetwork createDepositGearCenter() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear (Center) Network>");
+		
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
+				
+		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5);
+		UltrasonicEvent ultra1 = new UltrasonicEvent(2.0);  // ultrasonic event triggers at 2 inches
+		driveToTargetState.addAction(driveToTarget);
+		driveToTargetState.addEvent(ultra1);
+		
+		AutoState idleState2 = new AutoState("<Idle State 2>");
+		IdleAction deadEnd = new IdleAction("<Dead End Action>");
+		idleState2.addAction(deadEnd);
+				
+		// connect each event with a state to move to
+		idleState.associateNextState(driveState);
+		driveState.associateNextState(driveToTargetState);
+		driveToTargetState.associateNextState(idleState2);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState);
+		autoNet.addState(driveToTargetState);
+		autoNet.addState(idleState2);
+		
+		return autoNet;
+	}
+
+	// **** DEPOSIT GEAR RIGHT SIDE Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn LEFT a number of degrees
+	// 4) drive forward, using camera feedback to steer then stop
+	// 5) go back to idle and stay there 
+	private static AutoNetwork createDepositGearRight() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear (Right Side) Network>");
+		
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
+		
+		AutoState turnLeftState = new AutoState("<Turn Left State -45 deg>");
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-45, true, 0.5);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(-45, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		turnLeftState.addAction(turnLeftAction);
+		turnLeftState.addEvent(gyroLeft);
+		
+		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5);
+		UltrasonicEvent ultra1 = new UltrasonicEvent(2.0);  // ultrasonic event triggers at 2 inches
+		driveToTargetState.addAction(driveToTarget);
+		driveToTargetState.addEvent(ultra1);
+		
+		AutoState idleState2 = new AutoState("<Idle State 2>");
+		IdleAction deadEnd = new IdleAction("<Dead End Action>");
+		idleState2.addAction(deadEnd);
+				
+		// connect each event with a state to move to
+		idleState.associateNextState(driveState);
+		driveState.associateNextState(turnLeftState);
+		turnLeftState.associateNextState(driveToTargetState);
+		driveToTargetState.associateNextState(idleState2);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState);
+		autoNet.addState(turnLeftState);
+		autoNet.addState(driveToTargetState);
+		autoNet.addState(idleState2);
+		
+		return autoNet;
+	}
+	
+	// **** DRIVE AND SHOOT BLUE LEFT SIDE Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn LEFT a number of degrees
+	// 4) drive forward a number of sec
+	// 5) Calibrate shooter
+	// 6) Shoot at high goal
+	// 7) go back to idle and stay there 
+	private static AutoNetwork createDriveAndShootBlueLeft() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Left Side) Network>");
+		
+		// TODO:  Need to write this network!
+		
+		return autoNet;
+	}
+	
+	// **** DRIVE AND SHOOT BLUE CENTER Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn LEFT a number of degrees
+	// 4) drive forward a number of sec
+	// 5) Calibrate shooter
+	// 6) Shoot at high goal
+	// 7) go back to idle and stay there 
+	private static AutoNetwork createDriveAndShootBlueCenter() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Center) Network>");
+		
+		// TODO:  Need to write this network!
+		
+		return autoNet;
+	}
+
+	// **** DRIVE AND SHOOT BLUE RIGHT SIDE Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn LEFT a number of degrees
+	// 4) drive forward a number of sec
+	// 5) Calibrate shooter
+	// 6) Shoot at high goal
+	// 7) go back to idle and stay there 
+	private static AutoNetwork createDriveAndShootBlueRight() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Right Side) Network>");
+		
+		// TODO:  Need to write this network!
+		
+		return autoNet;
+	}
+
+	// **** DRIVE AND SHOOT RED LEFT SIDE Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn RIGHT a number of degrees
+	// 4) drive forward a number of sec
+	// 5) Calibrate shooter
+	// 6) Shoot at high goal
+	// 7) go back to idle and stay there 
+	private static AutoNetwork createDriveAndShootRedLeft() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Left Side) Network>");
+		
+		// TODO:  Need to write this network!
+		
+		return autoNet;
+	}
+	
+	// **** DRIVE AND SHOOT RED CENTER Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn RIGHT a number of degrees
+	// 4) drive forward a number of sec
+	// 5) Calibrate shooter
+	// 6) Shoot at high goal
+	// 7) go back to idle and stay there 
+	private static AutoNetwork createDriveAndShootRedCenter() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Center) Network>");
+		
+		// TODO:  Need to write this network!
+		
+		return autoNet;
+	}
+
+	// **** DRIVE AND SHOOT RED RIGHT SIDE Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn RIGHT a number of degrees
+	// 4) drive forward a number of sec
+	// 5) Calibrate shooter
+	// 6) Shoot at high goal
+	// 7) go back to idle and stay there 
+	private static AutoNetwork createDriveAndShootRedRight() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Right Side) Network>");
+		
+		// TODO:  Need to write this network!
+		
+		return autoNet;
+	}
+	
+	// **** SHOOT THE MOON BLUE LEFT SIDE Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn LEFT 90 degrees
+	// 4) drive forward to trigger fuel bin loading
+	// 5) wait for a number of sec
+	// 6) back up
+	// 7) Turn LEFT a number of degrees
+	// 8) Drive forward for a number of sec
+	// 9) Calibrate shooter
+	// 10) Shoot at high goal
+	// 11) go back to idle and stay there 
+	private static AutoNetwork createShootTheMoonBlueLeft() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Shoot The Moon (Blue Left Side) Network>");
+		
+		// TODO:  Need to write this network!
+		
+		return autoNet;
+	}
+	
+	// **** SHOOT THE MOON BLUE RIGHT SIDE Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn RIGHT 90 degrees
+	// 4) drive forward to trigger fuel bin loading
+	// 5) wait for a number of sec
+	// 6) back up
+	// 7) Turn RIGHT a number of degrees
+	// 8) Drive forward for a number of sec
+	// 9) Calibrate shooter
+	// 10) Shoot at high goal
+	// 11) go back to idle and stay there 
+	private static AutoNetwork createShootTheMoonBlueRight() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Shoot The Moon (Blue Right Side) Network>");
+		
+		// TODO:  Need to write this network!
+		
+		return autoNet;
+	}
+	
+	// **** SHOOT THE MOON RED LEFT SIDE Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn LEFT 90 degrees
+	// 4) drive forward to trigger fuel bin loading
+	// 5) wait for a number of sec
+	// 6) back up
+	// 7) Turn LEFT a number of degrees
+	// 8) Drive forward for a number of sec
+	// 9) Calibrate shooter
+	// 10) Shoot at high goal
+	// 11) go back to idle and stay there 
+	private static AutoNetwork createShootTheMoonRedLeft() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Shoot The Moon (Red Left Side) Network>");
+		
+		// TODO:  Need to write this network!
+		
+		return autoNet;
+	}
+	
+	// **** SHOOT THE MOON RED RIGHT SIDE Network ***** 
+	// 1) be idle for a number of sec
+	// 2) drive forward for a number of sec
+	// 3) Turn RIGHT 90 degrees
+	// 4) drive forward to trigger fuel bin loading
+	// 5) wait for a number of sec
+	// 6) back up
+	// 7) Turn RIGHT a number of degrees
+	// 8) Drive forward for a number of sec
+	// 9) Calibrate shooter
+	// 10) Shoot at high goal
+	// 11) go back to idle and stay there 
+	private static AutoNetwork createShootTheMoonRedRight() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Shoot The Moon (Red Right Side) Network>");
+		
+		// TODO:  Need to write this network!
+		
+		return autoNet;
+	}
+	
+	/*****************************************************************************************/
+	/**** LEGACY NETWORKS **** Networks below this are for reference only and are not used ***/
+	/*****************************************************************************************/
 	
 	// ****  [FOLLOW TARGET] Network - mainly for autotargeting testing - does not shoot ***** 
 	// 1) be idle for a number of sec

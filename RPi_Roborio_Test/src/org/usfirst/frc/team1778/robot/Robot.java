@@ -27,7 +27,7 @@ public class Robot extends IterativeRobot {
 	private static final int GAMEPAD_ID = 0;
 	
 	AutoStateMachine autoSM;
-	Joystick gamepad;
+	//Joystick gamepad;
 	final float DEBOUNCE_LIMIT_SEC	= 0.25f;
     final int PCM_NODE_ID = 2;
 	
