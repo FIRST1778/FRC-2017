@@ -15,10 +15,6 @@ public class AutoChooser {
 	public static final int DRIVE_AND_SHOOT_RED_LEFT = 8;
 	public static final int DRIVE_AND_SHOOT_RED_CENTER = 9;
 	public static final int DRIVE_AND_SHOOT_RED_RIGHT = 10;
-	public static final int SHOOT_THE_MOON_BLUE_LEFT = 11;
-	public static final int SHOOT_THE_MOON_BLUE_RIGHT = 12;
-	public static final int SHOOT_THE_MOON_RED_LEFT = 13;
-	public static final int SHOOT_THE_MOON_RED_RIGHT = 14;
 	
 	int mode;
 	private SendableChooser chooser;
@@ -37,10 +33,6 @@ public class AutoChooser {
 		chooser.addObject("DRIVE_AND_SHOOT_RED_LEFT", DRIVE_AND_SHOOT_RED_LEFT);
 		chooser.addObject("DRIVE_AND_SHOOT_RED_CENTER", DRIVE_AND_SHOOT_RED_CENTER);
 		chooser.addObject("DRIVE_AND_SHOOT_RED_RIGHT", DRIVE_AND_SHOOT_RED_RIGHT);
-		chooser.addObject("SHOOT_THE_MOON_BLUE_LEFT", SHOOT_THE_MOON_BLUE_LEFT);
-		chooser.addObject("SHOOT_THE_MOON_BLUE_RIGHT", SHOOT_THE_MOON_BLUE_RIGHT);
-		chooser.addObject("SHOOT_THE_MOON_RED_LEFT", SHOOT_THE_MOON_RED_LEFT);
-		chooser.addObject("SHOOT_THE_MOON_RED_RIGHT", SHOOT_THE_MOON_RED_RIGHT);
 		
 		SmartDashboard.putData("Auto_Mode_Chooser", chooser);
 	}

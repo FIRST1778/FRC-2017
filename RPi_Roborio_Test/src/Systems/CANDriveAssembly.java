@@ -1,8 +1,7 @@
 package Systems;
 
+import com.ctre.CANTalon;
 import NetworkComm.InputOutputComm;
-import NetworkComm.RPIComm;
-import edu.wpi.first.wpilibj.CANTalon;
 
 //Chill Out 1778 class for controlling the drivetrain during auto
 
@@ -17,7 +16,6 @@ public class CANDriveAssembly {
 	//private static final int RIGHT_REAR_TALON_ID = 7;
 			
 	private static final double AUTO_DRIVE_ANGLE_CORRECT_COEFF = 0.02;
-	private static final double AUTO_DRIVE_TARGET_CORRECT_COEFF = 0.5;
 	private static final double GYRO_CORRECT_COEFF = 0.03;
 		
 	// speed controllers and drive class
@@ -25,7 +23,7 @@ public class CANDriveAssembly {
 	
 	// used as angle baseline (if we don't reset gyro)
 	private static double initialAngle = 0.0;
-    	        
+	    	        
 	// static initializer
 	public static void initialize()
 	{
@@ -37,17 +35,14 @@ public class CANDriveAssembly {
 	        	        	        	        	        
 	        // initialize the NavXSensor
 	        NavXSensor.initialize();
-	        
+	        	        
 	        initialized = true;
 		}
 	}
 
 
 	public static void autoInit(boolean resetGyro) {
-		
-		// reset the RPi Vision Table
-		RPIComm.autoInit();
-		
+				
 		if (resetGyro) {
 			NavXSensor.reset();
 			initialAngle = 0.0;
@@ -55,7 +50,7 @@ public class CANDriveAssembly {
 		else
 			initialAngle = NavXSensor.getAngle();
    	}
-	
+		
 	private static double getGyroAngle() {
 		
 		//double gyroAngle = 0.0;
@@ -75,37 +70,7 @@ public class CANDriveAssembly {
 
 		return gyroAngle;
 	}
-	
-	public static void autoPeriodicTowardTarget(double speed) {
-		
-		// autonomous operation of drive toward target - uses vision
-		RPIComm.updateValues();
-		
-		// if no target found, don't move forward! 
-		if (!RPIComm.hasTarget())  {
-			drive(0.0, 0.0, 0.0);
-			return;
-		}
-		
-		// target found!  get target offset in X only
-		double frameWidth = RPIComm.getFrameWidth();
-		double deltaX = RPIComm.getDeltaX();
-		double driveIncrement = (deltaX/frameWidth) * AUTO_DRIVE_TARGET_CORRECT_COEFF;
-		
-		// calculate adjustment for drive toward target
-		double leftSpeed = speed+driveIncrement;		
-		double rightSpeed = speed-driveIncrement;
-		
-		String leftSpeedStr = String.format("%.2f", leftSpeed);
-		String rightSpeedStr = String.format("%.2f", rightSpeed);
-		String myString2 = new String("leftSpeed = " + leftSpeedStr + " rightSpeed = " + rightSpeedStr);
-		//System.out.println(myString2);
-		InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"Auto/AutoPeriodicDrive", myString2);
-		
-		// adjust speed of left and right sides
-		drive(leftSpeed, rightSpeed, 0.0);		 
-	}
-	
+			
 	public static void autoPeriodicStraight(double speed) {
 		// autonomous operation of drive straight - uses gyro
 		
@@ -119,13 +84,7 @@ public class CANDriveAssembly {
 				
 		double leftSpeed = speed+driveAngle;		
 		double rightSpeed = speed-driveAngle;
-		
-		String leftSpeedStr = String.format("%.2f", leftSpeed);
-		String rightSpeedStr = String.format("%.2f", rightSpeed);
-		String myString2 = new String("leftSpeed = " + leftSpeedStr + " rightSpeed = " + rightSpeedStr);
-		//System.out.println(myString2);
-		InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"Auto/AutoPeriodicDrive", myString2);
-		
+				
 		// adjust speed of left and right sides
 		drive(leftSpeed, rightSpeed, 0.0);		 
 	}
@@ -146,7 +105,13 @@ public class CANDriveAssembly {
 		
 		double rightMotorPolarity = -1.0;  // right motor is inverted 
 		double leftMotorPolarity = 1.0;    // left motor is not inverted
-				
+
+		String leftSpeedStr = String.format("%.2f", leftValue);
+		String rightSpeedStr = String.format("%.2f", rightValue);
+		String myString2 = new String("leftSpeed = " + leftSpeedStr + " rightSpeed = " + rightSpeedStr);
+		//System.out.println(myString2);
+		InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"Auto/AutoDrive", myString2);
+
 		// set motor values directly
 		mFrontLeft.set(leftMotorPolarity*leftValue);
 		mFrontRight.set(rightMotorPolarity*rightValue);

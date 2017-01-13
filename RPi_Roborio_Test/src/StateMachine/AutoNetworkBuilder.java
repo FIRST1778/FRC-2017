@@ -64,10 +64,6 @@ public class AutoNetworkBuilder {
 		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_RED_LEFT, createDriveAndShootRedLeft());	
 		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_RED_CENTER, createDriveAndShootRedCenter());	
 		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_RED_RIGHT, createDriveAndShootRedRight());	
-		autoNets.add(AutoChooser.SHOOT_THE_MOON_BLUE_LEFT, createShootTheMoonBlueLeft());
-		autoNets.add(AutoChooser.SHOOT_THE_MOON_BLUE_RIGHT, createShootTheMoonBlueRight());
-		autoNets.add(AutoChooser.SHOOT_THE_MOON_RED_LEFT, createShootTheMoonRedLeft());
-		autoNets.add(AutoChooser.SHOOT_THE_MOON_RED_RIGHT, createShootTheMoonRedRight());
 		
 		// add the networks to the prefs object
 		int counter = 0;
@@ -170,7 +166,7 @@ public class AutoNetworkBuilder {
 		turnRightState.addEvent(gyroRight);
 		
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5);
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5, 80, 90); // desired target at x=80, y=90 (assume 160x120 img)
 		UltrasonicEvent ultra1 = new UltrasonicEvent(2.0);  // ultrasonic event triggers at 2 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
@@ -216,7 +212,7 @@ public class AutoNetworkBuilder {
 		driveState.addEvent(timer2);
 				
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5);
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5, 80, 90);   // desired target at x=80, y=90 (assume 160x120 img)
 		UltrasonicEvent ultra1 = new UltrasonicEvent(2.0);  // ultrasonic event triggers at 2 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
@@ -267,7 +263,7 @@ public class AutoNetworkBuilder {
 		turnLeftState.addEvent(gyroLeft);
 		
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5);
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5, 80, 90); // desired target at x=80, y=90 (assume 160x120 img)
 		UltrasonicEvent ultra1 = new UltrasonicEvent(2.0);  // ultrasonic event triggers at 2 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
@@ -295,15 +291,54 @@ public class AutoNetworkBuilder {
 	// 1) be idle for a number of sec
 	// 2) drive forward for a number of sec
 	// 3) Turn LEFT a number of degrees
-	// 4) drive forward a number of sec
-	// 5) Calibrate shooter
-	// 6) Shoot at high goal
-	// 7) go back to idle and stay there 
+	// 4) Calibrate shooter
+	// 5) Shoot at high goal
+	// 6) go back to idle and stay there 
 	private static AutoNetwork createDriveAndShootBlueLeft() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Left Side) Network>");
+				
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
 		
-		// TODO:  Need to write this network!
+		AutoState turnLeftState = new AutoState("<Turn Left State -135 deg>");
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-135, true, 0.5);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(-135, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		turnLeftState.addAction(turnLeftAction);
+		turnLeftState.addEvent(gyroLeft);
+
+		AutoState targetCalState = new AutoState("<Cal Target State 1>");
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 30);  // desired target at x=80, y=30 (assume 160x120 img)
+		CalibratedEvent calEvent1 = new CalibratedEvent(80, 30, 5, 5);
+		targetCalState.addAction(calTarget);
+		targetCalState.addEvent(calEvent1);
+		
+		// TODO:  Shooter state here
+
+		AutoState idleState2 = new AutoState("<Idle State 2>");
+		IdleAction deadEnd = new IdleAction("<Dead End Action>");
+		idleState2.addAction(deadEnd);
+				
+		// connect each event with a state to move to
+		idleState.associateNextState(driveState);
+		driveState.associateNextState(turnLeftState);
+		turnLeftState.associateNextState(targetCalState);
+		targetCalState.associateNextState(idleState2);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState);
+		autoNet.addState(turnLeftState);
+		autoNet.addState(targetCalState);
+		autoNet.addState(idleState2);
 		
 		return autoNet;
 	}
@@ -320,7 +355,47 @@ public class AutoNetworkBuilder {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Center) Network>");
 		
-		// TODO:  Need to write this network!
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
+		
+		AutoState turnLeftState = new AutoState("<Turn Left State -120 deg>");
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-120, true, 0.5);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(-120, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		turnLeftState.addAction(turnLeftAction);
+		turnLeftState.addEvent(gyroLeft);
+
+		AutoState targetCalState = new AutoState("<Cal Target State 1>");
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 40);  // desired target at x=80, y=40 (assume 160x120 img)
+		CalibratedEvent calEvent1 = new CalibratedEvent(80, 40, 5, 5);
+		targetCalState.addAction(calTarget);
+		targetCalState.addEvent(calEvent1);
+		
+		// TODO:  Shooter state here
+
+		AutoState idleState2 = new AutoState("<Idle State 2>");
+		IdleAction deadEnd = new IdleAction("<Dead End Action>");
+		idleState2.addAction(deadEnd);
+				
+		// connect each event with a state to move to
+		idleState.associateNextState(driveState);
+		driveState.associateNextState(turnLeftState);
+		turnLeftState.associateNextState(targetCalState);
+		targetCalState.associateNextState(idleState2);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState);
+		autoNet.addState(turnLeftState);
+		autoNet.addState(targetCalState);
+		autoNet.addState(idleState2);
 		
 		return autoNet;
 	}
@@ -337,7 +412,47 @@ public class AutoNetworkBuilder {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Right Side) Network>");
 		
-		// TODO:  Need to write this network!
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
+		
+		AutoState turnLeftState = new AutoState("<Turn Left State -110 deg>");
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-110, true, 0.5);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(-110, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		turnLeftState.addAction(turnLeftAction);
+		turnLeftState.addEvent(gyroLeft);
+
+		AutoState targetCalState = new AutoState("<Cal Target State 1>");
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 50);  // desired target at x=80, y=50 (assume 160x120 img)
+		CalibratedEvent calEvent1 = new CalibratedEvent(80, 50, 5, 5);
+		targetCalState.addAction(calTarget);
+		targetCalState.addEvent(calEvent1);
+		
+		// TODO:  Shooter state here
+
+		AutoState idleState2 = new AutoState("<Idle State 2>");
+		IdleAction deadEnd = new IdleAction("<Dead End Action>");
+		idleState2.addAction(deadEnd);
+				
+		// connect each event with a state to move to
+		idleState.associateNextState(driveState);
+		driveState.associateNextState(turnLeftState);
+		turnLeftState.associateNextState(targetCalState);
+		targetCalState.associateNextState(idleState2);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState);
+		autoNet.addState(turnLeftState);
+		autoNet.addState(targetCalState);
+		autoNet.addState(idleState2);
 		
 		return autoNet;
 	}
@@ -354,7 +469,47 @@ public class AutoNetworkBuilder {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Left Side) Network>");
 		
-		// TODO:  Need to write this network!
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
+		
+		AutoState turnRightState = new AutoState("<Turn Right State +110 deg>");
+		TurnAction turnRightAction = new TurnAction("<Turn Right action>",110, true, 0.5);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(110, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		turnRightState.addAction(turnRightAction);
+		turnRightState.addEvent(gyroRight);
+
+		AutoState targetCalState = new AutoState("<Cal Target State 1>");
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 50); // desired target at x=80, y=50 (assume 160x120 img)
+		CalibratedEvent calEvent1 = new CalibratedEvent(80, 50, 5, 5);
+		targetCalState.addAction(calTarget);
+		targetCalState.addEvent(calEvent1);
+		
+		// TODO:  Shooter state here
+
+		AutoState idleState2 = new AutoState("<Idle State 2>");
+		IdleAction deadEnd = new IdleAction("<Dead End Action>");
+		idleState2.addAction(deadEnd);
+				
+		// connect each event with a state to move to
+		idleState.associateNextState(driveState);
+		driveState.associateNextState(turnRightState);
+		turnRightState.associateNextState(targetCalState);
+		targetCalState.associateNextState(idleState2);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState);
+		autoNet.addState(turnRightState);
+		autoNet.addState(targetCalState);
+		autoNet.addState(idleState2);
 		
 		return autoNet;
 	}
@@ -371,7 +526,47 @@ public class AutoNetworkBuilder {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Center) Network>");
 		
-		// TODO:  Need to write this network!
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
+		
+		AutoState turnRightState = new AutoState("<Turn Right State +120 deg>");
+		TurnAction turnRightAction = new TurnAction("<Turn Right action>",120, true, 0.5);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(120, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		turnRightState.addAction(turnRightAction);
+		turnRightState.addEvent(gyroRight);
+
+		AutoState targetCalState = new AutoState("<Cal Target State 1>");
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 40); // desired target at x=80, y=40 (assume 160x120 img)
+		CalibratedEvent calEvent1 = new CalibratedEvent(80, 40, 5, 5);
+		targetCalState.addAction(calTarget);
+		targetCalState.addEvent(calEvent1);
+		
+		// TODO:  Shooter state here
+
+		AutoState idleState2 = new AutoState("<Idle State 2>");
+		IdleAction deadEnd = new IdleAction("<Dead End Action>");
+		idleState2.addAction(deadEnd);
+				
+		// connect each event with a state to move to
+		idleState.associateNextState(driveState);
+		driveState.associateNextState(turnRightState);
+		turnRightState.associateNextState(targetCalState);
+		targetCalState.associateNextState(idleState2);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState);
+		autoNet.addState(turnRightState);
+		autoNet.addState(targetCalState);
+		autoNet.addState(idleState2);
 		
 		return autoNet;
 	}
@@ -388,94 +583,51 @@ public class AutoNetworkBuilder {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Right Side) Network>");
 		
-		// TODO:  Need to write this network!
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
+		
+		AutoState turnRightState = new AutoState("<Turn Right State +135 deg>");
+		TurnAction turnRightAction = new TurnAction("<Turn Right action>",135, true, 0.5);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(135, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		turnRightState.addAction(turnRightAction);
+		turnRightState.addEvent(gyroRight);
+
+		AutoState targetCalState = new AutoState("<Cal Target State 1>");
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 30); // desired target at x=80, y=30 (assume 160x120 img)
+		CalibratedEvent calEvent1 = new CalibratedEvent(80, 30, 5, 5);
+		targetCalState.addAction(calTarget);
+		targetCalState.addEvent(calEvent1);
+		
+		// TODO:  Shooter state here
+
+		AutoState idleState2 = new AutoState("<Idle State 2>");
+		IdleAction deadEnd = new IdleAction("<Dead End Action>");
+		idleState2.addAction(deadEnd);
+				
+		// connect each event with a state to move to
+		idleState.associateNextState(driveState);
+		driveState.associateNextState(turnRightState);
+		turnRightState.associateNextState(targetCalState);
+		targetCalState.associateNextState(idleState2);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState);
+		autoNet.addState(turnRightState);
+		autoNet.addState(targetCalState);
+		autoNet.addState(idleState2);
 		
 		return autoNet;
 	}
 	
-	// **** SHOOT THE MOON BLUE LEFT SIDE Network ***** 
-	// 1) be idle for a number of sec
-	// 2) drive forward for a number of sec
-	// 3) Turn LEFT 90 degrees
-	// 4) drive forward to trigger fuel bin loading
-	// 5) wait for a number of sec
-	// 6) back up
-	// 7) Turn LEFT a number of degrees
-	// 8) Drive forward for a number of sec
-	// 9) Calibrate shooter
-	// 10) Shoot at high goal
-	// 11) go back to idle and stay there 
-	private static AutoNetwork createShootTheMoonBlueLeft() {
-		
-		AutoNetwork autoNet = new AutoNetwork("<Shoot The Moon (Blue Left Side) Network>");
-		
-		// TODO:  Need to write this network!
-		
-		return autoNet;
-	}
-	
-	// **** SHOOT THE MOON BLUE RIGHT SIDE Network ***** 
-	// 1) be idle for a number of sec
-	// 2) drive forward for a number of sec
-	// 3) Turn RIGHT 90 degrees
-	// 4) drive forward to trigger fuel bin loading
-	// 5) wait for a number of sec
-	// 6) back up
-	// 7) Turn RIGHT a number of degrees
-	// 8) Drive forward for a number of sec
-	// 9) Calibrate shooter
-	// 10) Shoot at high goal
-	// 11) go back to idle and stay there 
-	private static AutoNetwork createShootTheMoonBlueRight() {
-		
-		AutoNetwork autoNet = new AutoNetwork("<Shoot The Moon (Blue Right Side) Network>");
-		
-		// TODO:  Need to write this network!
-		
-		return autoNet;
-	}
-	
-	// **** SHOOT THE MOON RED LEFT SIDE Network ***** 
-	// 1) be idle for a number of sec
-	// 2) drive forward for a number of sec
-	// 3) Turn LEFT 90 degrees
-	// 4) drive forward to trigger fuel bin loading
-	// 5) wait for a number of sec
-	// 6) back up
-	// 7) Turn LEFT a number of degrees
-	// 8) Drive forward for a number of sec
-	// 9) Calibrate shooter
-	// 10) Shoot at high goal
-	// 11) go back to idle and stay there 
-	private static AutoNetwork createShootTheMoonRedLeft() {
-		
-		AutoNetwork autoNet = new AutoNetwork("<Shoot The Moon (Red Left Side) Network>");
-		
-		// TODO:  Need to write this network!
-		
-		return autoNet;
-	}
-	
-	// **** SHOOT THE MOON RED RIGHT SIDE Network ***** 
-	// 1) be idle for a number of sec
-	// 2) drive forward for a number of sec
-	// 3) Turn RIGHT 90 degrees
-	// 4) drive forward to trigger fuel bin loading
-	// 5) wait for a number of sec
-	// 6) back up
-	// 7) Turn RIGHT a number of degrees
-	// 8) Drive forward for a number of sec
-	// 9) Calibrate shooter
-	// 10) Shoot at high goal
-	// 11) go back to idle and stay there 
-	private static AutoNetwork createShootTheMoonRedRight() {
-		
-		AutoNetwork autoNet = new AutoNetwork("<Shoot The Moon (Red Right Side) Network>");
-		
-		// TODO:  Need to write this network!
-		
-		return autoNet;
-	}
 	
 	/*****************************************************************************************/
 	/**** LEGACY NETWORKS **** Networks below this are for reference only and are not used ***/
@@ -500,7 +652,7 @@ public class AutoNetworkBuilder {
 		idleState.addEvent(timer1);
 		
 		AutoState targetCalState = new AutoState("<Cal Target FOREVER State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>");
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>",80, 60);
 		IdleAction doSomething4 = new IdleAction("<Placeholder Action 4>");
 		IdleAction doSomething5 = new IdleAction("<Placeholder Action 5>");
 		targetCalState.addAction(calTarget);

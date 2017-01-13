@@ -7,22 +7,33 @@ import NetworkComm.RPIComm;
 
 public class CalibrateTargetAction extends Action {
 	
+	double desiredX, desiredY;
+	
 	public CalibrateTargetAction() {
-		this.name = "<Calibrate Target Action>";		
+		this.name = "<Calibrate Target Action>";	
+		this.desiredX = 0.0;
+		this.desiredY = 0.0;
 	}
 	
-	public CalibrateTargetAction(String name)
+	public CalibrateTargetAction(String name, double desiredX, double desiredY)
 	{
 		this.name = name;
+		this.desiredX = desiredX;
+		this.desiredY = desiredY;
 	}
 	
 	// action entry
 	public void initialize() {
 		// do some calibrate initialization
 		RPIComm.initialize();
-		//RPIComm.setMovementModes(true, false);  // forward movement only
-		RPIComm.setMovementModes(false, true);  // lateral movement only
-		//RPIComm.setMovementModes(true, true);  // forward and lateral movement
+		
+		// reset the RPi Vision Table
+		RPIComm.autoInit();
+						
+		// set the desired target X and Y
+		RPIComm.setDesired(desiredX, desiredY);
+		
+		RPIComm.setMovementModes(true, true);  // forward and lateral movement
 				
 		super.initialize();
 	}
@@ -30,9 +41,12 @@ public class CalibrateTargetAction extends Action {
 	// called periodically
 	public void process()  {
 		
-		// do some calibrate stuff
+		RPIComm.updateValues();
 		
 		if (RPIComm.hasTarget()) {
+			
+			RPIComm.targetProcessing();
+			
 			double leftVal = RPIComm.getLeftDriveValue();
 			double rightVal = RPIComm.getRightDriveValue();
 			
@@ -40,7 +54,6 @@ public class CalibrateTargetAction extends Action {
 		}
 		else {
 			// no target - stop motors
-			// TODO:  spin & search mode?
 			CANDriveAssembly.drive(0, 0, 0);
 		}
 		
