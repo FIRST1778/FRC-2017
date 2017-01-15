@@ -1,6 +1,8 @@
 package Systems;
 
 import com.ctre.CANTalon;
+
+import NetworkComm.InputOutputComm;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Utility;
 
@@ -58,7 +60,8 @@ public class ShooterAssembly {
 		if ((newIndex > MOTOR_MAX) || (newIndex < MOTOR_OFF))
 			return;
 		
-		System.out.println("Motor Strength = " + motorSettings[newIndex]);
+		//System.out.println("Motor Strength = " + motorSettings[newIndex]);
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Teleop/ShooterStrength", motorSettings[newIndex]);		
 		
 		shooterMotor.set(motorSettings[newIndex]);
 		

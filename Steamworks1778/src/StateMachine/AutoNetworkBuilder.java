@@ -166,7 +166,7 @@ public class AutoNetworkBuilder {
 		turnRightState.addEvent(gyroRight);
 		
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5, 80, 90); // desired target at x=80, y=90 (assume 160x120 img)
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5, 32, 62); // desired target at x=32, y=62 (assume 160x120 img)
 		UltrasonicEvent ultra1 = new UltrasonicEvent(2.0);  // ultrasonic event triggers at 2 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
@@ -212,7 +212,7 @@ public class AutoNetworkBuilder {
 		driveState.addEvent(timer2);
 				
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5, 80, 90);   // desired target at x=80, y=90 (assume 160x120 img)
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5, 32, 62);   // desired target at x=32, y=62 (assume 160x120 img)
 		UltrasonicEvent ultra1 = new UltrasonicEvent(2.0);  // ultrasonic event triggers at 2 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
@@ -263,7 +263,7 @@ public class AutoNetworkBuilder {
 		turnLeftState.addEvent(gyroLeft);
 		
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5, 80, 90); // desired target at x=80, y=90 (assume 160x120 img)
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.5, 32, 62); // desired target at x=32, y=62 (assume 160x120 img)
 		UltrasonicEvent ultra1 = new UltrasonicEvent(2.0);  // ultrasonic event triggers at 2 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);

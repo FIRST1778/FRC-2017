@@ -50,31 +50,11 @@ public class AutoDriveAssembly {
 		else
 			initialAngle = NavXSensor.getAngle();
    	}
-		
-	private static double getGyroAngle() {
-		
-		//double gyroAngle = 0.0;
-		//double gyroAngle = NavXSensor.getYaw();	  // -180 deg to +180 deg
-		double gyroAngle = NavXSensor.getAngle();     // continuous angle (can be larger than 360 deg)
-				
-		//System.out.println("autoPeriodicStraight:  Gyro angle = " + gyroAngle);
-			
-		// send output data for test & debug
-	    //InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/IMU_Connected",NavXSensor.isConnected());
-	    //InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/IMU_Calibrating",NavXSensor.isCalibrating());
-
-		String gyroAngleStr = String.format("%.2f", gyroAngle);
-	    String myString = new String("gyroAngle = " + gyroAngleStr);
-		//System.out.println(myString);
-		InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"Auto/GyroAngle", myString);		
-
-		return gyroAngle;
-	}
-			
+					
 	public static void autoPeriodicStraight(double speed) {
 		// autonomous operation of drive straight - uses gyro
 		
-		double gyroAngle = getGyroAngle();
+		double gyroAngle = NavXSensor.getAngle();
 		
 		// subtract the initial angle offset, if any
 		gyroAngle -= initialAngle;
@@ -118,13 +98,13 @@ public class AutoDriveAssembly {
 	}
 	
 	public static void driveDirection(double angle, double speed) {
-		double gyroAngle = getGyroAngle();	
+		double gyroAngle = NavXSensor.getAngle();	
 		double driveAngle = (angle-gyroAngle)*GYRO_CORRECT_COEFF;
 		drive(driveAngle+speed, -driveAngle+speed, 0);
 	}
 	
 	public static void turnToDirection(double angle, double power) {
-		double gyroAngle = getGyroAngle();
+		double gyroAngle = NavXSensor.getAngle();
 		double driveAngle = (angle-gyroAngle)*(1/360)*power;
 		drive(driveAngle, -driveAngle, 0);
 	}

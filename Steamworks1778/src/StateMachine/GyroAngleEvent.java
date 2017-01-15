@@ -50,10 +50,8 @@ public class GyroAngleEvent extends Event {
 	    InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/IMU_Connected",NavXSensor.isConnected());
 	    InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/IMU_Calibrating",NavXSensor.isCalibrating());
 
-		String gyroAngleStr = String.format("%.2f", gyroAngle);
-	    String myString = new String("gyroAngle = " + gyroAngleStr);
-		//System.out.println(myString);
-		InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"Auto/GyroAngle", myString);		
+		//System.out.println("gyroAngle = " + gyroAngle);
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/GyroAngle", gyroAngle);		
 
 		return gyroAngle;
 	}

@@ -22,6 +22,10 @@ public class DriveTowardTargetAction extends Action {
 		this.desiredY = desiredY;
 
 		CANDriveAssembly.initialize();
+		RPIComm.initialize();
+		
+		// set the desired target X and Y
+		RPIComm.setDesired(desiredX, desiredY);
 	}
 	
 	public DriveTowardTargetAction(String name, double speed, double desiredX, double desiredY)

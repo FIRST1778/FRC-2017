@@ -1,4 +1,5 @@
 package FreezyDrive;
+import NetworkComm.InputOutputComm;
 import Utility.SimpleUtil;
 
 public class DriveControl {
@@ -19,7 +20,8 @@ public class DriveControl {
 		wheel = handleDeadband(wheel, wheelDeadband);
         throttle = handleDeadband(throttle, throttleDeadband);
         
-		System.out.println(throttle);
+		//System.out.println(throttle);
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Teleop/Throttle", throttle);		
         
 		throttle = throttle / 0.6;
 		

@@ -299,12 +299,15 @@ int main()
 	vector<Moments>mu(hulls.size());	  // hull moments
 	vector<Point2f>mc(hulls.size());       // hull mass centers
 	vector<double>targetArea(hulls.size());   // hull areas
+	vector<double>targetWidth(hulls.size());   // hull widths
 
 	for (int i=0; i<hulls.size(); i++)
 	{
 		mu[i] = moments(hulls[i], false);   // find moments
 		mc[i] = Point2f(mu[i].m10/mu[i].m00, mu[i].m01/mu[i].m00);
 		targetArea[i] = contourArea(hulls[i]);
+		
+		targetWidth[i] = boundingRect(hulls[i]).width;
 	}
 
 	int maxTargetArea = -1;
@@ -340,8 +343,10 @@ int main()
 	{
 		// write target info out to roborio
 		table->PutNumber("targets",(float)1.0f);
-		table->PutNumber("targetX",mc[targetIndex].x - imageCenterX);
-		table->PutNumber("targetY",mc[targetIndex].y - imageCenterY);
+		//table->PutNumber("targetX",mc[targetIndex].x - imageCenterX);
+		//table->PutNumber("targetY",mc[targetIndex].y - imageCenterY);
+		table->PutNumber("targetX",mc[targetIndex].x);
+		table->PutNumber("targetY",mc[targetIndex].y);
 		table->PutNumber("targetArea",targetArea[targetIndex]);
 		table->PutNumber("frameWidth",(float)frameWidth);
 		table->PutNumber("frameHeight",(float)frameHeight);

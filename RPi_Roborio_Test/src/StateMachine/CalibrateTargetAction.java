@@ -13,6 +13,10 @@ public class CalibrateTargetAction extends Action {
 		this.name = "<Calibrate Target Action>";	
 		this.desiredX = 0.0;
 		this.desiredY = 0.0;
+		
+		// do some calibrate initialization
+		CANDriveAssembly.initialize();
+		RPIComm.initialize();
 	}
 	
 	public CalibrateTargetAction(String name, double desiredX, double desiredY)
@@ -20,12 +24,14 @@ public class CalibrateTargetAction extends Action {
 		this.name = name;
 		this.desiredX = desiredX;
 		this.desiredY = desiredY;
+		
+		// do some calibrate initialization
+		CANDriveAssembly.initialize();
+		RPIComm.initialize();
 	}
 	
 	// action entry
 	public void initialize() {
-		// do some calibrate initialization
-		RPIComm.initialize();
 		
 		// reset the RPi Vision Table
 		RPIComm.autoInit();

@@ -7,6 +7,7 @@ import StateMachine.AutoStateMachine;
 import Systems.CANDriveAssembly;
 import Systems.MotionProfilePrototype;
 import Systems.NavXSensor;
+import Systems.ShooterAssembly;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -42,6 +43,8 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
 		RPIComm.initialize();
 		InputOutputComm.initialize();
+		ShooterAssembly.initialize();
+		
 		//CANDriveAssembly.initialize();
 		
 		//myDoubleSol = new DoubleSolenoid(PCM_NODE_ID, 0, 1);
@@ -97,6 +100,8 @@ public class Robot extends IterativeRobot {
     	InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"MainLog","teleop mode...");
 
     	RPIComm.teleopInit();
+    	ShooterAssembly.teleopInit();
+    	
 		//CANDriveAssembly.teleopInit();
 		
     	//MotionProfilePrototype.teleopInit();
@@ -106,7 +111,10 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	RPIComm.updateValues();        
+    	RPIComm.updateValues();  
+    	
+    	ShooterAssembly.teleopPeriodic();
+    	
 		//CANDriveAssembly.teleopPeriodic();   	
     	
     	/*

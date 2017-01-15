@@ -2,6 +2,7 @@ package StateMachine;
 
 import java.util.prefs.Preferences;
 
+import NetworkComm.InputOutputComm;
 import NetworkComm.RPIComm;
 import Systems.AutoDriveAssembly;
 
@@ -36,18 +37,18 @@ public class DriveTowardTargetAction extends Action {
 		this.desiredY = desiredY;
 				
 		AutoDriveAssembly.initialize();
-		RPIComm.initialize();
-		
-		// set the desired target X and Y
-		RPIComm.setDesired(desiredX, desiredY);
+		RPIComm.initialize();	
 	}
 	
 	// action entry
 	public void initialize() {
-		
-		// reset the RPi Vision Table
+						
+		// reset the RPI vision object
 		RPIComm.autoInit();
-										
+		
+		// set the desired target X and Y
+		RPIComm.setDesired(desiredX, desiredY);
+		
 		super.initialize();
 	}
 	
@@ -58,11 +59,15 @@ public class DriveTowardTargetAction extends Action {
 		RPIComm.updateValues();
 		
 		if (RPIComm.hasTarget()) {
-						
+			
 			// target found!  process and retrieve deltaX from desired location		
 			double frameWidth = RPIComm.getFrameWidth();
 			double deltaX = RPIComm.getDeltaX();
 			double driveIncrement = (deltaX/frameWidth) * AUTO_DRIVE_TARGET_CORRECT_COEFF;
+
+			InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/hasTarget", true);		
+			InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/desiredX", desiredX);		
+			InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/deltaX", deltaX);		
 			
 			// calculate adjustment for drive toward target
 			double leftSpeed = speed+driveIncrement;		
@@ -71,6 +76,8 @@ public class DriveTowardTargetAction extends Action {
 			AutoDriveAssembly.drive(leftSpeed, rightSpeed, 0);
 		}
 		else {
+			InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/hasTarget", false);		
+
 			// no target - drive straight
 			AutoDriveAssembly.drive(speed, speed, 0);
 		}

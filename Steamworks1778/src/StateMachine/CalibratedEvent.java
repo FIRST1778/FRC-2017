@@ -1,5 +1,6 @@
 package StateMachine;
 
+import NetworkComm.InputOutputComm;
 import NetworkComm.RPIComm;
 
 public class CalibratedEvent extends Event {
@@ -46,7 +47,10 @@ public class CalibratedEvent extends Event {
 		double deltaX = Math.abs(desiredX - RPIComm.targetX);
 		double deltaY = Math.abs(desiredY - RPIComm.targetY);
 		
-		//System.out.println("delta = " + delta + " duration = " + durationSec);
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/desiredX", desiredX);		
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/desiredY", desiredY);		
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/deltaX", deltaX);		
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/deltaY", deltaY);		
 		
 		if ((deltaX < marginX) && (deltaY < marginY))
 		{
