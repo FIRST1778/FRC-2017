@@ -41,6 +41,28 @@ int area_min_slider, area_max_slider;
 int dilation_slider;
 int exposure_slider;
 
+// overlay variables - assuming capture of 160x120 dims
+const Point gearCenter(40,60);
+const Point gearSize(30, 30);
+const Point gearUL(gearCenter.x - (gearSize.x/2), gearCenter.y - (gearSize.y/2));
+const Point gearLR(gearCenter.x + (gearSize.x/2), gearCenter.y + (gearSize.y/2));
+
+const Point highCenter(115,20);
+const Point highSize(50,10);
+const Point highUL(highCenter.x - (highSize.x/2), highCenter.y - (highSize.y/2));
+const Point highLR(highCenter.x + (highSize.x/2), highCenter.y + (highSize.y/2));
+
+const Point middleCenter(115,35);
+const Point middleSize(30,7);
+const Point middleUL(middleCenter.x - (middleSize.x/2), middleCenter.y - (middleSize.y/2));
+const Point middleLR(middleCenter.x + (middleSize.x/2), middleCenter.y + (middleSize.y/2));
+
+const Point lowCenter(115,50);
+const Point lowSize(20,5);
+const Point lowUL(lowCenter.x - (lowSize.x/2), lowCenter.y - (lowSize.y/2));
+const Point lowLR(lowCenter.x + (lowSize.x/2), lowCenter.y + (lowSize.y/2));
+
+
 // video capture objects
 VideoCapture cap(0);     // get 'any' cam
 //VideoCapture cap("/dev/video1");    // get second camera - not used
@@ -127,6 +149,19 @@ void on_exposure(int, void *)
 	set_exposure(exposure);
 }
 
+
+void draw_overlay(Mat& inImg) 
+{
+		
+	// draw boxes
+	rectangle(inImg, gearUL, gearLR, Scalar(0, 0, 255), 1, 8, 0);					
+	rectangle(inImg, highUL, highLR, Scalar(255, 0, 0), 1, 8, 0);					
+	rectangle(inImg,middleUL,middleLR, Scalar(0, 255, 0), 1, 8, 0);					
+	rectangle(inImg,lowUL,lowLR, Scalar(0, 0, 255), 1, 8, 0);
+
+	// draw lines
+}
+
 int main()
 {
 	FILE *parameter_file = NULL;
@@ -190,7 +225,7 @@ int main()
 	printf("minColor_v = %d\n",minColor_v);
 	printf("maxColor_v = %d\n",maxColor_v);
 	printf("dilationFactor = %d\n",dilationFactor);
-	printf("exposure = %f\n",exposure);
+	//printf("exposure = %f\n",exposure);
 	
 
 	// initialize slider values
@@ -217,19 +252,25 @@ int main()
 	createTrackbar("Area Min", "Thresholds", &area_min_slider, maxArea, on_min_area);
 	createTrackbar("Area Max", "Thresholds", &area_max_slider, maxArea, on_max_area);
 	createTrackbar("Dilation", "Thresholds", &dilation_slider, 50, on_dilation);
-	createTrackbar("Exposure", "Thresholds", &exposure_slider, 2500, on_exposure);
+	//createTrackbar("Exposure", "Thresholds", &exposure_slider, 2500, on_exposure);
 
 	// calculate image center
 	imageCenterX = frameWidth/2;
 	imageCenterY = frameHeight/2;
 
 	// read in the overlay image (depends on 320x240 or 160x120, nothing else is valid)
+	/*
 	if (frameWidth == 320)
 		overlayImg = imread("/home/pi/chillout/Vision2017_Target_Overlay1_320x240.png",CV_LOAD_IMAGE_COLOR);
 	else if (frameWidth == 160)
 		overlayImg = imread("/home/pi/chillout/Vision2017_Target_Overlay1_160x120.png",CV_LOAD_IMAGE_COLOR);
+	*/
+	/*
+	if (frameWidth == 160)
+		overlayImg = imread("/home/pi/chillout/Steamworks1778_Camera_Overlay1_160x120.png",CV_LOAD_IMAGE_COLOR);
 	else
 		overlayImg = Mat::zeros(Size(frameWidth, frameHeight),CV_8UC3);
+	*/
 
 	// initialize network table for comm with the robot
 	static std::shared_ptr<NetworkTable> table;
@@ -237,8 +278,10 @@ int main()
 	NetworkTable::SetClientMode();
 	NetworkTable::Initialize();
 	table = NetworkTable::GetTable("RPIComm/Data_Table");
+	table->PutBoolean("autoExposure",true);
 	
-	// set exposure level first	
+	// set exposure level first - experimental
+	/*	
 	if (descriptor != -1) {
 		autoExposureOff();
 		set_exposure(exposure);
@@ -246,6 +289,7 @@ int main()
 	}
 	else
 		printf("ERROR - could not open v4l2 device!\n");
+	*/
 
     // initialize frame size
     if (cap.isOpened()) {
@@ -265,9 +309,10 @@ int main()
 
         if ( ! cap.read(inputImg) )
             break;
-
+	
+		
 	// color threshold input image into binary image
-        cvtColor( inputImg, hsvImg, CV_BGR2HSV );
+    cvtColor( inputImg, hsvImg, CV_BGR2HSV );
 	inRange(hsvImg, Scalar(minColor_h, minColor_s, minColor_v), Scalar(maxColor_h, maxColor_s, maxColor_v), binaryImg);		/*green*/
 
 	Mat binary2 = binaryImg.clone();
@@ -299,15 +344,12 @@ int main()
 	vector<Moments>mu(hulls.size());	  // hull moments
 	vector<Point2f>mc(hulls.size());       // hull mass centers
 	vector<double>targetArea(hulls.size());   // hull areas
-	vector<double>targetWidth(hulls.size());   // hull widths
 
 	for (int i=0; i<hulls.size(); i++)
 	{
 		mu[i] = moments(hulls[i], false);   // find moments
 		mc[i] = Point2f(mu[i].m10/mu[i].m00, mu[i].m01/mu[i].m00);
 		targetArea[i] = contourArea(hulls[i]);
-		
-		targetWidth[i] = boundingRect(hulls[i]).width;
 	}
 
 	int maxTargetArea = -1;
@@ -369,7 +411,8 @@ int main()
 		//printf("No target\n");
 	}
 
-	// check to see if we need to change auto exposure
+	// check to see if we need to change auto exposure - experimental
+	/*
 	bool autoExp = table->GetBoolean("autoExposure");
 	if (auto_exposure && !autoExp)
 	{
@@ -384,11 +427,15 @@ int main()
 		auto_exposure = true;
 		autoExposureOn();
 	}
+	*/
 
 	// create output image with overlay
-	float alpha = 0.6;
-	float beta = 1.0 - alpha;
-	addWeighted(inputImg, alpha, overlayImg, beta, 0.0, outputImg);
+	//float alpha = 0.6;
+	//float beta = 1.0 - alpha;
+	//addWeighted(inputImg, alpha, overlayImg, beta, 0.0, outputImg);
+
+	outputImg = inputImg;
+	draw_overlay(outputImg);
 	
 	/*** Image output code - debug only ****/
 	//imshow("original",inputImg);
