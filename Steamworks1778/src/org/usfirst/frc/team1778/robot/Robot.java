@@ -5,7 +5,7 @@ import FreezyDrive.FreezyDriveTrain;
 import NetworkComm.InputOutputComm;
 import NetworkComm.RPIComm;
 import StateMachine.AutoStateMachine;
-import Systems.ShooterAssembly;
+import Systems.BallManagement;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 
@@ -27,7 +27,7 @@ public class Robot extends IterativeRobot {
     	  	    	
 		RPIComm.initialize();
 		InputOutputComm.initialize();
-        ShooterAssembly.initialize();
+        BallManagement.initialize();
         FreezyDriveTrain.initialize();
         
 		autoSM = new AutoStateMachine();
@@ -56,7 +56,7 @@ public class Robot extends IterativeRobot {
     	InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"MainLog","teleop mode...");
 
     	RPIComm.teleopInit();
-    	ShooterAssembly.teleopInit();  	
+    	BallManagement.teleopInit();  	
     	FreezyDriveTrain.teleopInit();	
     }
     /**
@@ -65,7 +65,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
     	
     	RPIComm.updateValues();  
-        ShooterAssembly.teleopPeriodic();	
+        BallManagement.teleopPeriodic();	
         FreezyDriveTrain.teleopPeriodic();    
     }
     
