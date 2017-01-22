@@ -32,7 +32,7 @@ public class AutoDriveAssembly {
 	        //mBackLeft = new CANTalon(LEFT_REAR_TALON_ID);
 	        mFrontRight = new CANTalon(RIGHT_FRONT_TALON_ID);
 	        //mBackRight = new CANTalon(RIGHT_REAR_TALON_ID);
-	        	        	        	        	        
+	        	        	
 	        // initialize the NavXSensor
 	        NavXSensor.initialize();
 	        	        

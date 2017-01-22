@@ -6,6 +6,7 @@ import NetworkComm.InputOutputComm;
 import NetworkComm.RPIComm;
 import StateMachine.AutoStateMachine;
 import Systems.BallManagement;
+import Systems.CameraControl;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 
@@ -29,6 +30,7 @@ public class Robot extends IterativeRobot {
 		InputOutputComm.initialize();
         BallManagement.initialize();
         FreezyDriveTrain.initialize();
+        CameraControl.initialize();
         
 		autoSM = new AutoStateMachine();
 		
@@ -58,6 +60,7 @@ public class Robot extends IterativeRobot {
     	RPIComm.teleopInit();
     	BallManagement.teleopInit();  	
     	FreezyDriveTrain.teleopInit();	
+    	CameraControl.teleopInit();
     }
     /**
      * This function is called periodically during operator control
@@ -66,7 +69,8 @@ public class Robot extends IterativeRobot {
     	
     	RPIComm.updateValues();  
         BallManagement.teleopPeriodic();	
-        FreezyDriveTrain.teleopPeriodic();    
+        FreezyDriveTrain.teleopPeriodic();   
+        CameraControl.teleopPeriodic();
     }
     
     /**

@@ -1,9 +1,13 @@
 package Systems;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.FeedbackDeviceStatus;
+import com.ctre.CANTalon.TalonControlMode;
 
 import NetworkComm.InputOutputComm;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Utility;
 
 public class BallManagement {
@@ -21,6 +25,8 @@ public class BallManagement {
 	private static final double COLLECTOR_IN_LEVEL = 0.5;
 	private static final double COLLECTOR_OUT_LEVEL = -0.5;
 	
+	private static final double AGITATOR_LEVEL = 0.3;
+	
 	private static final double DEAD_ZONE_THRESHOLD = 0.05;
 	
 	public static final int MOTOR_OFF = 0;
@@ -31,7 +37,9 @@ public class BallManagement {
 	public static final int MOTOR_VERY_HIGH = 5;
 	public static final int MOTOR_MAX = 6;
 
-	private static final double motorSettings[] = { 0.0, -0.1, -0.4, -0.6, -0.8, -0.9, -1.0 };
+	private static final double motorSettings[] = { 0, 700, 850, 1500, 2000, 2500, 4000 };		// Speed (RPM) control settings
+	//private static final double motorSettings[] = { 0.0, -250, -500, -750, -1000, -1250, -1500 };		// Speed (RPM) control settings
+	//private static final double motorSettings[] = { 0.0, -0.1, -0.4, -0.6, -0.8, -0.9, -1.0 };  	// Vbus (%) control settings
 	private static final int NUM_MOTOR_SETTINGS = 7;
 	
 	private static double currentMotorIndex = 0;
@@ -40,7 +48,7 @@ public class BallManagement {
 	
 	private static final int GAMEPAD_ID = 1;
 	private static Joystick gamepad;
-	
+		
 	// gamepad controls
 	private static final int COLLECTOR_IN_AXIS = 2;
 	private static final int COLLECTOR_OUT_BUTTON = 5;
@@ -61,12 +69,27 @@ public class BallManagement {
 		if (initialized)
 			return;
 
-		// initialize motors
-		shooterMotor = new CANTalon(SHOOTER_TALON_ID);
+		// create motors
 		conveyerMotor = new CANTalon(CONVEYER_TALON_ID);
 		collectorMotor = new CANTalon(COLLECTOR_TALON_ID);
 		agitatorMotor = new CANTalon(AGITATOR_TALON_ID);
-
+		shooterMotor = new CANTalon(SHOOTER_TALON_ID);
+		
+		// configure shooter motor for closed loop speed control
+		//shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
+		shooterMotor.changeControlMode(TalonControlMode.Speed);
+		
+		shooterMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		shooterMotor.reverseSensor(true);
+		shooterMotor.configEncoderCodesPerRev(12);
+		shooterMotor.configNominalOutputVoltage(+0.0f, -0.0f);
+		shooterMotor.configPeakOutputVoltage(+12.0f, -12.0f);
+		shooterMotor.setProfile(0);
+		shooterMotor.setP(25.0);
+		shooterMotor.setI(0.06);
+		shooterMotor.setD(0.6);
+		shooterMotor.setF(0);
+		
 		// make sure all motors are off
 		resetMotors();
 		
@@ -75,16 +98,17 @@ public class BallManagement {
 		initialized = true;
 	}
 	
-	private static void resetMotors()
-	{
+	public static void resetMotors()
+	{		
 		currentMotorIndex = MOTOR_OFF;
 		shooterMotor.set(0);
 		conveyerMotor.set(0);
 		collectorMotor.set(0);
-		agitatorMotor.set(0);		
+		agitatorMotor.set(0);	
+		
 	}
 	
-	private static void setShooterStrength(int newIndex) {
+	public static void setShooterStrength(int newIndex) {
 		
 		if (!initialized)
 			initialize();
@@ -94,30 +118,36 @@ public class BallManagement {
 			return;
 		
 		//System.out.println("Motor Strength = " + motorSettings[newIndex]);
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Teleop/ShooterLevel", motorSettings[newIndex]);		
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ShooterLevel", motorSettings[newIndex]);		
 		
 		shooterMotor.set(motorSettings[newIndex]);	
+		
+	}
+	
+	public static void startAgitator() {
+        // initialize the agitator (always on)
+        double agitatorLevel = AGITATOR_LEVEL;
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
+        agitatorMotor.set(agitatorLevel);		
+	}
+	
+	public static void startConveyer() {
+		double conveyerLevel = CONVEYER_IN_LEVEL;
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ConveyerLevel", conveyerLevel);		
+		conveyerMotor.set(conveyerLevel);
+		
 	}
 	
 	public static void fireLevel(int motorLevel) {
-		
+				
 		setShooterStrength(motorLevel);
 		
 		// reset trigger init time
 		initTriggerTime = Utility.getFPGATime();
 	}
 		
-	public static void teleopInit() {
-		setShooterStrength(MOTOR_OFF);
-        initTriggerTime = Utility.getFPGATime();
-        
-        // initialize the agitator (always on)
-        double agitatorLevel = 0.3;
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Teleop/AgitatorLevel", agitatorLevel);		
-        agitatorMotor.set(agitatorLevel);
-	}
 	
-	public static void teleopPeriodic() {
+	private static void checkCollectorConveyerControls() {
 		
 		// conveyer control
 		double conveyerLevel = gamepad.getRawAxis(CONVEYER_IN_AXIS);
@@ -127,7 +157,7 @@ public class BallManagement {
 			conveyerLevel = CONVEYER_OUT_LEVEL;
 		else
 			conveyerLevel = 0.0;
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Teleop/ConveyerLevel", conveyerLevel);		
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ConveyerLevel", conveyerLevel);		
 		conveyerMotor.set(conveyerLevel);
 		
 		// collector control
@@ -138,9 +168,12 @@ public class BallManagement {
 			collectorLevel = COLLECTOR_OUT_LEVEL;
 		else
 			collectorLevel = 0.0;
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Teleop/CollectorLevel", collectorLevel);
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/CollectorLevel", collectorLevel);
 		collectorMotor.set(collectorLevel);
-
+		
+	}
+	
+	private static void checkShooterControls() {
 		// fire controls - using a timer to debounce
 		double currentTime = Utility.getFPGATime();
 
@@ -155,11 +188,35 @@ public class BallManagement {
 		if (gamepad.getRawButton(FIRE_MEDIUM_BUTTON))
 			fireLevel(MOTOR_MEDIUM);			
 
-		if (gamepad.getRawButton(FIRE_LOW_BUTTON)) 
+		if (gamepad.getRawButton(FIRE_LOW_BUTTON))
 			fireLevel(MOTOR_LOW);			
 		
 		if (gamepad.getRawButton(HOLD_BUTTON))
 			fireLevel(MOTOR_OFF);
+		
+	}
+	
+	public static void teleopInit() {
+		setShooterStrength(MOTOR_OFF);
+        initTriggerTime = Utility.getFPGATime();
+        startAgitator();
+        
+	}
+	
+	public static void teleopPeriodic() {
+		
+		checkCollectorConveyerControls();
+		checkShooterControls();
+		
+		// DEBUG - report on shooter motor values		
+		double speed = shooterMotor.getSpeed();
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/speed", speed);
+				
+		double motorOutput = shooterMotor.getOutputVoltage()/shooterMotor.getBusVoltage();
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/motorOutput", motorOutput);
+
+		double closedLoopError = shooterMotor.getClosedLoopError();
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/closedLoopError", closedLoopError);
 		
 	}
 	

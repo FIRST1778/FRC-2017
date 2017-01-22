@@ -2,6 +2,9 @@ package StateMachine;
 
 import java.util.prefs.Preferences;
 
+import NetworkComm.InputOutputComm;
+import Systems.UltrasonicSensor;
+
 
 public class IdleAction extends Action {
 	
@@ -13,7 +16,7 @@ public class IdleAction extends Action {
 	{
 		this.name = name;
 	}
-	
+		
 	// no need for enter, process, exit overloaded methods
 	// WE DON'T DO ANYTHING IN IDLE!
 	// used for persisting the network in a Java Preferences class object

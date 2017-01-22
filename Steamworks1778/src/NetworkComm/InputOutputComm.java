@@ -34,6 +34,13 @@ public class InputOutputComm {
     		System.out.println("No network table to write to!!");
     }
     
+    public static void putInt(LogTable log, String key, int value) {
+    	if (table != null)
+    		table.putNumber(key,value);
+    	else
+    		System.out.println("No network table to write to!!");
+    }
+    
     public static void putString(LogTable log, String key, String outputStr) {
     	if (table != null)
     		table.putString(key, outputStr);
