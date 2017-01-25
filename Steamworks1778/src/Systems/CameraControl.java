@@ -13,8 +13,9 @@ public class CameraControl {
 	
 	private static Joystick gamepad;
 	
-	public static final double BOILER_CAM_POS = 0.75;
-	public static final double GEAR_CAM_POS = 0.25;
+	// assumes HS-485HB servo, which 1.0 = 180 degrees
+	public static final double BOILER_CAM_POS = 0.25;  // 45 deg
+	public static final double GEAR_CAM_POS = 0.0;     // 0 deg
 	private static final double SERVO_POS_TOLERANCE = 0.005;
 	
 	

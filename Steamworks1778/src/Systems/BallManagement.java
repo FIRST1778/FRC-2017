@@ -27,6 +27,9 @@ public class BallManagement {
 	
 	private static final double AGITATOR_LEVEL = 0.3;
 	
+	//  10 100ms/s * (60 s/min) * (1 rev/12 Native Units)
+	private static final double NATIVE_TO_RPM_FACTOR = 10 * 60 / 12;
+	
 	private static final double DEAD_ZONE_THRESHOLD = 0.05;
 	
 	public static final int MOTOR_OFF = 0;
@@ -37,12 +40,9 @@ public class BallManagement {
 	public static final int MOTOR_VERY_HIGH = 5;
 	public static final int MOTOR_MAX = 6;
 
-	private static final double motorSettings[] = { 0, 700, 850, 1500, 2000, 2500, 4000 };		// Speed (RPM) control settings
-	//private static final double motorSettings[] = { 0.0, -250, -500, -750, -1000, -1250, -1500 };		// Speed (RPM) control settings
-	//private static final double motorSettings[] = { 0.0, -0.1, -0.4, -0.6, -0.8, -0.9, -1.0 };  	// Vbus (%) control settings
+	private static final double motorSettings[] = { 0, 0, 100, 115, 130, 300, 300 };		    // Speed (Native) control settings
+	//private static final double motorSettings[] = { 0.0, 0.1, 0.375, 0.43, 0.5, 1.0, 1.0 };   // Vbus (%) control settings
 	private static final int NUM_MOTOR_SETTINGS = 7;
-	
-	private static double currentMotorIndex = 0;
 	
 	private static CANTalon shooterMotor, conveyerMotor, collectorMotor, agitatorMotor;
 	
@@ -74,22 +74,23 @@ public class BallManagement {
 		collectorMotor = new CANTalon(COLLECTOR_TALON_ID);
 		agitatorMotor = new CANTalon(AGITATOR_TALON_ID);
 		shooterMotor = new CANTalon(SHOOTER_TALON_ID);
+		shooterMotor.reverseSensor(true);
+		shooterMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		//shooterMotor.configEncoderCodesPerRev(12);   // do not use this unless you want RPM-ish values!
+		
+		// configure shooter motor for open loop speed control
+		//shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
 		
 		// configure shooter motor for closed loop speed control
-		//shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
 		shooterMotor.changeControlMode(TalonControlMode.Speed);
-		
-		shooterMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		shooterMotor.reverseSensor(true);
-		shooterMotor.configEncoderCodesPerRev(12);
 		shooterMotor.configNominalOutputVoltage(+0.0f, -0.0f);
 		shooterMotor.configPeakOutputVoltage(+12.0f, -12.0f);
 		shooterMotor.setProfile(0);
-		shooterMotor.setP(25.0);
-		shooterMotor.setI(0.06);
-		shooterMotor.setD(0.6);
-		shooterMotor.setF(0);
-		
+		shooterMotor.setP(9.0);
+		shooterMotor.setI(0.001);
+		shooterMotor.setD(0.8);
+		shooterMotor.setF(4.35);
+
 		// make sure all motors are off
 		resetMotors();
 		
@@ -100,7 +101,6 @@ public class BallManagement {
 	
 	public static void resetMotors()
 	{		
-		currentMotorIndex = MOTOR_OFF;
 		shooterMotor.set(0);
 		conveyerMotor.set(0);
 		collectorMotor.set(0);
@@ -118,7 +118,8 @@ public class BallManagement {
 			return;
 		
 		//System.out.println("Motor Strength = " + motorSettings[newIndex]);
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ShooterLevel", motorSettings[newIndex]);		
+		double shooter_rpm = motorSettings[newIndex] * NATIVE_TO_RPM_FACTOR;
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ShooterRpm_Target", shooter_rpm);		
 		
 		shooterMotor.set(motorSettings[newIndex]);	
 		
@@ -209,8 +210,11 @@ public class BallManagement {
 		checkShooterControls();
 		
 		// DEBUG - report on shooter motor values		
-		double speed = shooterMotor.getSpeed();
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/speed", speed);
+		double speed_rpm = shooterMotor.getSpeed() * NATIVE_TO_RPM_FACTOR;
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ShooterRpm_Actual", speed_rpm);
+		
+		double encVelocity = shooterMotor.getEncVelocity();
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/encVelocity", encVelocity);
 				
 		double motorOutput = shooterMotor.getOutputVoltage()/shooterMotor.getBusVoltage();
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/motorOutput", motorOutput);
