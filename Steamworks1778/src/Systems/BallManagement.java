@@ -8,15 +8,18 @@ import com.ctre.CANTalon.TalonControlMode;
 import NetworkComm.InputOutputComm;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Utility;
 
 public class BallManagement {
 	
 	private static boolean initialized = false;
 
+	private static final int COLLECTOR_RELAY_CHANNEL = 0;
+	
 	private static final int SHOOTER_TALON_ID = 6;
-	private static final int CONVEYER_TALON_ID = 4;
-	private static final int COLLECTOR_TALON_ID = 7;
+	private static final int CONVEYER_TALON_ID = 10;
+	private static final int COLLECTOR_TALON_ID = 9;
 	private static final int AGITATOR_TALON_ID = 5;
 	
 	private static final double CONVEYER_IN_LEVEL = 0.5;
@@ -44,6 +47,8 @@ public class BallManagement {
 	//private static final double motorSettings[] = { 0.0, 0.1, 0.375, 0.43, 0.5, 1.0, 1.0 };   // Vbus (%) control settings
 	private static final int NUM_MOTOR_SETTINGS = 7;
 	
+	private static Relay collectorRelay;
+	
 	private static CANTalon shooterMotor, conveyerMotor, collectorMotor, agitatorMotor;
 	
 	private static final int GAMEPAD_ID = 1;
@@ -68,6 +73,10 @@ public class BallManagement {
 	public static void initialize() {
 		if (initialized)
 			return;
+		
+        // create and reset collector relay
+        collectorRelay = new Relay(COLLECTOR_RELAY_CHANNEL,Relay.Direction.kForward);
+        collectorRelay.set(Relay.Value.kOff);
 
 		// create motors
 		conveyerMotor = new CANTalon(CONVEYER_TALON_ID);
@@ -196,8 +205,11 @@ public class BallManagement {
 			fireLevel(MOTOR_OFF);
 		
 	}
-	
+		
 	public static void teleopInit() {
+		// turn on relay
+    	collectorRelay.set(Relay.Value.kOn);
+				
 		setShooterStrength(MOTOR_OFF);
         initTriggerTime = Utility.getFPGATime();
         startAgitator();

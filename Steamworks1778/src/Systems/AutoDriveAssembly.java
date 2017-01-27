@@ -10,10 +10,14 @@ public class AutoDriveAssembly {
 	private static boolean initialized = false;
 	
 	// Speed controller IDs
-	private static final int LEFT_FRONT_TALON_ID = 8;
+	//private static final int LEFT_FRONT_TALON_ID = 8;
 	//private static final int LEFT_REAR_TALON_ID = 4;
-	private static final int RIGHT_FRONT_TALON_ID = 3;
+	//private static final int RIGHT_FRONT_TALON_ID = 3;
 	//private static final int RIGHT_REAR_TALON_ID = 7;
+	private static final int LEFT_FRONT_TALON_ID = 3;
+	private static final int LEFT_REAR_TALON_ID = 7;
+	private static final int RIGHT_FRONT_TALON_ID = 8;
+	private static final int RIGHT_REAR_TALON_ID = 4;
 			
 	private static final double AUTO_DRIVE_ANGLE_CORRECT_COEFF = 0.02;
 	private static final double GYRO_CORRECT_COEFF = 0.03;
