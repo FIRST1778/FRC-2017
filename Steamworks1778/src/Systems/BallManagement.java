@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Utility;
 public class BallManagement {
 	
 	private static boolean initialized = false;
+	private static boolean feeding = false;
 
 	private static final int COLLECTOR_RELAY_CHANNEL = 0;
 	
@@ -128,6 +129,7 @@ public class BallManagement {
 		transportMotor.set(0);
 		collectorMotor.set(0);
 		
+		feeding = false;
 	}
 	
 	public static void setShooterStrength(int newIndex) {
@@ -149,9 +151,21 @@ public class BallManagement {
 		
 		shooterMotor.set(motorSettings[newIndex]);	
 		
-		// if shooter is on, make sure agitator and feeder are on AFTER shooter is turned on
-		if (newIndex != MOTOR_OFF)
-			startFeeding();
+		// if shooter is not off and we're not feeding (i.e. motor is spinning up from being off)
+		if ((newIndex != MOTOR_OFF) && (!feeding))
+		{
+			// spawn a wait thread to ensure agitator and feeder are turned on only AFTER a certain period
+			new Thread() {
+				public void run() {
+					try {
+						Thread.sleep(2000);  // wait two sec before starting to feed
+						startFeeding();		 // start feeder motors
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}.start();
+		}
 		
 		// reset trigger init time
 		initTriggerTime = Utility.getFPGATime();		
@@ -164,7 +178,9 @@ public class BallManagement {
         
         double feederLevel = FEEDER_LEVEL;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
-        feederMotor.set(feederLevel);		
+        feederMotor.set(feederLevel);	
+        
+        feeding = true;
 	}
 	
 	public static void stopFeeding() {
@@ -174,7 +190,9 @@ public class BallManagement {
         
         double feederLevel = 0;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
-        feederMotor.set(feederLevel);		
+        feederMotor.set(feederLevel);	
+        
+        feeding = false;
 	}		
 	
 	private static void checkCollectorControls() {
