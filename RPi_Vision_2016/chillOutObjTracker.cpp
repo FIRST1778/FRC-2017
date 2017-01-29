@@ -42,23 +42,24 @@ int dilation_slider;
 int exposure_slider;
 
 // overlay variables - assuming capture of 160x120 dims
-const Point gearCenter(40,60);
-const Point gearSize(30, 30);
-const Point gearUL(gearCenter.x - (gearSize.x/2), gearCenter.y - (gearSize.y/2));
-const Point gearLR(gearCenter.x + (gearSize.x/2), gearCenter.y + (gearSize.y/2));
+const Point gearLineCenter(80,80);
+const Point gearLineBottom(80,120);
 
-const Point highCenter(115,20);
-const Point highSize(50,10);
+// 9 ft
+const Point highCenter(68,36);
+const Point highSize(20,10);
 const Point highUL(highCenter.x - (highSize.x/2), highCenter.y - (highSize.y/2));
 const Point highLR(highCenter.x + (highSize.x/2), highCenter.y + (highSize.y/2));
 
-const Point middleCenter(115,35);
-const Point middleSize(30,7);
+// 12 ft 6 in
+const Point middleCenter(76,57);
+const Point middleSize(18,7);
 const Point middleUL(middleCenter.x - (middleSize.x/2), middleCenter.y - (middleSize.y/2));
 const Point middleLR(middleCenter.x + (middleSize.x/2), middleCenter.y + (middleSize.y/2));
 
-const Point lowCenter(115,50);
-const Point lowSize(20,5);
+// 20 ft
+const Point lowCenter(80,77);
+const Point lowSize(12,5);
 const Point lowUL(lowCenter.x - (lowSize.x/2), lowCenter.y - (lowSize.y/2));
 const Point lowLR(lowCenter.x + (lowSize.x/2), lowCenter.y + (lowSize.y/2));
 
@@ -153,8 +154,10 @@ void on_exposure(int, void *)
 void draw_overlay(Mat& inImg) 
 {
 		
-	// draw boxes
-	rectangle(inImg, gearUL, gearLR, Scalar(0, 0, 255), 1, 8, 0);					
+	// draw gear post guideline
+	line(inImg,gearLineCenter,gearLineBottom,Scalar(0,255,255), 1, 8);
+	
+	// draw boxes for boiler
 	rectangle(inImg, highUL, highLR, Scalar(255, 0, 0), 1, 8, 0);					
 	rectangle(inImg,middleUL,middleLR, Scalar(0, 255, 0), 1, 8, 0);					
 	rectangle(inImg,lowUL,lowLR, Scalar(0, 0, 255), 1, 8, 0);
