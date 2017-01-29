@@ -13,15 +13,13 @@ public class ShootAction extends Action {
 	
 	public ShootAction(String name, int shootStrength) {
 		this.name = name;
-		this.shooterStrength = shooterStrength;
+		this.shooterStrength = shootStrength;
 	}
 	
 	// action entry
 	public void initialize() {
 		BallManagement.initialize();
 		BallManagement.setShooterStrength(shooterStrength);
-		BallManagement.startAgitator();
-		BallManagement.startConveyer();
 		
 		super.initialize();
 	}
