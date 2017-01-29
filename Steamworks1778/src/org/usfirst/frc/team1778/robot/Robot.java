@@ -73,6 +73,10 @@ public class Robot extends IterativeRobot {
         CameraControl.teleopPeriodic();
     }
     
+    public void disabledInit() {
+    	BallManagement.resetMotors();
+    }
+    
     /**
      * This function is called periodically during test mode
      */
