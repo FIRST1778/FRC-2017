@@ -42,8 +42,12 @@ int dilation_slider;
 int exposure_slider;
 
 // overlay variables - assuming capture of 160x120 dims
-const Point gearLineCenter(80,80);
-const Point gearLineBottom(80,120);
+
+// guidelines for gear placement
+const Point gearLineUpperCenter(80,80);
+const Point gearLineUpperBottom(40,120);
+const Point gearLineLowerCenter(80,90);
+const Point gearLineLowerBottom(50,120);
 
 // 9 ft
 const Point highCenter(68,36);
@@ -154,8 +158,9 @@ void on_exposure(int, void *)
 void draw_overlay(Mat& inImg) 
 {
 		
-	// draw gear post guideline
-	line(inImg,gearLineCenter,gearLineBottom,Scalar(0,255,255), 1, 8);
+	// draw gear post guidelines
+	line(inImg,gearLineUppperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
+	line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
 	
 	// draw boxes for boiler
 	rectangle(inImg, highUL, highLR, Scalar(255, 0, 0), 1, 8, 0);					

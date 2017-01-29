@@ -171,7 +171,7 @@ public class AutoNetworkBuilder {
 		turnRightState.addEvent(gyroRight);
 		
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.3, 80, 120); // desired target at x=80, y=120 (assume 160x120 img)
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.3, 45, 120); // desired target at x=45, y=120 (assume 160x120 img)
 		UltrasonicEvent ultra1 = new UltrasonicEvent(18.0);  // ultrasonic event triggers at 18 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
@@ -217,7 +217,7 @@ public class AutoNetworkBuilder {
 		driveState.addEvent(timer2);
 				
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.3, 80, 120);   // desired target at x=80, y=120 (assume 160x120 img)
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.3, 45, 120);   // desired target at x=45, y=120 (assume 160x120 img)
 		UltrasonicEvent ultra1 = new UltrasonicEvent(18.0);  // ultrasonic event triggers at 18 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
@@ -268,7 +268,7 @@ public class AutoNetworkBuilder {
 		turnLeftState.addEvent(gyroLeft);
 		
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.3, 80, 120); // desired target at x=80, y=120 (assume 160x120 img)
+		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.3, 45, 120); // desired target at x=45, y=120 (assume 160x120 img)
 		UltrasonicEvent ultra1 = new UltrasonicEvent(18.0);  // ultrasonic event triggers at 18 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
