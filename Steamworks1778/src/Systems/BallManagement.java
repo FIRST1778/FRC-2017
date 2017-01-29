@@ -17,6 +17,7 @@ public class BallManagement {
 	private static boolean feeding = false;
 
 	private static final int COLLECTOR_RELAY_CHANNEL = 0;
+	private static final int GEAR_TRAY_RELAY_CHANNEL = 1;
 	
 	private static final int SHOOTER_TALON_ID = 6;
 	private static final int AGITATOR_TALON_ID = 5;
@@ -51,7 +52,9 @@ public class BallManagement {
 	//private static final double motorSettings[] = { 0.0, 0.1, 0.375, 0.43, 0.5, 1.0, 1.0 };   // Vbus (%) control settings
 	private static final int NUM_MOTOR_SETTINGS = 7;
 	
+	// relays to release collector and gear tray
 	private static Relay collectorRelay;
+	private static Relay gearTrayRelay;
 	
 	// shooter and support motors
 	private static CANTalon shooterMotor, feederMotor, agitatorMotor;
@@ -85,6 +88,10 @@ public class BallManagement {
         // create and reset collector relay
         collectorRelay = new Relay(COLLECTOR_RELAY_CHANNEL,Relay.Direction.kForward);
         collectorRelay.set(Relay.Value.kOff);
+        
+        // create and reset gear tray relay
+        gearTrayRelay = new Relay(GEAR_TRAY_RELAY_CHANNEL,Relay.Direction.kForward);
+        gearTrayRelay.set(Relay.Value.kOff);
 
 		// create motors
 		transportMotor = new CANTalon(TRANSPORT_TALON_ID);
@@ -197,7 +204,7 @@ public class BallManagement {
 	
 	private static void checkCollectorControls() {
 		
-		// transprt control
+		// transport control
 		double transportLevel = gamepad.getRawAxis(TRANSPORT_IN_AXIS);
 		if (Math.abs(transportLevel) > DEAD_ZONE_THRESHOLD)
 			transportLevel = TRANSPORT_IN_LEVEL;
@@ -245,8 +252,9 @@ public class BallManagement {
 	}
 			
 	public static void teleopInit() {
-		// turn on relay
+		// release collector and gear tray
     	collectorRelay.set(Relay.Value.kOn);
+    	gearTrayRelay.set(Relay.Value.kOn);
 				
 		resetMotors();
 		

@@ -21,6 +21,9 @@ public class CameraAction extends Action {
 		CameraControl.initialize();	
 		CameraControl.moveToPos(camPos);
 		
+		// in auto, turn on extra LEDs!
+		CameraControl.setCameraLed(true);
+		
 		super.initialize();
 	}
 	
