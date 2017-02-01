@@ -159,7 +159,7 @@ void draw_overlay(Mat& inImg)
 {
 		
 	// draw gear post guidelines
-	line(inImg,gearLineUppperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
+	line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
 	line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
 	
 	// draw boxes for boiler

@@ -156,6 +156,7 @@ public class BallManagement {
 		double shooter_rpm = motorSettings[newIndex] * NATIVE_TO_RPM_FACTOR;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ShooterRpm_Target", shooter_rpm);		
 		
+		//System.out.println("shooter motor speed..");
 		shooterMotor.set(motorSettings[newIndex]);	
 		
 		// if shooter is not off and we're not feeding (i.e. motor is spinning up from being off)
@@ -165,7 +166,7 @@ public class BallManagement {
 			new Thread() {
 				public void run() {
 					try {
-						Thread.sleep(2000);  // wait two sec before starting to feed
+						Thread.sleep(3000);  // wait three sec before starting to feed
 						startFeeding();		 // start feeder motors
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -179,6 +180,8 @@ public class BallManagement {
 	}
 	
 	public static void startFeeding() {
+		//System.out.println("starting feeders...");
+		
         double agitatorLevel = AGITATOR_LEVEL;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
         agitatorMotor.set(agitatorLevel);		
@@ -186,7 +189,7 @@ public class BallManagement {
         double feederLevel = FEEDER_LEVEL;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
         feederMotor.set(feederLevel);	
-        
+                
         feeding = true;
 	}
 	
