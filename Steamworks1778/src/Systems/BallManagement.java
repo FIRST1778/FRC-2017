@@ -9,6 +9,7 @@ import NetworkComm.InputOutputComm;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Utility;
 
 public class BallManagement {
@@ -24,7 +25,7 @@ public class BallManagement {
 	private static final int FEEDER_TALON_ID = 11;
 	
 	private static final int TRANSPORT_TALON_ID = 10;
-	private static final int COLLECTOR_TALON_ID = 9;
+	private static final int COLLECTOR_PWM_ID = 1;
 	
 	private static final double TRANSPORT_IN_LEVEL = 0.5;
 	private static final double TRANSPORT_OUT_LEVEL = -0.5;
@@ -48,7 +49,13 @@ public class BallManagement {
 	public static final int MOTOR_VERY_HIGH = 5;
 	public static final int MOTOR_MAX = 6;
 
-	private static final double motorSettings[] = { 0, 0, 100, 115, 130, 300, 300 };		    // Speed (Native) control settings
+	// 1:1 native speed settings
+	//private static final double motorSettings[] = { 0, 0, 100, 115, 130, 300, 300 };		    // Speed (Native) control settings
+
+	// 1:1 native speed settings
+	private static final double motorSettings[] = { 0, 0, 200, 230, 260, 300, 300 };		    // Speed (Native) control settings
+	
+	
 	//private static final double motorSettings[] = { 0.0, 0.1, 0.375, 0.43, 0.5, 1.0, 1.0 };   // Vbus (%) control settings
 	private static final int NUM_MOTOR_SETTINGS = 7;
 	
@@ -60,7 +67,8 @@ public class BallManagement {
 	private static CANTalon shooterMotor, feederMotor, agitatorMotor;
 	
 	// collector & transport motors
-	private static CANTalon transportMotor, collectorMotor;
+	private static CANTalon transportMotor;
+	private static Spark collectorMotor;
 	
 	private static final int GAMEPAD_ID = 1;
 	private static Joystick gamepad;
@@ -95,14 +103,14 @@ public class BallManagement {
 
 		// create motors
 		transportMotor = new CANTalon(TRANSPORT_TALON_ID);
-		collectorMotor = new CANTalon(COLLECTOR_TALON_ID);
+		collectorMotor = new Spark(COLLECTOR_PWM_ID);
 		
 		feederMotor = new CANTalon(FEEDER_TALON_ID);
 		agitatorMotor = new CANTalon(AGITATOR_TALON_ID);
 		shooterMotor = new CANTalon(SHOOTER_TALON_ID);
 		
 		// set up shooter motor sensor
-		shooterMotor.reverseSensor(true);
+		shooterMotor.reverseSensor(false);
 		shooterMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		//shooterMotor.configEncoderCodesPerRev(12);   // do not use this unless you want RPM-ish values!
 		
@@ -114,10 +122,10 @@ public class BallManagement {
 		shooterMotor.configNominalOutputVoltage(+0.0f, -0.0f);
 		shooterMotor.configPeakOutputVoltage(+12.0f, -12.0f);
 		shooterMotor.setProfile(0);
-		shooterMotor.setP(9.0);
-		shooterMotor.setI(0.001);
-		shooterMotor.setD(0.8);
-		shooterMotor.setF(4.35);
+		shooterMotor.setP(3);
+		shooterMotor.setI(0);
+		shooterMotor.setD(0);
+		shooterMotor.setF(2.91);
 
 		// make sure all motors are off
 		resetMotors();
