@@ -24,7 +24,7 @@ public class BallManagement {
 	private static final double COLLECTOR_IN_LEVEL = 0.5;
 	private static final double COLLECTOR_OUT_LEVEL = -0.5;
 	
-	private static final double AGITATOR_LEVEL = 0.3;
+	//private static final double AGITATOR_LEVEL = 0.3;
 	private static final double FEEDER_LEVEL = 0.3;
 	
 	//  10 100ms/s * (60 s/min) * (1 rev/12 Native Units)
@@ -53,9 +53,10 @@ public class BallManagement {
 	// relays to release collector and gear tray
 	private static Relay collectorRelay;
 	private static Relay gearTrayRelay;
+	private static Relay agitatorRelay;
 	
 	// shooter and support motors
-	private static CANTalon shooterMotor, feederMotor, agitatorMotor;
+	private static CANTalon shooterMotor, feederMotor;
 	
 	// collector & transport motors
 	private static CANTalon transportMotor;
@@ -76,6 +77,10 @@ public class BallManagement {
         collectorRelay = new Relay(HardwareIDs.COLLECTOR_RELAY_CHANNEL,Relay.Direction.kForward);
         collectorRelay.set(Relay.Value.kOff);
         
+        // create and reset agitator relay
+        agitatorRelay = new Relay(HardwareIDs.AGITATOR_RELAY_CHANNEL,Relay.Direction.kForward);
+        collectorRelay.set(Relay.Value.kOff);
+        
         // create and reset gear tray relay
         gearTrayRelay = new Relay(HardwareIDs.GEAR_TRAY_RELAY_CHANNEL,Relay.Direction.kForward);
         gearTrayRelay.set(Relay.Value.kOff);
@@ -85,7 +90,7 @@ public class BallManagement {
 		collectorMotor = new Spark(HardwareIDs.COLLECTOR_PWM_ID);
 		
 		feederMotor = new CANTalon(HardwareIDs.FEEDER_TALON_ID);
-		agitatorMotor = new CANTalon(HardwareIDs.AGITATOR_TALON_ID);
+		//agitatorMotor = new CANTalon(HardwareIDs.AGITATOR_TALON_ID);
 		shooterMotor = new CANTalon(HardwareIDs.SHOOTER_TALON_ID);
 		
 		// set up shooter motor sensor
@@ -118,7 +123,7 @@ public class BallManagement {
 	{		
 		shooterMotor.set(0);
 		feederMotor.set(0);
-		agitatorMotor.set(0);
+		//agitatorMotor.set(0);
 		
 		transportMotor.set(0);
 		collectorMotor.set(0);
@@ -169,9 +174,13 @@ public class BallManagement {
 	public static void startFeeding() {
 		//System.out.println("starting feeders...");
 		
-        double agitatorLevel = AGITATOR_LEVEL;
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
-        agitatorMotor.set(agitatorLevel);		
+        //double agitatorLevel = AGITATOR_LEVEL;
+		//InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
+        //agitatorMotor.set(agitatorLevel);
+		
+		agitatorRelay.set(Relay.Value.kOn);
+		
+		
         
         double feederLevel = FEEDER_LEVEL;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
@@ -181,10 +190,13 @@ public class BallManagement {
 	}
 	
 	public static void stopFeeding() {
-        double agitatorLevel = 0;
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
-        agitatorMotor.set(agitatorLevel);		
+//        double agitatorLevel = 0;
+//		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
+//        agitatorMotor.set(agitatorLevel);		
         
+		agitatorRelay.set(Relay.Value.kOff);
+
+		
         double feederLevel = 0;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
         feederMotor.set(feederLevel);	

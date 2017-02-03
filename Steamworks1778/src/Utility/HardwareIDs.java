@@ -11,9 +11,10 @@ public class HardwareIDs {
 	// Ball Management Hardware
 	public static final int COLLECTOR_RELAY_CHANNEL = 0;
 	public static final int GEAR_TRAY_RELAY_CHANNEL = 1;
+	public static final int AGITATOR_RELAY_CHANNEL = 4;
 	
 	public static final int SHOOTER_TALON_ID = 6;
-	public static final int AGITATOR_TALON_ID = 5;
+	// public static final int AGITATOR_TALON_ID = 5;
 	public static final int FEEDER_TALON_ID = 11;
 	
 	public static final int TRANSPORT_TALON_ID = 10;
