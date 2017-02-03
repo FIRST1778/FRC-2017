@@ -6,6 +6,7 @@ import com.ctre.CANTalon.FeedbackDeviceStatus;
 import com.ctre.CANTalon.TalonControlMode;
 
 import NetworkComm.InputOutputComm;
+import Utility.HardwareIDs;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
@@ -16,16 +17,6 @@ public class BallManagement {
 	
 	private static boolean initialized = false;
 	private static boolean feeding = false;
-
-	private static final int COLLECTOR_RELAY_CHANNEL = 0;
-	private static final int GEAR_TRAY_RELAY_CHANNEL = 1;
-	
-	private static final int SHOOTER_TALON_ID = 6;
-	private static final int AGITATOR_TALON_ID = 5;
-	private static final int FEEDER_TALON_ID = 11;
-	
-	private static final int TRANSPORT_TALON_ID = 10;
-	private static final int COLLECTOR_PWM_ID = 1;
 	
 	private static final double TRANSPORT_IN_LEVEL = 0.5;
 	private static final double TRANSPORT_OUT_LEVEL = -0.5;
@@ -70,20 +61,8 @@ public class BallManagement {
 	private static CANTalon transportMotor;
 	private static Spark collectorMotor;
 	
-	private static final int GAMEPAD_ID = 1;
 	private static Joystick gamepad;
 		
-	// gamepad controls
-	private static final int COLLECTOR_IN_AXIS = 2;
-	private static final int COLLECTOR_OUT_BUTTON = 5;
-
-	private static final int TRANSPORT_IN_AXIS = 3;
-	private static final int TRANSPORT_OUT_BUTTON = 6;
-	
-	private static final int FIRE_HIGH_BUTTON = 2;
-	private static final int FIRE_MEDIUM_BUTTON = 1;
-	private static final int FIRE_LOW_BUTTON = 3;
-	private static final int HOLD_BUTTON = 4;
 	
 	// wait 0.25 s between button pushes on shooter
     private static final int TRIGGER_CYCLE_WAIT_US = 250000;
@@ -94,20 +73,20 @@ public class BallManagement {
 			return;
 		
         // create and reset collector relay
-        collectorRelay = new Relay(COLLECTOR_RELAY_CHANNEL,Relay.Direction.kForward);
+        collectorRelay = new Relay(HardwareIDs.COLLECTOR_RELAY_CHANNEL,Relay.Direction.kForward);
         collectorRelay.set(Relay.Value.kOff);
         
         // create and reset gear tray relay
-        gearTrayRelay = new Relay(GEAR_TRAY_RELAY_CHANNEL,Relay.Direction.kForward);
+        gearTrayRelay = new Relay(HardwareIDs.GEAR_TRAY_RELAY_CHANNEL,Relay.Direction.kForward);
         gearTrayRelay.set(Relay.Value.kOff);
 
 		// create motors
-		transportMotor = new CANTalon(TRANSPORT_TALON_ID);
-		collectorMotor = new Spark(COLLECTOR_PWM_ID);
+		transportMotor = new CANTalon(HardwareIDs.TRANSPORT_TALON_ID);
+		collectorMotor = new Spark(HardwareIDs.COLLECTOR_PWM_ID);
 		
-		feederMotor = new CANTalon(FEEDER_TALON_ID);
-		agitatorMotor = new CANTalon(AGITATOR_TALON_ID);
-		shooterMotor = new CANTalon(SHOOTER_TALON_ID);
+		feederMotor = new CANTalon(HardwareIDs.FEEDER_TALON_ID);
+		agitatorMotor = new CANTalon(HardwareIDs.AGITATOR_TALON_ID);
+		shooterMotor = new CANTalon(HardwareIDs.SHOOTER_TALON_ID);
 		
 		// set up shooter motor sensor
 		shooterMotor.reverseSensor(false);
@@ -130,7 +109,7 @@ public class BallManagement {
 		// make sure all motors are off
 		resetMotors();
 		
-		gamepad = new Joystick(GAMEPAD_ID);
+		gamepad = new Joystick(HardwareIDs.GAMEPAD_ID);
 		
 		initialized = true;
 	}
@@ -216,10 +195,10 @@ public class BallManagement {
 	private static void checkCollectorControls() {
 		
 		// transport control
-		double transportLevel = gamepad.getRawAxis(TRANSPORT_IN_AXIS);
+		double transportLevel = gamepad.getRawAxis(HardwareIDs.TRANSPORT_IN_AXIS);
 		if (Math.abs(transportLevel) > DEAD_ZONE_THRESHOLD)
 			transportLevel = TRANSPORT_IN_LEVEL;
-		else if (gamepad.getRawButton(TRANSPORT_OUT_BUTTON))
+		else if (gamepad.getRawButton(HardwareIDs.TRANSPORT_OUT_BUTTON))
 			transportLevel = TRANSPORT_OUT_LEVEL;
 		else
 			transportLevel = 0.0;
@@ -227,10 +206,10 @@ public class BallManagement {
 		transportMotor.set(transportLevel);
 		
 		// collector control
-		double collectorLevel = gamepad.getRawAxis(COLLECTOR_IN_AXIS);
+		double collectorLevel = gamepad.getRawAxis(HardwareIDs.COLLECTOR_IN_AXIS);
 		if (Math.abs(collectorLevel) > DEAD_ZONE_THRESHOLD)
 			collectorLevel = COLLECTOR_IN_LEVEL;
-		else if (gamepad.getRawButton(COLLECTOR_OUT_BUTTON))
+		else if (gamepad.getRawButton(HardwareIDs.COLLECTOR_OUT_BUTTON))
 			collectorLevel = COLLECTOR_OUT_LEVEL;
 		else
 			collectorLevel = 0.0;
@@ -248,16 +227,16 @@ public class BallManagement {
 			return;
 
 		// shooter commands
-		if (gamepad.getRawButton(FIRE_HIGH_BUTTON))
+		if (gamepad.getRawButton(HardwareIDs.FIRE_HIGH_BUTTON))
 			setShooterStrength(MOTOR_HIGH);			
 		
-		if (gamepad.getRawButton(FIRE_MEDIUM_BUTTON))
+		if (gamepad.getRawButton(HardwareIDs.FIRE_MEDIUM_BUTTON))
 			setShooterStrength(MOTOR_MEDIUM);			
 
-		if (gamepad.getRawButton(FIRE_LOW_BUTTON))
+		if (gamepad.getRawButton(HardwareIDs.FIRE_LOW_BUTTON))
 			setShooterStrength(MOTOR_LOW);			
 		
-		if (gamepad.getRawButton(HOLD_BUTTON))
+		if (gamepad.getRawButton(HardwareIDs.HOLD_BUTTON))
 			setShooterStrength(MOTOR_OFF);
 		
 	}

@@ -32,7 +32,7 @@ public class Robot extends IterativeRobot {
         BallManagement.initialize();
         FreezyDriveTrain.initialize();
         CameraControl.initialize();
-        //ClimberAssembly.initialize();
+        ClimberAssembly.initialize();
         
 		autoSM = new AutoStateMachine();
 		
@@ -63,7 +63,7 @@ public class Robot extends IterativeRobot {
     	BallManagement.teleopInit();  	
     	FreezyDriveTrain.teleopInit();	
     	CameraControl.teleopInit();
-    	//ClimberAssembly.teleopInit();
+    	ClimberAssembly.teleopInit();
     }
     /**
      * This function is called periodically during operator control
@@ -74,7 +74,7 @@ public class Robot extends IterativeRobot {
         BallManagement.teleopPeriodic();	
         FreezyDriveTrain.teleopPeriodic();   
         CameraControl.teleopPeriodic();
-        //ClimberAssembly.teleopPeriodic();
+        ClimberAssembly.teleopPeriodic();
     }
     
     public void disabledInit() {

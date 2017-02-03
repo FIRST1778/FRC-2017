@@ -2,23 +2,14 @@ package Systems;
 
 import com.ctre.CANTalon;
 import NetworkComm.InputOutputComm;
+import Utility.HardwareIDs;
 
 //Chill Out 1778 class for controlling the drivetrain during auto
 
 public class AutoDriveAssembly {
 	
 	private static boolean initialized = false;
-	
-	// Speed controller IDs
-	//private static final int LEFT_FRONT_TALON_ID = 8;
-	//private static final int LEFT_REAR_TALON_ID = 4;
-	//private static final int RIGHT_FRONT_TALON_ID = 3;
-	//private static final int RIGHT_REAR_TALON_ID = 7;
-	private static final int LEFT_FRONT_TALON_ID = 3;
-	private static final int LEFT_REAR_TALON_ID = 7;
-	private static final int RIGHT_FRONT_TALON_ID = 8;
-	private static final int RIGHT_REAR_TALON_ID = 4;
-			
+				
 	private static final double AUTO_DRIVE_ANGLE_CORRECT_COEFF = 0.02;
 	private static final double GYRO_CORRECT_COEFF = 0.03;
 		
@@ -32,10 +23,10 @@ public class AutoDriveAssembly {
 	public static void initialize()
 	{
 		if (!initialized) {
-	        mFrontLeft = new CANTalon(LEFT_FRONT_TALON_ID);
-	        //mBackLeft = new CANTalon(LEFT_REAR_TALON_ID);
-	        mFrontRight = new CANTalon(RIGHT_FRONT_TALON_ID);
-	        //mBackRight = new CANTalon(RIGHT_REAR_TALON_ID);
+	        mFrontLeft = new CANTalon(HardwareIDs.LEFT_FRONT_TALON_ID);
+	        mBackLeft = new CANTalon(HardwareIDs.LEFT_REAR_TALON_ID);
+	        mFrontRight = new CANTalon(HardwareIDs.RIGHT_FRONT_TALON_ID);
+	        mBackRight = new CANTalon(HardwareIDs.RIGHT_REAR_TALON_ID);
 	        	        	
 	        // initialize the NavXSensor
 	        NavXSensor.initialize();
@@ -98,7 +89,9 @@ public class AutoDriveAssembly {
 
 		// set motor values directly
 		mFrontLeft.set(leftMotorPolarity*leftValue);
+		mBackLeft.set(leftMotorPolarity*leftValue);		
 		mFrontRight.set(rightMotorPolarity*rightValue);
+		mBackRight.set(rightMotorPolarity*rightValue);
 	}
 	
 	public static void driveDirection(double angle, double speed) {

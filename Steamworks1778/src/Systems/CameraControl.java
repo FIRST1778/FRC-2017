@@ -1,20 +1,14 @@
 package Systems;
 
 import NetworkComm.InputOutputComm;
+import Utility.HardwareIDs;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Servo;
 
 public class CameraControl {
 	private static boolean initialized = false;
-	
-	private static final int DRIVER_CONTROL_ID = 0;
-	
-	private static final int SERVO_CHANNEL_ID = 0;
-	private static final int CAMERA_CONTROL_BUTTON = 1;
-	
-	private static final int CAMERA_LED_RELAY_CHANNEL = 2;
-	
+		
 	private static Joystick gamepad;
 	
 	// assumes HS-475HB servo, which 1.0 = 90 degrees
@@ -32,12 +26,12 @@ public class CameraControl {
 		if (initialized)
 			return;
 		
-		cameraLedRelay = new Relay(CAMERA_LED_RELAY_CHANNEL,Relay.Direction.kForward);
+		cameraLedRelay = new Relay(HardwareIDs.CAMERA_LED_RELAY_CHANNEL,Relay.Direction.kForward);
 		cameraLedRelay.set(Relay.Value.kOff);
 		
-		positionServo = new Servo(SERVO_CHANNEL_ID);
+		positionServo = new Servo(HardwareIDs.SERVO_CHANNEL_ID);
 		
-		gamepad = new Joystick(DRIVER_CONTROL_ID);
+		gamepad = new Joystick(HardwareIDs.DRIVER_CONTROL_ID);
 		
 		initialized = true;
 	}
@@ -69,15 +63,15 @@ public class CameraControl {
 	public static void teleopPeriodic() {
 		double currentPos = positionServo.get();
 		
-		if (gamepad.getRawButton(CAMERA_CONTROL_BUTTON) == true)
-		{
-			if (Math.abs(currentPos - GEAR_CAM_POS) > SERVO_POS_TOLERANCE)
-				moveToPos(GEAR_CAM_POS);
-		}
-		else
+		if (gamepad.getRawButton(HardwareIDs.CAMERA_CONTROL_BUTTON) == false)
 		{
 			if (Math.abs(currentPos - BOILER_CAM_POS) > SERVO_POS_TOLERANCE)
 				moveToPos(BOILER_CAM_POS);
+		}
+		else
+		{
+			if (Math.abs(currentPos - GEAR_CAM_POS) > SERVO_POS_TOLERANCE)
+				moveToPos(GEAR_CAM_POS);
 		}
 			
 	}
