@@ -102,6 +102,58 @@ void set_exposure(float exp_abs)
 	v4l2_ioctl(descriptor,VIDIOC_S_CTRL,&c);
 }
 
+void on_min_hue(int, void *) 
+{
+	minColor_h = hue_min_slider;
+}
+
+void on_max_hue(int, void *) 
+{
+	maxColor_h = hue_max_slider;
+}
+
+void on_min_sat(int, void *) 
+{
+	minColor_s = sat_min_slider;
+}
+
+void on_max_sat(int, void *) 
+{
+	maxColor_s = sat_max_slider;
+}
+
+void on_min_val(int, void *) 
+{
+	minColor_v = val_min_slider;
+}
+
+void on_max_val(int, void *) 
+{
+	maxColor_v = val_max_slider;
+}
+
+void on_min_area(int, void *) 
+{
+	minArea = area_min_slider;
+}
+
+void on_max_area(int, void *) 
+{
+	maxArea = area_max_slider;
+}
+
+void on_dilation(int, void *) 
+{
+	dilationFactor = dilation_slider;
+}
+
+void on_exposure(int, void *) 
+{
+	exposure = exposure_slider;
+
+	set_exposure(exposure);
+}
+
 
 void draw_overlay(Mat& inImg) 
 {
@@ -179,8 +231,34 @@ int main()
 	printf("maxColor_s = %d\n",maxColor_s);
 	printf("minColor_v = %d\n",minColor_v);
 	printf("maxColor_v = %d\n",maxColor_v);
-	printf("dilationFactor = %d\n",dilationFactor);
-	
+	printf("dilationFactor = %d\n",dilationFactor);	
+
+	// initialize slider values
+	hue_min_slider = minColor_h;
+	hue_max_slider = maxColor_h;
+	sat_min_slider = minColor_s;
+	sat_max_slider = maxColor_s;
+	val_min_slider = minColor_v;
+	val_max_slider = maxColor_v;
+	area_min_slider = minArea;
+	area_max_slider = maxArea;
+	dilation_slider = dilationFactor;
+	exposure_slider = (int) exposure;
+
+	// slider control window - named "Thresholds"
+	namedWindow("Thresholds", 1);
+	moveWindow("Thresholds",200,0);
+	createTrackbar("Hue Min", "Thresholds", &hue_min_slider, 255, on_min_hue);
+	createTrackbar("Hue Max", "Thresholds", &hue_max_slider, 255, on_max_hue);
+	createTrackbar("Sat Min", "Thresholds", &sat_min_slider, 255, on_min_sat);
+	createTrackbar("Sat Max", "Thresholds", &sat_max_slider, 255, on_max_sat);
+	createTrackbar("Val Min", "Thresholds", &val_min_slider, 255, on_min_val);
+	createTrackbar("Val Max", "Thresholds", &val_max_slider, 255, on_max_val);
+	createTrackbar("Area Min", "Thresholds", &area_min_slider, maxArea, on_min_area);
+	createTrackbar("Area Max", "Thresholds", &area_max_slider, maxArea, on_max_area);
+	createTrackbar("Dilation", "Thresholds", &dilation_slider, 50, on_dilation);
+	//createTrackbar("Exposure", "Thresholds", &exposure_slider, 2500, on_exposure);
+
 	// calculate image center
 	imageCenterX = frameWidth/2;
 	imageCenterY = frameHeight/2;
@@ -340,7 +418,6 @@ int main()
 	//imshow("original",inputImg);
 	//imshow("overlay",overlayImg);
 
-	/*
 	// first stage: threshold image display
 	imshow("threshold binary",binaryImg);
 	moveWindow("threshold binary",0,0);
@@ -352,7 +429,6 @@ int main()
 	// third stage: output target
 	imshow("output",outputImg);
 	moveWindow("output",0, 400);
-	*/
 
 	// write out to file (for webserver)
 	VideoWriter outStream(outFile,CV_FOURCC('M','J','P','G'), 2, Size(frameWidth,frameHeight), true);

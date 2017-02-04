@@ -1,16 +1,10 @@
-all:	chillOutObjTracker chillOutStereoTracker calibrate edgeDetector
+all:	chillOutObjTracker calibrateTracker
 
 clean:
-	rm -f chillOutObjTracker chillOutStereoTracker calibrate edgeDetector
+	rm -f chillOutObjTracker calibrateTracker
 
 chillOutObjTracker: chillOutObjTracker.cpp
 	g++ -o chillOutObjTracker chillOutObjTracker.cpp `pkg-config opencv --cflags --libs` -std=gnu++11  -lntcore -lv4l2
 
-chillOutStereoTracker: chillOutStereoTracker.cpp
-	g++ -o chillOutStereoTracker chillOutStereoTracker.cpp `pkg-config opencv --cflags --libs` -std=gnu++11  -lntcore 
-
-calibrate: calibrate.cpp
-	g++ -o calibrate calibrate.cpp `pkg-config opencv --cflags --libs` -std=gnu++11  -lntcore 
-
-edgeDetector: edgeDetector.cpp
-	g++ -o edgeDetector edgeDetector.cpp `pkg-config opencv --cflags --libs` -std=gnu++11  -lntcore 
+calibrateTracker: calibrateTracker.cpp
+	g++ -o calibrateTracker calibrateTracker.cpp `pkg-config opencv --cflags --libs` -std=gnu++11  -lntcore -lv4l2
