@@ -8,13 +8,14 @@ public class HardwareIDs {
 	public static final int RIGHT_FRONT_TALON_ID = 8;
 	public static final int RIGHT_REAR_TALON_ID = 4;
 
-	// Ball Management Hardware
+	// Relays
 	public static final int COLLECTOR_RELAY_CHANNEL = 0;
 	public static final int GEAR_TRAY_RELAY_CHANNEL = 1;
-	public static final int AGITATOR_RELAY_CHANNEL = 4;
+	//public static final int CAMERA_LED_RELAY_CHANNEL = 2;
+	public static final int AGITATOR_RELAY_CHANNEL = 3;
+	public static final int CLIMBER_RELAY_CHANNEL = 2;
 	
 	public static final int SHOOTER_TALON_ID = 6;
-	// public static final int AGITATOR_TALON_ID = 5;
 	public static final int FEEDER_TALON_ID = 11;
 	
 	public static final int TRANSPORT_TALON_ID = 10;
@@ -51,8 +52,6 @@ public class HardwareIDs {
 	// Digital IO (DIO) channels
 	public static final int TRIGGER_CHANNEL_ID = 0;
 	public static final int ECHO_CHANNEL_ID = 1;	
-	public static final int CAMERA_LED_RELAY_CHANNEL = 2;
-	public static final int CLIMBER_RELAY_CHANNEL = 3;
 	
 
 	

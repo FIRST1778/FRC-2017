@@ -17,7 +17,7 @@ public class CameraControl {
 	private static final double SERVO_POS_TOLERANCE = 0.005;
 	
 	// Relay for extra LEDs
-	private static Relay cameraLedRelay;
+	//private static Relay cameraLedRelay;
 	
 	// camera position servo
 	private static Servo positionServo;
@@ -26,8 +26,8 @@ public class CameraControl {
 		if (initialized)
 			return;
 		
-		cameraLedRelay = new Relay(HardwareIDs.CAMERA_LED_RELAY_CHANNEL,Relay.Direction.kForward);
-		cameraLedRelay.set(Relay.Value.kOff);
+		//cameraLedRelay = new Relay(HardwareIDs.CAMERA_LED_RELAY_CHANNEL,Relay.Direction.kForward);
+		//cameraLedRelay.set(Relay.Value.kOff);
 		
 		positionServo = new Servo(HardwareIDs.SERVO_CHANNEL_ID);
 		
@@ -45,6 +45,7 @@ public class CameraControl {
 		positionServo.set(position);
 	}
 	
+	/*
 	public static void setCameraLed(boolean state) {
 		if (state == true) {
 			cameraLedRelay.set(Relay.Value.kOn);
@@ -53,11 +54,12 @@ public class CameraControl {
 			cameraLedRelay.set(Relay.Value.kOff);			
 		}
 	}
+	*/
 	
 	public static void teleopInit() {
 		
 		// turn off extra LEDs for teleop (not needed)
-		setCameraLed(false);
+		//setCameraLed(false);
 	}
 	
 	public static void teleopPeriodic() {
