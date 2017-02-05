@@ -11,15 +11,18 @@ public class HardwareIDs {
 	// Relays
 	public static final int COLLECTOR_RELAY_CHANNEL = 0;
 	public static final int GEAR_TRAY_RELAY_CHANNEL = 1;
-	//public static final int CAMERA_LED_RELAY_CHANNEL = 2;
-	public static final int AGITATOR_RELAY_CHANNEL = 3;
+	public static final int CAMERA_LED_RELAY_CHANNEL = 3;
 	public static final int CLIMBER_RELAY_CHANNEL = 2;
 	
 	public static final int SHOOTER_TALON_ID = 6;
 	public static final int FEEDER_TALON_ID = 11;
 	
 	public static final int TRANSPORT_TALON_ID = 10;
+
+	// PWM devices	
+	public static final int CAMERA_SERVO_PWM_ID = 0;
 	public static final int COLLECTOR_PWM_ID = 1;
+	public static final int AGITATOR_PWM_ID	= 2;
 
 	// Climber Hardware
 	public static final int CLIMBER_TALON_ID = 12;
@@ -45,9 +48,6 @@ public class HardwareIDs {
 	
 	public static final int CLIMBER_CONTROL_BUTTON = 8;
 	public static final int CLIMBER_MOTOR_AXIS = 5;
-	
-	// PWM devices
-	public static final int SERVO_CHANNEL_ID = 0;
 	
 	// Digital IO (DIO) channels
 	public static final int TRIGGER_CHANNEL_ID = 0;

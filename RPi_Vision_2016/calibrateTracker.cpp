@@ -217,6 +217,7 @@ int main()
 		fscanf(parameter_file,"minColor_v = %d\n",&minColor_v);
 		fscanf(parameter_file,"maxColor_v = %d\n",&maxColor_v);
 		fscanf(parameter_file,"dilationFactor = %d\n",&dilationFactor);
+		fscanf(parameter_file,"exposure = %d\n",&exposure);
 	}
 	fclose(parameter_file);
 	printf("File read complete.\n");
@@ -232,6 +233,7 @@ int main()
 	printf("minColor_v = %d\n",minColor_v);
 	printf("maxColor_v = %d\n",maxColor_v);
 	printf("dilationFactor = %d\n",dilationFactor);	
+	printf("exposure = %d\n",exposure);	
 
 	// initialize slider values
 	hue_min_slider = minColor_h;
@@ -257,7 +259,7 @@ int main()
 	createTrackbar("Area Min", "Thresholds", &area_min_slider, maxArea, on_min_area);
 	createTrackbar("Area Max", "Thresholds", &area_max_slider, maxArea, on_max_area);
 	createTrackbar("Dilation", "Thresholds", &dilation_slider, 50, on_dilation);
-	//createTrackbar("Exposure", "Thresholds", &exposure_slider, 2500, on_exposure);
+	createTrackbar("Exposure", "Thresholds", &exposure_slider, 2500, on_exposure);
 
 	// calculate image center
 	imageCenterX = frameWidth/2;
@@ -279,13 +281,13 @@ int main()
 	table = NetworkTable::GetTable("RPIComm/Data_Table");
 	table->PutBoolean("autoExposure",true);
 	
-	// enable auto exposure for all modes
+	// enable auto exposure for all modes - debug only - cannot localize target
 	//autoExposureOn();
 
 	// disable auto exposure for all modes
 	// (this might be faster FPS)
 	autoExposureOff();
-	set_exposure(100);
+	set_exposure(exposure);
 
     // initialize frame size
     if (cap.isOpened()) {

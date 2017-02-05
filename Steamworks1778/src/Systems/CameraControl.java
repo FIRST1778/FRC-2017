@@ -29,7 +29,7 @@ public class CameraControl {
 		//cameraLedRelay = new Relay(HardwareIDs.CAMERA_LED_RELAY_CHANNEL,Relay.Direction.kForward);
 		//cameraLedRelay.set(Relay.Value.kOff);
 		
-		positionServo = new Servo(HardwareIDs.SERVO_CHANNEL_ID);
+		positionServo = new Servo(HardwareIDs.CAMERA_SERVO_PWM_ID);
 		
 		gamepad = new Joystick(HardwareIDs.DRIVER_CONTROL_ID);
 		
@@ -60,6 +60,7 @@ public class CameraControl {
 		
 		// turn off extra LEDs for teleop (not needed)
 		//setCameraLed(false);
+
 	}
 	
 	public static void teleopPeriodic() {

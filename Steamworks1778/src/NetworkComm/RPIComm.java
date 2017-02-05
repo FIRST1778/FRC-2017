@@ -43,7 +43,7 @@ public class RPIComm {
     		
 	        table = NetworkTable.getTable("RPIComm/Data_Table");	        	        	        	        
        		initialized = true;
-    		table.putBoolean("autoExposure", true);
+    		table.putBoolean("autoCam", false);
     	}
 	}
     
@@ -69,7 +69,7 @@ public class RPIComm {
     	
 		reset();
 		
-		table.putBoolean("autoExposure", true);
+		table.putBoolean("autoCam", true);
     }
     
     public static void teleopInit() {
@@ -83,12 +83,12 @@ public class RPIComm {
     	
 		reset();
 		
-		table.putBoolean("autoExposure", true);
+		table.putBoolean("autoCam", false);
     }
     
     public static void disabledInit() {
     	
-		table.putBoolean("autoExposure", true);
+		table.putBoolean("autoCam", false);
     }
   
         

@@ -79,6 +79,7 @@ public class Robot extends IterativeRobot {
     
     public void disabledInit() {
     	BallManagement.resetMotors();
+    	RPIComm.disabledInit();
     }
     
     /**
