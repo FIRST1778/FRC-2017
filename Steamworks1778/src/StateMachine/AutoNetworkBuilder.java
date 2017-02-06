@@ -122,7 +122,7 @@ public class AutoNetworkBuilder {
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true);
 		TimeEvent timer2 = new TimeEvent(5.0);  // drive forward timer event -OR-
-		UltrasonicEvent ultra1 = new UltrasonicEvent(18.0);  // ultrasonic event triggers at 18 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		driveState.addEvent(ultra1);
@@ -172,7 +172,7 @@ public class AutoNetworkBuilder {
 		
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
 		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.3, 45, 120); // desired target at x=45, y=120 (assume 160x120 img)
-		UltrasonicEvent ultra1 = new UltrasonicEvent(18.0);  // ultrasonic event triggers at 18 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
 		
@@ -218,7 +218,7 @@ public class AutoNetworkBuilder {
 				
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
 		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.3, 45, 120);   // desired target at x=45, y=120 (assume 160x120 img)
-		UltrasonicEvent ultra1 = new UltrasonicEvent(18.0);  // ultrasonic event triggers at 18 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
 		
@@ -269,7 +269,7 @@ public class AutoNetworkBuilder {
 		
 		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
 		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.3, 45, 120); // desired target at x=45, y=120 (assume 160x120 img)
-		UltrasonicEvent ultra1 = new UltrasonicEvent(18.0);  // ultrasonic event triggers at 18 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
 		driveToTargetState.addAction(driveToTarget);
 		driveToTargetState.addEvent(ultra1);
 		

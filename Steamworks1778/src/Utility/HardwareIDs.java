@@ -11,8 +11,8 @@ public class HardwareIDs {
 	// Relays
 	public static final int COLLECTOR_RELAY_CHANNEL = 0;
 	public static final int GEAR_TRAY_RELAY_CHANNEL = 1;
-	public static final int CAMERA_LED_RELAY_CHANNEL = 3;
 	public static final int CLIMBER_RELAY_CHANNEL = 2;
+	public static final int CAMERA_LED_RELAY_CHANNEL = 3;
 	
 	public static final int SHOOTER_TALON_ID = 6;
 	public static final int FEEDER_TALON_ID = 11;

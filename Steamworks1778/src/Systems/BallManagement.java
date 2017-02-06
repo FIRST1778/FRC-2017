@@ -43,7 +43,7 @@ public class BallManagement {
 	// 1:1 native speed settings
 	//private static final double motorSettings[] = { 0, 0, 100, 115, 130, 300, 300 };		    // Speed (Native) control settings
 
-	// 1:1 native speed settings
+	// 2:1 native speed settings
 	private static final double motorSettings[] = { 0, 0, 200, 230, 260, 300, 300 };		    // Speed (Native) control settings
 	
 	
@@ -92,7 +92,7 @@ public class BallManagement {
 		// set up shooter motor sensor
 		shooterMotor.reverseSensor(false);
 		shooterMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		//shooterMotor.configEncoderCodesPerRev(12);   // do not use this unless you want RPM-ish values!
+		//shooterMotor.configEncoderCodesPerRev(12);   // use this ONLY if you are NOT reading Native units
 		
 		// USE FOR DEBUG ONLY:  configure shooter motor for open loop speed control
 		//shooterMotor.changeControlMode(TalonControlMode.PercentVbus);

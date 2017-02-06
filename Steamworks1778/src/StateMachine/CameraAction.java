@@ -1,6 +1,5 @@
 package StateMachine;
 
-import Systems.BallManagement;
 import Systems.CameraControl;
 
 public class CameraAction extends Action {
@@ -22,7 +21,7 @@ public class CameraAction extends Action {
 		CameraControl.moveToPos(camPos);
 		
 		// in auto, turn on extra LEDs!
-		//CameraControl.setCameraLed(true);
+		CameraControl.setCameraLed(true);
 		
 		super.initialize();
 	}
