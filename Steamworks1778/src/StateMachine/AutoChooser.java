@@ -15,6 +15,12 @@ public class AutoChooser {
 	public static final int DRIVE_AND_SHOOT_RED_LEFT = 8;
 	public static final int DRIVE_AND_SHOOT_RED_CENTER = 9;
 	public static final int DRIVE_AND_SHOOT_RED_RIGHT = 10;
+
+	// debug networks
+	public static final int DRIVE_AND_SHOOT_NEAR = 11;
+	public static final int DRIVE_AND_SHOOT_MEDIUM = 12;
+	public static final int DRIVE_AND_SHOOT_FAR = 13;
+	
 	
 	int mode;
 	private SendableChooser chooser;
@@ -33,6 +39,11 @@ public class AutoChooser {
 		chooser.addObject("DRIVE_AND_SHOOT_RED_LEFT", DRIVE_AND_SHOOT_RED_LEFT);
 		chooser.addObject("DRIVE_AND_SHOOT_RED_CENTER", DRIVE_AND_SHOOT_RED_CENTER);
 		chooser.addObject("DRIVE_AND_SHOOT_RED_RIGHT", DRIVE_AND_SHOOT_RED_RIGHT);
+
+		// debug networks
+		chooser.addObject("DRIVE_AND_SHOOT_NEAR", DRIVE_AND_SHOOT_NEAR);
+		chooser.addObject("DRIVE_AND_SHOOT_MEDIUM", DRIVE_AND_SHOOT_MEDIUM);
+		chooser.addObject("DRIVE_AND_SHOOT_FAR", DRIVE_AND_SHOOT_FAR);
 		
 		SmartDashboard.putData("Auto_Mode_Chooser", chooser);
 	}

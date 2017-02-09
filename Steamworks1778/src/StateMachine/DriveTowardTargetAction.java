@@ -7,7 +7,7 @@ import NetworkComm.RPIComm;
 import Systems.AutoDriveAssembly;
 
 public class DriveTowardTargetAction extends Action {
-	private final double AUTO_DRIVE_TARGET_CORRECT_COEFF = 0.5;
+	private final double AUTO_DRIVE_TARGET_CORRECT_COEFF = 0.75;
 	
 	private String name;
 	private double speed = 0.0;
