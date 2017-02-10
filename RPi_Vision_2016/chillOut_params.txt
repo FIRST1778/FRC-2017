@@ -1,14 +1,14 @@
 roborio_ipaddr = 10.17.78.52
 frameWidth = 160
 frameHeight = 120
-minArea = 1000
+minArea = 10
 maxArea = 12000
-minColor_h = 55
-maxColor_h = 85
-minColor_s = 145
-maxColor_s = 209
-minColor_v = 49
-maxColor_v = 95
-dilationFactor = 10
+minColor_h = 69
+maxColor_h = 88
+minColor_s = 234
+maxColor_s = 255
+minColor_v = 120
+maxColor_v = 214
+dilationFactor = 25
 maxExposure = 22
 

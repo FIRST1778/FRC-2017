@@ -15,6 +15,9 @@ public class DriveTowardTargetAction extends Action {
 	private double desiredX = 0.0;
 	private double desiredY = 0.0;
 	
+	private final double CORRECTION_THRESH_PIX = 5.0;
+	private final double TURN_SPEED = 0.2;
+	
 	public DriveTowardTargetAction(double speed, double desiredX, double desiredY)
 	{
 		this.name = "<Drive Toward Target Action>";		
@@ -58,30 +61,36 @@ public class DriveTowardTargetAction extends Action {
 		// do some drivey stuff
 		RPIComm.updateValues();
 		
+		double leftSpeed = speed;
+		double rightSpeed = speed;
+		
 		if (RPIComm.hasTarget()) {
 			
 			// target found!  process and retrieve deltaX from desired location		
-			double frameWidth = RPIComm.getFrameWidth();
 			double deltaX = RPIComm.getDeltaX();
-			double driveIncrement = (deltaX/frameWidth) * AUTO_DRIVE_TARGET_CORRECT_COEFF;
+			
+			double driveIncrement = 0;
+			// if deltaX is more than a threshold, set turn to non-zero
+			if (Math.abs(deltaX) > CORRECTION_THRESH_PIX)
+				driveIncrement = Math.copySign(TURN_SPEED, deltaX);
 
+			// log data
 			InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/hasTarget", true);		
 			InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/desiredX", desiredX);		
 			InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/deltaX", deltaX);		
 			
 			// calculate adjustment for drive toward target
-			double leftSpeed = speed+driveIncrement;		
-			double rightSpeed = speed-driveIncrement;	
+			leftSpeed += driveIncrement;		
+			rightSpeed -= driveIncrement;	
 
-			AutoDriveAssembly.drive(leftSpeed, rightSpeed, 0);
 		}
 		else {
+			// no target found - log it
 			InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/hasTarget", false);		
-
-			// no target - drive straight
-			AutoDriveAssembly.drive(speed, speed, 0);
 		}
 		
+		// send drive speeds to motors
+		AutoDriveAssembly.drive(leftSpeed, rightSpeed, 0);
 						
 		super.process();
 	}

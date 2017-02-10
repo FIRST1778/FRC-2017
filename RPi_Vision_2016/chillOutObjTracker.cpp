@@ -27,7 +27,7 @@ int maxColor_h = 255;
 int maxColor_s = 255;
 int maxColor_v = 255;
 
-double minArea = 1000.0;
+double minArea = 100.0;
 double maxArea = 30000.0;
 
 int dilationFactor = 5;
@@ -213,6 +213,9 @@ int main()
 	set_exposure(exposure);
 	autoCam = false;
 	table->SetDefaultBoolean("autoCam",false);
+		
+	// debug only - auto
+	set_exposure(0);
 
     // initialize frame size
     if (cap.isOpened()) {
@@ -249,107 +252,104 @@ int main()
             break;
 		
 	// color threshold input image into binary image
-	if (autoCam) {
+    	cvtColor( inputImg, hsvImg, CV_BGR2HSV );
+	inRange(hsvImg, Scalar(minColor_h, minColor_s, minColor_v), Scalar(maxColor_h, maxColor_s, maxColor_v), binaryImg);		/*green*/
 
-	    	cvtColor( inputImg, hsvImg, CV_BGR2HSV );
-		inRange(hsvImg, Scalar(minColor_h, minColor_s, minColor_v), Scalar(maxColor_h, maxColor_s, maxColor_v), binaryImg);		/*green*/
+	Mat binary2 = binaryImg.clone();
+
+	// erode thresholded image - not used
+	//Mat erosionElement = getStructuringElement(MORPH_RECT, Size(7,7), Point(3,3));
+	//erode(binaryImg,erosionImg,erosionElement);	
 	
-		Mat binary2 = binaryImg.clone();
+	// dilate image (unify pieces)
+	int dil = dilationFactor;
+	int dil2 = dilationFactor*2 + 1;
+	Mat dilateElement = getStructuringElement(MORPH_RECT, Size(dil2,dil2), Point(dil,dil));
+	//dilate(erosionImg, dilationImg, dilateElement);
+	dilate(binary2, dilationImg, dilateElement);
+
+	// find contours from dilated image, place in list (vector)
+	findContours(dilationImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE,Point(0,0));
+	//findContours(binary2, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE,Point(0,0));
+
+	// find the convex hull objects
 	
-		// erode thresholded image - not used
-		//Mat erosionElement = getStructuringElement(MORPH_RECT, Size(7,7), Point(3,3));
-		//erode(binaryImg,erosionImg,erosionElement);	
-		
-		// dilate image (unify pieces)
-		int dil = dilationFactor;
-		int dil2 = dilationFactor*2 + 1;
-		Mat dilateElement = getStructuringElement(MORPH_RECT, Size(dil2,dil2), Point(dil,dil));
-		//dilate(erosionImg, dilationImg, dilateElement);
-		dilate(binary2, dilationImg, dilateElement);
-	
-		// find contours from dilated image, place in list (vector)
-		findContours(dilationImg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE,Point(0,0));
-		//findContours(binary2, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE,Point(0,0));
-	
-		// find the convex hull objects
-		
-		vector<vector<Point>> hulls (contours.size());	
-		for (int i=0; i< contours.size(); i++)
+	vector<vector<Point>> hulls (contours.size());	
+	for (int i=0; i< contours.size(); i++)
+	{
+		convexHull(Mat(contours[i]), hulls[i], false);
+	}
+
+	// create stats for each convex hull	
+	vector<Moments>mu(hulls.size());	  // hull moments
+	vector<Point2f>mc(hulls.size());       // hull mass centers
+	vector<double>targetArea(hulls.size());   // hull areas
+
+	for (int i=0; i<hulls.size(); i++)
+	{
+		mu[i] = moments(hulls[i], false);   // find moments
+		mc[i] = Point2f(mu[i].m10/mu[i].m00, mu[i].m01/mu[i].m00);
+		targetArea[i] = contourArea(hulls[i]);
+	}
+
+	int maxTargetArea = -1;
+	int targetIndex = -1;
+	targetDetected = false;
+	for (int i=0; i<hulls.size(); i++)
+	{
+		// see if this target meets the minimum area requirement
+		if (targetArea[i] > minArea)
 		{
-			convexHull(Mat(contours[i]), hulls[i], false);
-		}
-	
-		// create stats for each convex hull	
-		vector<Moments>mu(hulls.size());	  // hull moments
-		vector<Point2f>mc(hulls.size());       // hull mass centers
-		vector<double>targetArea(hulls.size());   // hull areas
-	
-		for (int i=0; i<hulls.size(); i++)
-		{
-			mu[i] = moments(hulls[i], false);   // find moments
-			mc[i] = Point2f(mu[i].m10/mu[i].m00, mu[i].m01/mu[i].m00);
-			targetArea[i] = contourArea(hulls[i]);
-		}
-	
-		int maxTargetArea = -1;
-		int targetIndex = -1;
-		targetDetected = false;
-		for (int i=0; i<hulls.size(); i++)
-		{
-			// see if this target meets the minimum area requirement
-			if (targetArea[i] > minArea)
+			targetDetected = true;
+
+			// see if this target is the biggest so far
+			if (targetArea[i] > maxTargetArea)
 			{
-				targetDetected = true;
-	
-				// see if this target is the biggest so far
-				if (targetArea[i] > maxTargetArea)
-				{
-					targetIndex = i;
-					maxTargetArea = targetArea[i];
-				}
+				targetIndex = i;
+				maxTargetArea = targetArea[i];
 			}
 		}
-	
-		// create contour image
-		contourImg = Mat::zeros(binaryImg.size(),CV_8UC3);
-		for (int i=0; i< contours.size(); i++)
-		{
-			Scalar colorGreen = Scalar(0, 0, 255);  // green
-			Scalar colorWhite = Scalar(255, 255, 255);  // white
-			drawContours(contourImg, hulls, i, colorWhite, 2, 8, hierarchy, 0, Point());
-		}
-	
-		// if target meets criteria, do stuff
-		if (targetDetected)
-		{
-			// write target info out to roborio
-			table->PutNumber("targets",(float)1.0f);
-			//table->PutNumber("targetX",mc[targetIndex].x - imageCenterX);
-			//table->PutNumber("targetY",mc[targetIndex].y - imageCenterY);
-			table->PutNumber("targetX",mc[targetIndex].x);
-			table->PutNumber("targetY",mc[targetIndex].y);
-			table->PutNumber("targetArea",targetArea[targetIndex]);
-			table->PutNumber("frameWidth",(float)frameWidth);
-			table->PutNumber("frameHeight",(float)frameHeight);
-	
-			// draw the target on one of the images
-			Scalar colorWhite = Scalar(255, 255, 255);  // white
-			Scalar colorGreen = Scalar(0, 255, 0);  // green
-			Scalar colorBlue = Scalar(255, 0, 0);  // blue
-			drawContours(inputImg, hulls, targetIndex, colorGreen, 2, 8, hierarchy, 0, Point());
-			circle(inputImg, mc[targetIndex], 3 ,colorBlue,2,6,0);
-	
-			//printf("Target area %3.0f detected at (%3.0f,%3.0f)\n",
-			//	targetArea[targetIndex], mc[targetIndex].x - imageCenterX,
-			//			     mc[targetIndex].y - imageCenterY);
-		}
-		else
-		{
-			// let roborio know that no target is detected
-			table->PutNumber("targets",(float)0.0f);
-			//printf("No target\n");
-		}
-	}  // autoCam processing
+	}
+
+	// create contour image
+	contourImg = Mat::zeros(binaryImg.size(),CV_8UC3);
+	for (int i=0; i< contours.size(); i++)
+	{
+		Scalar colorGreen = Scalar(0, 0, 255);  // green
+		Scalar colorWhite = Scalar(255, 255, 255);  // white
+		drawContours(contourImg, hulls, i, colorWhite, 2, 8, hierarchy, 0, Point());
+	}
+
+	// if target meets criteria, do stuff
+	if (targetDetected)
+	{
+		// write target info out to roborio
+		table->PutNumber("targets",(float)1.0f);
+		//table->PutNumber("targetX",mc[targetIndex].x - imageCenterX);
+		//table->PutNumber("targetY",mc[targetIndex].y - imageCenterY);
+		table->PutNumber("targetX",mc[targetIndex].x);
+		table->PutNumber("targetY",mc[targetIndex].y);
+		table->PutNumber("targetArea",targetArea[targetIndex]);
+		table->PutNumber("frameWidth",(float)frameWidth);
+		table->PutNumber("frameHeight",(float)frameHeight);
+
+		// draw the target on one of the images
+		Scalar colorWhite = Scalar(255, 255, 255);  // white
+		Scalar colorGreen = Scalar(0, 255, 0);  // green
+		Scalar colorBlue = Scalar(255, 0, 0);  // blue
+		drawContours(inputImg, hulls, targetIndex, colorGreen, 2, 8, hierarchy, 0, Point());
+		circle(inputImg, mc[targetIndex], 3 ,colorBlue,2,6,0);
+
+		//printf("Target area %3.0f detected at (%3.0f,%3.0f)\n",
+		//	targetArea[targetIndex], mc[targetIndex].x - imageCenterX,
+		//			     mc[targetIndex].y - imageCenterY);
+	}
+	else
+	{
+		// let roborio know that no target is detected
+		table->PutNumber("targets",(float)0.0f);
+		//printf("No target\n");
+	}
 
 	// create output image with overlay
 	//float alpha = 0.6;
@@ -363,21 +363,17 @@ int main()
 	//imshow("original",inputImg);
 	//imshow("overlay",overlayImg);
 
-	/*
-	if (autoCam) {
-		// first stage: threshold image display
-		imshow("threshold binary",binaryImg);
-		moveWindow("threshold binary",0,0);
-		
-		// second stage: contour image display
-		imshow("contours",contourImg);
-		moveWindow("contours",0,200);
+	// first stage: threshold image display
+	imshow("threshold binary",binaryImg);
+	moveWindow("threshold binary",0,0);
 	
-		// third stage: output target
-		imshow("output",outputImg);
-		moveWindow("output",0, 400);
-	}
-	*/
+	// second stage: contour image display
+	imshow("contours",contourImg);
+	moveWindow("contours",0,200);
+
+	// third stage: output target
+	imshow("output",outputImg);
+	moveWindow("output",0, 400);
 
 	// write out to file (for webserver)
 	VideoWriter outStream(outFile,CV_FOURCC('M','J','P','G'), 2, Size(frameWidth,frameHeight), true);

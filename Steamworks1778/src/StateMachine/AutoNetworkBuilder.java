@@ -126,7 +126,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.25, true);
-		TimeEvent timer2 = new TimeEvent(5.0);  // drive forward timer event -OR-
+		TimeEvent timer2 = new TimeEvent(15.0);  // drive forward timer event -OR-
 		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
@@ -174,12 +174,14 @@ public class AutoNetworkBuilder {
 		GyroAngleEvent gyroRight = new GyroAngleEvent(45, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
-		
-		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.2, 45, 120); // desired target at x=45, y=120 (assume 160x120 img)
+				
+		AutoState driveState2 = new AutoState("<Drive State 2>");
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, true);
+		TimeEvent timer3 = new TimeEvent(10.0);  // drive forward timer event -OR-
 		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
-		driveToTargetState.addAction(driveToTarget);
-		driveToTargetState.addEvent(ultra1);
+		driveState2.addAction(driveForward2);
+		driveState2.addEvent(timer3);
+		driveState2.addEvent(ultra1);
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
 		IdleAction deadEnd = new IdleAction("<Dead End Action>");
@@ -188,13 +190,13 @@ public class AutoNetworkBuilder {
 		// connect each event with a state to move to
 		camState.associateNextState(driveState);
 		driveState.associateNextState(turnRightState);
-		turnRightState.associateNextState(driveToTargetState);
-		driveToTargetState.associateNextState(idleState2);
+		turnRightState.associateNextState(driveState2);
+		driveState2.associateNextState(idleState2);
 						
 		autoNet.addState(camState);
 		autoNet.addState(driveState);
 		autoNet.addState(turnRightState);
-		autoNet.addState(driveToTargetState);
+		autoNet.addState(driveState2);
 		autoNet.addState(idleState2);
 				
 		return autoNet;
@@ -214,18 +216,14 @@ public class AutoNetworkBuilder {
 		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
-
+				
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.25, true);
-		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.25, true);
+		TimeEvent timer2 = new TimeEvent(10.0);  // drive forward timer event -OR-
+		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
-				
-		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.2, 45, 120);   // desired target at x=45, y=120 (assume 160x120 img)
-		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
-		driveToTargetState.addAction(driveToTarget);
-		driveToTargetState.addEvent(ultra1);
+		driveState.addEvent(ultra1);
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
 		IdleAction deadEnd = new IdleAction("<Dead End Action>");
@@ -233,17 +231,15 @@ public class AutoNetworkBuilder {
 				
 		// connect each event with a state to move to
 		camState.associateNextState(driveState);
-		driveState.associateNextState(driveToTargetState);
-		driveToTargetState.associateNextState(idleState2);
+		driveState.associateNextState(idleState2);
 						
 		autoNet.addState(camState);
 		autoNet.addState(driveState);
-		autoNet.addState(driveToTargetState);
 		autoNet.addState(idleState2);
 		
 		return autoNet;
 	}
-
+	
 	// **** DEPOSIT GEAR RIGHT SIDE Network ***** 
 	// 1) Move camera
 	// 2) drive forward for a number of sec
@@ -272,11 +268,13 @@ public class AutoNetworkBuilder {
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 		
-		AutoState driveToTargetState = new AutoState("<Drive To Target State 1>");
-		DriveTowardTargetAction driveToTarget = new DriveTowardTargetAction("<Drive To Target Action>", 0.2, 45, 120); // desired target at x=45, y=120 (assume 160x120 img)
+		AutoState driveState2 = new AutoState("<Drive State 2>");
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, true);
+		TimeEvent timer3 = new TimeEvent(10.0);  // drive forward timer event -OR-
 		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
-		driveToTargetState.addAction(driveToTarget);
-		driveToTargetState.addEvent(ultra1);
+		driveState2.addAction(driveForward2);
+		driveState2.addEvent(timer3);
+		driveState2.addEvent(ultra1);
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
 		IdleAction deadEnd = new IdleAction("<Dead End Action>");
@@ -285,13 +283,13 @@ public class AutoNetworkBuilder {
 		// connect each event with a state to move to
 		camState.associateNextState(driveState);
 		driveState.associateNextState(turnLeftState);
-		turnLeftState.associateNextState(driveToTargetState);
-		driveToTargetState.associateNextState(idleState2);
+		turnLeftState.associateNextState(driveState2);
+		driveState2.associateNextState(idleState2);
 						
 		autoNet.addState(camState);
 		autoNet.addState(driveState);
 		autoNet.addState(turnLeftState);
-		autoNet.addState(driveToTargetState);
+		autoNet.addState(driveState2);
 		autoNet.addState(idleState2);
 		
 		return autoNet;

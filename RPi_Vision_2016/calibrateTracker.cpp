@@ -27,7 +27,7 @@ int maxColor_h = 255;
 int maxColor_s = 255;
 int maxColor_v = 255;
 
-double minArea = 1000.0;
+double minArea = 100.0;
 double maxArea = 30000.0;
 
 int dilationFactor = 5;
