@@ -10,10 +10,12 @@ public class DriveTowardTargetAction extends Action {
 	private final double AUTO_DRIVE_TARGET_CORRECT_COEFF = 0.75;
 	
 	private String name;
-	private double speed = 0.0;
+	private double speedX = 0.0;
+	private double speedY = 0.0;
 	
 	private double desiredX = 0.0;
 	private double desiredY = 0.0;
+	private double threshX, threshY;
 	
 	private final double CORRECTION_THRESH_PIX = 5.0;
 	private final double TURN_SPEED = 0.2;
@@ -21,23 +23,29 @@ public class DriveTowardTargetAction extends Action {
 	public DriveTowardTargetAction(double speed, double desiredX, double desiredY)
 	{
 		this.name = "<Drive Toward Target Action>";		
-		this.speed = speed;
 		this.desiredX = desiredX;
 		this.desiredY = desiredY;
+		this.threshX = threshX;
+		this.threshY = threshY;
+		this.speedX = speedX;
+		this.speedY = speedY;
 
 		AutoDriveAssembly.initialize();
 		RPIComm.initialize();
 		
 		// set the desired target X and Y
-		RPIComm.setDesired(desiredX, desiredY);
+		RPIComm.setDesired(desiredX, desiredY, threshX, threshY, speedX, speedY);
 	}
 	
-	public DriveTowardTargetAction(String name, double speed, double desiredX, double desiredY)
+	public DriveTowardTargetAction(String name, double speedX, double speedY, double desiredX, double desiredY)
 	{
 		this.name =  name;
-		this.speed = speed;
 		this.desiredX = desiredX;
 		this.desiredY = desiredY;
+		this.threshX = threshX;
+		this.threshY = threshY;
+		this.speedX = speedX;
+		this.speedY = speedY;
 				
 		AutoDriveAssembly.initialize();
 		RPIComm.initialize();	
@@ -50,7 +58,7 @@ public class DriveTowardTargetAction extends Action {
 		RPIComm.autoInit();
 		
 		// set the desired target X and Y
-		RPIComm.setDesired(desiredX, desiredY);
+		RPIComm.setDesired(desiredX, desiredY, threshX, threshY, speedX, speedY);
 		
 		super.initialize();
 	}
@@ -61,8 +69,8 @@ public class DriveTowardTargetAction extends Action {
 		// do some drivey stuff
 		RPIComm.updateValues();
 		
-		double leftSpeed = speed;
-		double rightSpeed = speed;
+		double leftSpeed = speedY;
+		double rightSpeed = speedY;
 		
 		if (RPIComm.hasTarget()) {
 			
@@ -112,7 +120,7 @@ public class DriveTowardTargetAction extends Action {
 	
 		// store action details
 		actionPrefs.put("class",this.getClass().toString());
-		actionPrefs.putDouble("speed",this.speed);
+		actionPrefs.putDouble("speed",this.speedY);
 	}
 
 }

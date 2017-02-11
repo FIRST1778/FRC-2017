@@ -324,7 +324,7 @@ public class AutoNetworkBuilder {
 		turnLeftState.addEvent(gyroLeft);
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 68, 36);  // desired target at x=68, y=36 (assume 160x120 img)
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 68, 36, 5, 5, 0.2, 0.2);  // desired target at x=68, y=36 (assume 160x120 img)
 		CalibratedEvent calEvent1 = new CalibratedEvent(68, 36, 1, 1);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
@@ -379,7 +379,7 @@ public class AutoNetworkBuilder {
 		turnLeftState.addEvent(gyroLeft);
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 76, 57);  // desired target at x=76, y=57 (assume 160x120 img)
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 76, 57, 5, 5, 0.2, 0.2);  // desired target at x=76, y=57 (assume 160x120 img)
 		CalibratedEvent calEvent1 = new CalibratedEvent(76, 57, 1, 1);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
@@ -434,7 +434,7 @@ public class AutoNetworkBuilder {
 		turnLeftState.addEvent(gyroLeft);
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 77);  // desired target at x=80, y=77 (assume 160x120 img)
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 77, 5, 5, 0.2, 0.2);  // desired target at x=80, y=77 (assume 160x120 img)
 		CalibratedEvent calEvent1 = new CalibratedEvent(80, 77, 1, 1);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
@@ -489,7 +489,7 @@ public class AutoNetworkBuilder {
 		turnRightState.addEvent(gyroRight);
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 77); // desired target at x=80, y=77 (assume 160x120 img)
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 77, 5, 5, 0.2, 0.2); // desired target at x=80, y=77 (assume 160x120 img)
 		CalibratedEvent calEvent1 = new CalibratedEvent(80, 77, 1, 1);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
@@ -544,7 +544,7 @@ public class AutoNetworkBuilder {
 		turnRightState.addEvent(gyroRight);
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 76, 57); // desired target at x=80, y=40 (assume 160x120 img)
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 76, 57, 5, 5, 0.2, 0.2); // desired target at x=80, y=40 (assume 160x120 img)
 		CalibratedEvent calEvent1 = new CalibratedEvent(76, 57, 1, 1);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
@@ -599,7 +599,7 @@ public class AutoNetworkBuilder {
 		turnRightState.addEvent(gyroRight);
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 68, 36); // desired target at x=68, y=36 (assume 160x120 img)
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 68, 36, 5, 5, 0.2, 0.2); // desired target at x=68, y=36 (assume 160x120 img)
 		CalibratedEvent calEvent1 = new CalibratedEvent(68, 36, 1, 1);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
@@ -642,18 +642,24 @@ public class AutoNetworkBuilder {
 		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
-
-		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
-		TimeEvent timer2 = new TimeEvent(0.5);  // drive forward timer event
-		driveState.addAction(driveForward);
-		driveState.addEvent(timer2);
 		
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 68, 36);  // desired target at x=68, y=36 (assume 160x120 img)
-		CalibratedEvent calEvent1 = new CalibratedEvent(68, 36, 1, 1);
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", 68, 36, 5, 5, 0.2, 0.3);  // desired target at x=68, y=36 (assume 160x120 img)
+		CalibratedEvent calEvent1 = new CalibratedEvent(68, 36, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
+		
+		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", 68, 36, 1, 1, 0.15, 0.15);  // desired target at x=68, y=36 (assume 160x120 img)
+		CalibratedEvent calEvent2 = new CalibratedEvent(68, 36, 1, 1);
+		targetCalState2.addAction(calTarget2);
+		targetCalState2.addEvent(calEvent2);
+		
+		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", 68, 36, 1, 10, 0.15, 0.0);  // desired target at x=68, y=36 (assume 160x120 img)
+		CalibratedEvent calEvent3 = new CalibratedEvent(68, 36, 1, 10);
+		targetCalState3.addAction(calTarget3);
+		targetCalState3.addEvent(calEvent3);
 		
 		// Shoot state - keep shooting until end of auto (do not leave state)
 		AutoState shootState = new AutoState("<Shoot state - low>");
@@ -661,13 +667,15 @@ public class AutoNetworkBuilder {
 		shootState.addAction(shootAct);
 				
 		// connect each event with a state to move to
-		camState.associateNextState(driveState);
-		driveState.associateNextState(targetCalState);
-		targetCalState.associateNextState(shootState);
+		camState.associateNextState(targetCalState);
+		targetCalState.associateNextState(targetCalState2);
+		targetCalState2.associateNextState(targetCalState3);
+		targetCalState3.associateNextState(shootState);
 						
 		autoNet.addState(camState);
-		autoNet.addState(driveState);
 		autoNet.addState(targetCalState);
+		autoNet.addState(targetCalState2);
+		autoNet.addState(targetCalState3);
 		autoNet.addState(shootState);
 		
 		return autoNet;
@@ -687,18 +695,24 @@ public class AutoNetworkBuilder {
 		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
-
-		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
-		TimeEvent timer2 = new TimeEvent(0.5);  // drive forward timer event
-		driveState.addAction(driveForward);
-		driveState.addEvent(timer2);
 		
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 76, 57);  // desired target at x=76, y=57 (assume 160x120 img)
-		CalibratedEvent calEvent1 = new CalibratedEvent(76, 57, 1, 1);
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", 76, 57, 5, 5, 0.2, 0.3);  // desired target at x=76, y=57 (assume 160x120 img)
+		CalibratedEvent calEvent1 = new CalibratedEvent(76, 57, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
+		
+		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", 76, 57, 1, 1, 0.15, 0.15);  // desired target at x=76, y=57 (assume 160x120 img)
+		CalibratedEvent calEvent2 = new CalibratedEvent(76, 57, 1, 1);
+		targetCalState2.addAction(calTarget2);
+		targetCalState2.addEvent(calEvent2);
+		
+		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", 76, 57, 1, 10, 0.15, 0.0);  // desired target at x=76, y=57 (assume 160x120 img)
+		CalibratedEvent calEvent3 = new CalibratedEvent(76, 57, 1, 10);
+		targetCalState3.addAction(calTarget3);
+		targetCalState3.addEvent(calEvent3);
 		
 		// Shoot state - keep shooting until end of auto (do not leave state)
 		AutoState shootState = new AutoState("<Shoot state - medium>");
@@ -706,13 +720,15 @@ public class AutoNetworkBuilder {
 		shootState.addAction(shootAct);
 				
 		// connect each event with a state to move to
-		camState.associateNextState(driveState);
-		driveState.associateNextState(targetCalState);
-		targetCalState.associateNextState(shootState);
+		camState.associateNextState(targetCalState);
+		targetCalState.associateNextState(targetCalState2);
+		targetCalState2.associateNextState(targetCalState3);
+		targetCalState3.associateNextState(shootState);
 						
 		autoNet.addState(camState);
-		autoNet.addState(driveState);
 		autoNet.addState(targetCalState);
+		autoNet.addState(targetCalState2);
+		autoNet.addState(targetCalState3);
 		autoNet.addState(shootState);
 		
 		return autoNet;
@@ -732,18 +748,25 @@ public class AutoNetworkBuilder {
 		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
-
-		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
-		TimeEvent timer2 = new TimeEvent(0.5);  // drive forward timer event
-		driveState.addAction(driveForward);
-		driveState.addEvent(timer2);
 		
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", 80, 77);  // desired target at x=80, y=77 (assume 160x120 img)
-		CalibratedEvent calEvent1 = new CalibratedEvent(80, 77, 1, 1);
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", 80, 77, 5, 5, 0.2, 0.3);  // desired target at x=80, y=77 (assume 160x120 img)
+		CalibratedEvent calEvent1 = new CalibratedEvent(80, 77, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
+		
+		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", 80, 77, 1, 1, 0.15, 0.15);  // desired target at x=80, y=77 (assume 160x120 img)
+		CalibratedEvent calEvent2 = new CalibratedEvent(80, 77, 1, 1);
+		targetCalState2.addAction(calTarget2);
+		targetCalState2.addEvent(calEvent2);
+
+		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", 80, 77, 1, 10, 0.15, 0.0);  // desired target at x=80, y=77 (assume 160x120 img)
+		CalibratedEvent calEvent3 = new CalibratedEvent(80, 77, 1, 10);
+		targetCalState3.addAction(calTarget3);
+		targetCalState3.addEvent(calEvent3);
+
 		
 		// Shoot state - keep shooting until end of auto (do not leave state)
 		AutoState shootState = new AutoState("<Shoot state - high>");
@@ -751,13 +774,15 @@ public class AutoNetworkBuilder {
 		shootState.addAction(shootAct);
 				
 		// connect each event with a state to move to
-		camState.associateNextState(driveState);
-		driveState.associateNextState(targetCalState);
-		targetCalState.associateNextState(shootState);
+		camState.associateNextState(targetCalState);
+		targetCalState.associateNextState(targetCalState2);
+		targetCalState2.associateNextState(targetCalState3);
+		targetCalState3.associateNextState(shootState);
 						
 		autoNet.addState(camState);
-		autoNet.addState(driveState);
 		autoNet.addState(targetCalState);
+		autoNet.addState(targetCalState2);
+		autoNet.addState(targetCalState3);
 		autoNet.addState(shootState);
 		
 		return autoNet;
@@ -787,7 +812,7 @@ public class AutoNetworkBuilder {
 		idleState.addEvent(timer1);
 		
 		AutoState targetCalState = new AutoState("<Cal Target FOREVER State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>",80, 60);
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>",80, 60, 5, 5, 0.2, 0.2);
 		IdleAction doSomething4 = new IdleAction("<Placeholder Action 4>");
 		IdleAction doSomething5 = new IdleAction("<Placeholder Action 5>");
 		targetCalState.addAction(calTarget);

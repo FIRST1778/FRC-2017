@@ -26,13 +26,16 @@ public class RPIComm {
 	
 	public static double numTargets, targetX, targetY, targetArea, targetDistance;
 	private static double desiredX, desiredY;
+	private static double threshX, threshY;
+	private static double speedX, speedY;
 	
 	// Robot drive output
 	private static double driveLeft;
 	private static double driveRight;
 	
 	// Robot targeting speed (% how fast it moves and turns)
-	private static final double DRIVE_SPEED = 0.2;
+	private static final double DRIVE_SPEED_X = 0.2;
+	private static final double DRIVE_SPEED_Y = 0.2;
 	
 	// Number of loops to perform to guarantee the robot is lined up with the target
 	private static final int IS_CENTERED_DELAY = 15;
@@ -44,6 +47,11 @@ public class RPIComm {
 	        table = NetworkTable.getTable("RPIComm/Data_Table");	        	        	        	        
        		initialized = true;
     		table.putBoolean("autoCam", false);
+    		
+    		threshX = X_THRESHOLD;
+    		threshY = Y_THRESHOLD;
+    		speedX = DRIVE_SPEED_X;
+    		speedY = DRIVE_SPEED_Y;
     	}
 	}
     
@@ -52,10 +60,14 @@ public class RPIComm {
     	lateralMovement = lateralFlag;
     }
     
-    public static void setDesired(double x, double y)
+    public static void setDesired(double x, double y, double tX, double tY, double spX, double spY)
     {
     	desiredX = x;
     	desiredY = y;
+    	threshX = tX;
+    	threshY = tY;
+    	speedX = spX;
+    	speedY = spY;
     }
     
     public static void autoInit() {
@@ -136,13 +148,13 @@ public class RPIComm {
 			// pos delta X = actual right of goal, turn RIGHT => angular velocity = POS
 			// if no lateral movement needed, pass through
 			
-			if ((Math.abs(deltaX) < X_THRESHOLD) || (!lateralMovement))  {
+			if ((Math.abs(deltaX) < threshX) || (!lateralMovement))  {
 				// X is now centered!  Next focus on Y!
 				// neg delta Y = actual above goal, move backward => forward velocity = NEG
 				// pos delta Y = actual below goal, move forward => forward velocity = POS
 				// if no forward movement needed, pass through
 				
-				if ((Math.abs(deltaY) < Y_THRESHOLD) || (!forwardMovement))  {
+				if ((Math.abs(deltaY) < threshY) || (!forwardMovement))  {
 					// Both X and Y are centered!
 					driveLeft = 0;
 					driveRight = 0;
@@ -162,8 +174,8 @@ public class RPIComm {
 				}
 				else {
 					// Set the left and right motors to help center Y
-					driveLeft = Math.copySign(DRIVE_SPEED, deltaY);
-					driveRight = Math.copySign(DRIVE_SPEED, deltaY);
+					driveLeft = Math.copySign(speedY, deltaY);
+					driveRight = Math.copySign(speedY, deltaY);
 					targetCentered = false;
 					readyTimer = 0;
 
@@ -175,8 +187,8 @@ public class RPIComm {
 			}
 			else {
 				// Set the left and right motors to help center X
-				driveLeft = Math.copySign(DRIVE_SPEED, deltaX);
-				driveRight = Math.copySign(DRIVE_SPEED, -deltaX);
+				driveLeft = Math.copySign(speedX, deltaX);
+				driveRight = Math.copySign(speedX, -deltaX);
 				targetCentered = false;
 				readyTimer = 0;
 				
