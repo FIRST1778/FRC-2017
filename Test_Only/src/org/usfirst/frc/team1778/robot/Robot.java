@@ -1,8 +1,8 @@
 package org.usfirst.frc.team1778.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import NetworkComm.InputOutputComm;
-import Drive.Controller;
+import networkComm.InputOutputComm;
+import drive.Controller;
 
 
 public class Robot extends IterativeRobot {
@@ -11,10 +11,10 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		
 		// Start up network tables
-		Drive.Controller.initialize();
+		drive.Controller.initialize();
 		InputOutputComm.initialize();
 		InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"MainLog","robot initialized...");
-	
+		
 	}
 
 	

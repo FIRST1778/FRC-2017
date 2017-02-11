@@ -1,11 +1,11 @@
-package Drive;
+package drive;
 
 /** 
     Use this class to map the buttons and tumbsticks of the Logitech controllers to named uses.
 	For reference, all the button IDs are listed in the LogitechF310.java file.
 */
 import edu.wpi.first.wpilibj.Joystick;
-import Utility.InterLinkElite;
+import utility.InterLinkElite;
 
 
 public class Controller {

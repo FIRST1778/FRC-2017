@@ -1,4 +1,4 @@
-package NetworkComm;
+package networkComm;
 
 //import NetworkComm.InputOutputComm.LogTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;

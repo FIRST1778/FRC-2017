@@ -1,4 +1,4 @@
-package Utility;
+package utility;
 
 //The XBox One controller also have rumble capabitlities
 public class XboxOne {
