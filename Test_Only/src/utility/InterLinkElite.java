@@ -1,4 +1,4 @@
-package Utility;
+package utility;
 
 public class InterLinkElite {
 	public static final int LEFT_TOP_SWITCH = 1;

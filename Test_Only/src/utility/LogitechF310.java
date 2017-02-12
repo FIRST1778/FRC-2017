@@ -1,4 +1,4 @@
-package Utility;
+package utility;
 
 public class LogitechF310 {
 	public static final int DPAD = 0;//GetPOV () direction for directional gamepad

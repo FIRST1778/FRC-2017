@@ -1,4 +1,4 @@
-package Utility;
+package utility;
 
 public class LogitechDualAction {
 	public static final int DPAD = 0;//GetPOV () direction for directional gamepad
