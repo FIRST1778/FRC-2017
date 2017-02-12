@@ -168,7 +168,7 @@ public class AutoNetworkBuilder {
 	// 1) move camera
 	// 2) drive forward for a number of sec
 	// 3) Turn RIGHT a number of degrees
-	// 4) drive forward, using camera feedback to steer then stop
+	// 4) drive forward
 	// 5) go back to idle and stay there 
 	private static AutoNetwork createDepositGearLeft() {
 		
@@ -191,33 +191,17 @@ public class AutoNetworkBuilder {
 		GyroAngleEvent gyroRight = new GyroAngleEvent(60, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
-				
+										
 		AutoState driveState2 = new AutoState("<Drive State 2>");
 		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.35, false);  // don't reset gyro - use absolute heading (60 deg) 
-		TimeEvent timer3 = new TimeEvent(2.0);  // drive forward timer event
-		driveState2.addAction(driveForward2);
-		driveState2.addEvent(timer3);
-
-		// desired target at x=45, y=55 (assume 160x120 img)
-		double x = 45.0;
-		double y = 55.0; 
-		
-		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1>", x, y, 5, 20, 0.2, 0.0);  
-		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 20);
-		targetCalState.addAction(calTarget);
-		targetCalState.addEvent(calEvent1);
-						
-		AutoState driveState3 = new AutoState("<Drive State 3>");
-		DriveForwardAction driveForward3 = new DriveForwardAction("<Drive Forward Action 3>", 0.35, false);  // don't reset gyro - use absolute heading (60 deg) 
 		TimeEvent timer4 = new TimeEvent(10.0);  // drive forward timer event -OR-
 		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
-		driveState3.addAction(driveForward3);
-		driveState3.addEvent(timer4);
-		driveState3.addEvent(ultra1);
+		driveState2.addAction(driveForward2);
+		driveState2.addEvent(timer4);
+		driveState2.addEvent(ultra1);
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
-		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true);  // don't reset gyro - use absolute heading (60 deg) 
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true);  // reset gyro
 		IdleAction deadEnd = new IdleAction("<Dead End Action>");
 		idleState2.addAction(driveForward4);
 		idleState2.addAction(deadEnd);
@@ -226,16 +210,12 @@ public class AutoNetworkBuilder {
 		camState.associateNextState(driveState);
 		driveState.associateNextState(turnRightState);
 		turnRightState.associateNextState(driveState2);
-		driveState2.associateNextState(targetCalState);
-		targetCalState.associateNextState(driveState3);
-		driveState3.associateNextState(idleState2);
+		driveState2.associateNextState(idleState2);
 						
 		autoNet.addState(camState);
 		autoNet.addState(driveState);
 		autoNet.addState(turnRightState);
 		autoNet.addState(driveState2);
-		autoNet.addState(targetCalState);
-		autoNet.addState(driveState3);
 		autoNet.addState(idleState2);
 				
 		return autoNet;
@@ -316,7 +296,7 @@ public class AutoNetworkBuilder {
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
 		IdleAction deadEnd = new IdleAction("<Dead End Action>");
-		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true);  // don't reset gyro - use absolute heading (60 deg) 
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true);  // reset gyro 
 		idleState2.addAction(deadEnd);
 		idleState2.addAction(driveForward4);
 				
@@ -472,7 +452,7 @@ public class AutoNetworkBuilder {
 		driveState2.addEvent(ultra1);
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
-		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true);  // don't reset gyro - use absolute heading (60 deg) 
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true);  // reset gyro 
 		TimeEvent timer5 = new TimeEvent(1.0);  // wait for gear to be pulled
 		idleState2.addAction(driveForward4);
 		idleState2.addEvent(timer5);
@@ -682,7 +662,7 @@ public class AutoNetworkBuilder {
 		driveState2.addEvent(ultra1);
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
-		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true);  // don't reset gyro - use absolute heading (60 deg) 
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true);  // reset gyro 
 		TimeEvent timer5 = new TimeEvent(1.0);  // wait for gear to be pulled
 		idleState2.addAction(driveForward4);
 		idleState2.addEvent(timer5);
