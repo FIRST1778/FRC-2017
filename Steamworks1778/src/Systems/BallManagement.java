@@ -154,7 +154,7 @@ public class BallManagement {
 			new Thread() {
 				public void run() {
 					try {
-						Thread.sleep(3000);  // wait three sec before starting to feed
+						Thread.sleep(1000);  // wait one sec before starting to feed
 						startFeeding();		 // start feeder motors
 					} catch (Exception e) {
 						e.printStackTrace();
