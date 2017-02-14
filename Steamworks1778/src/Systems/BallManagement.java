@@ -52,7 +52,8 @@ public class BallManagement {
 	
 	// relays to release collector and gear tray
 	private static Relay collectorRelay;
-	private static Relay gearTrayRelay;
+	private static Relay gearTrayRelay1;
+	private static Relay gearTrayRelay2;
 	
 	// shooter and support motors
 	private static CANTalon shooterMotor, feederMotor;
@@ -77,9 +78,11 @@ public class BallManagement {
         collectorRelay = new Relay(HardwareIDs.COLLECTOR_RELAY_CHANNEL,Relay.Direction.kForward);
         collectorRelay.set(Relay.Value.kOff);
                 
-        // create and reset gear tray relay
-        gearTrayRelay = new Relay(HardwareIDs.GEAR_TRAY_RELAY_CHANNEL,Relay.Direction.kForward);
-        gearTrayRelay.set(Relay.Value.kOff);
+        // create and reset gear tray relays
+        gearTrayRelay1 = new Relay(HardwareIDs.GEAR_TRAY_RELAY_CHANNEL_1,Relay.Direction.kForward);
+        gearTrayRelay1.set(Relay.Value.kOff);
+        gearTrayRelay2 = new Relay(HardwareIDs.GEAR_TRAY_RELAY_CHANNEL_2,Relay.Direction.kForward);
+        gearTrayRelay2.set(Relay.Value.kOff);
 
 		// create motors
 		transportMotor = new CANTalon(HardwareIDs.TRANSPORT_TALON_ID);
@@ -245,7 +248,8 @@ public class BallManagement {
 	public static void teleopInit() {
 		// release collector and gear tray
     	collectorRelay.set(Relay.Value.kOn);
-    	gearTrayRelay.set(Relay.Value.kOn);
+    	gearTrayRelay1.set(Relay.Value.kOn);
+    	gearTrayRelay2.set(Relay.Value.kOn);
 				
 		resetMotors();
 		

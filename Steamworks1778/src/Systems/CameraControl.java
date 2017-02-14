@@ -12,8 +12,14 @@ public class CameraControl {
 	private static Joystick gamepad;
 	
 	// assumes HS-475HB servo, which 1.0 = 90 degrees
-	public static final double BOILER_CAM_POS = 0.125;  // 11.25 deg
-	public static final double GEAR_CAM_POS = 0.0;     // 0 deg
+	//public static final double BOILER_CAM_POS = 0.125;  // 11.25 deg
+	//public static final double GEAR_CAM_POS = 0.0;     // 0 deg
+
+	// assumes HS-485HB servo, which 1.0 = 180 degrees
+	//public static final double BOILER_CAM_POS = 0.5;  // 90 deg
+	public static final double BOILER_CAM_POS = (0.04 + 0.0625);  // 11.25 deg
+	public static final double GEAR_CAM_POS = 0.04;     // 0 deg
+	
 	private static final double SERVO_POS_TOLERANCE = 0.005;
 	
 	// Relay for extra LEDs
@@ -40,18 +46,20 @@ public class CameraControl {
 		if ((position < GEAR_CAM_POS) || (position > BOILER_CAM_POS))
 			return;
 		
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"CameraControl/Angle", position*90.0);
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"CameraControl/Angle", position*180.0);
 		
 		positionServo.set(position);
 	}
 	
 	public static void setCameraLed(boolean state) {
+		
 		if (state == true) {
 			cameraLedRelay.set(Relay.Value.kOn);
 		}
 		else {
 			cameraLedRelay.set(Relay.Value.kOff);			
 		}
+		
 	}
 	
 	public static void teleopInit() {

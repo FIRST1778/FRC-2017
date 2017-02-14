@@ -13,6 +13,25 @@ import Systems.CameraControl;
 
 public class AutoNetworkBuilder {
 		
+	// desired target for near at x=68, y=36 (assume 160x120 img)
+	private final static double NEAR_TARGET_X = 68.0;
+	private final static double NEAR_TARGET_Y = 36.0;
+	
+	// desired target for medium at x=76, y=57 (assume 160x120 img)
+	private final static double MEDIUM_TARGET_X = 76.0;
+	private final static double MEDIUM_TARGET_Y = 57.0;
+
+	// desired target for far at x=80, y=77 (assume 160x120 img)
+	private final static double FAR_TARGET_X = 80.0;
+	private final static double FAR_TARGET_Y = 77.0;
+	
+	// general control parameters (affects ALL networks)
+	private final static double DRIVE_FORWARD_SPEED = 0.35;
+	private final static double DRIVE_BACKWARD_SPEED = -0.35;
+	private final static double TURN_SPEED = 0.25;
+	private final static double TURN_AROUND_SPEED = 0.4;
+	private final static double ULTRASONIC_DIST_INCHES = 12.0;
+	
 	private final static String PREF_ROOT = "ChillOutAutonomousNetworks";
 	private static Preferences prefRoot, prefs;
 	
@@ -65,8 +84,8 @@ public class AutoNetworkBuilder {
 
 		autoNets.add(AutoChooser.DEPOSIT_GEAR_AND_SHOOT_RED_CENTER, createDepositGearAndShootRedCenter());	
 		autoNets.add(AutoChooser.DEPOSIT_GEAR_AND_SHOOT_RED_RIGHT, createDepositGearAndShootRedRight());	
-		autoNets.add(AutoChooser.DEPOSIT_GEAR_AND_SHOOT_BLUE_CENTER, createDepositGearAndShootBlueCenter());	
 		autoNets.add(AutoChooser.DEPOSIT_GEAR_AND_SHOOT_BLUE_LEFT, createDepositGearAndShootBlueLeft());	
+		autoNets.add(AutoChooser.DEPOSIT_GEAR_AND_SHOOT_BLUE_CENTER, createDepositGearAndShootBlueCenter());	
 
 		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_BLUE_LEFT, createDriveAndShootBlueLeft());	
 		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_BLUE_CENTER, createDriveAndShootBlueCenter());	
@@ -135,6 +154,9 @@ public class AutoNetworkBuilder {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive Forward Network>");
 		
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
+		
 		AutoState camState = new AutoState("<Move Camera>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.GEAR_CAM_POS);
 		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
@@ -142,9 +164,9 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.25, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
 		TimeEvent timer2 = new TimeEvent(15.0);  // drive forward timer event -OR-
-		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		driveState.addEvent(ultra1);
@@ -174,6 +196,11 @@ public class AutoNetworkBuilder {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear (left side) Network>");
 		
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double turnSpeed = TURN_SPEED;
+		double angleToTurnDeg = 60.0;
+		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
+
 		AutoState camState = new AutoState("<Move Camera>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.GEAR_CAM_POS);
 		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
@@ -181,21 +208,21 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.35, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
 		TimeEvent timer2 = new TimeEvent(1.25);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
-		AutoState turnRightState = new AutoState("<Turn Right State +60 deg>");
-		TurnAction turnRightAction = new TurnAction("<Turn right action>",60, true, 0.25);
-		GyroAngleEvent gyroRight = new GyroAngleEvent(60, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		AutoState turnRightState = new AutoState("<Turn Right State>");
+		TurnAction turnRightAction = new TurnAction("<Turn right action>",angleToTurnDeg, true, turnSpeed);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(angleToTurnDeg, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 										
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.35, false);  // don't reset gyro - use absolute heading (60 deg) 
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", driveForwardSpeed, false);  // don't reset gyro - use absolute heading (60 deg) 
 		TimeEvent timer4 = new TimeEvent(10.0);  // drive forward timer event -OR-
-		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer4);
 		driveState2.addEvent(ultra1);
@@ -228,6 +255,9 @@ public class AutoNetworkBuilder {
 	private static AutoNetwork createDepositGearCenter() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear (Center) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.GEAR_CAM_POS);
@@ -236,9 +266,9 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 								
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.35, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", driveForwardSpeed, true);
 		TimeEvent timer3 = new TimeEvent(10.0);  // drive forward timer event -OR-
-		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer3);
 		driveState.addEvent(ultra1);
@@ -262,11 +292,16 @@ public class AutoNetworkBuilder {
 	// 1) Move camera
 	// 2) drive forward for a number of sec
 	// 3) Turn LEFT a number of degrees
-	// 4) drive forward, using camera feedback to steer then stop
+	// 4) drive forward
 	// 5) go back to idle and stay there 
 	private static AutoNetwork createDepositGearRight() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear (Right Side) Network>");
+		
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double turnSpeed = TURN_SPEED;
+		double angleToTurnDeg = -60.0;
+		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.GEAR_CAM_POS);
@@ -275,21 +310,21 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.25, false);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, false);
 		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
-		AutoState turnLeftState = new AutoState("<Turn Left State -60 deg>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-60, true, 0.25);
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(-60, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		AutoState turnLeftState = new AutoState("<Turn Left State>");
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",angleToTurnDeg, true, turnSpeed);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(angleToTurnDeg, true, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, false);
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", driveForwardSpeed, false);
 		TimeEvent timer3 = new TimeEvent(10.0);  // drive forward timer event -OR-
-		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer3);
 		driveState2.addEvent(ultra1);
@@ -326,6 +361,12 @@ public class AutoNetworkBuilder {
 	private static AutoNetwork createDepositGearAndShootBlueCenter() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear and Shoot (Blue Center) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double driveBackwardSpeed = DRIVE_BACKWARD_SPEED;
+		double turnAroundSpeed = TURN_AROUND_SPEED;
+		double angleToTurnAroundDeg = -135.0;
+		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.GEAR_CAM_POS);
@@ -334,9 +375,9 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 								
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.35, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", driveForwardSpeed, true);
 		TimeEvent timer3 = new TimeEvent(10.0);  // drive forward timer event -OR-
-		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer3);
 		driveState.addEvent(ultra1);
@@ -348,22 +389,21 @@ public class AutoNetworkBuilder {
 		idleState2.addEvent(timer4);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", -0.35, true);
+		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", driveBackwardSpeed, true);
 		TimeEvent timer5 = new TimeEvent(1.0);  // drive forward timer event
 		driveState2.addAction(driveBackward);
 		driveState2.addEvent(timer5);
 		
-		AutoState turnLeftState = new AutoState("<Turn Left State -135 deg and cam move>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-135, true, 0.4);
+		AutoState turnLeftState = new AutoState("<Turn around and cam move>");
+		TurnAction turnLeftAction = new TurnAction("<Turn around action>",angleToTurnAroundDeg, true, turnAroundSpeed);
 		CameraAction camAct2 = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
-		GyroAngleEvent gyroRight = new GyroAngleEvent(-135, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(angleToTurnAroundDeg, true, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addAction(camAct2);
 		turnLeftState.addEvent(gyroRight);
 		
-		// desired target at x=76, y=57 (assume 160x120 img)
-		double x = 76.0;
-		double y = 57.0; 
+		double x = MEDIUM_TARGET_X;
+		double y = MEDIUM_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State>");
 		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
@@ -418,12 +458,20 @@ public class AutoNetworkBuilder {
 	// 4) drive forward to gear post
 	// 5) WAIT for human player to pull gear
 	// 6) back up a number of sec
-	// 7) turn to the right +180 deg (toward boiler) and move camera up 
+	// 7) turn around (toward boiler) and move camera up 
 	// 8) calibrate to near target
 	// 9) shoot until end of auto
 	private static AutoNetwork createDepositGearAndShootBlueLeft() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear and shoot (blue left side) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double turnAngleDeg = 60.0;
+		double turnSpeed = TURN_SPEED;
+		double driveBackwardSpeed = DRIVE_BACKWARD_SPEED;
+		double turnAroundSpeed = TURN_AROUND_SPEED;
+		double angleToTurnAroundDeg = 180.0;
+		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.GEAR_CAM_POS);
@@ -432,21 +480,21 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.35, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
 		TimeEvent timer2 = new TimeEvent(1.25);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
-		AutoState turnRightState = new AutoState("<Turn Right State +60 deg>");
-		TurnAction turnRightAction = new TurnAction("<Turn right action>",60, true, 0.25);
-		GyroAngleEvent gyroRight = new GyroAngleEvent(60, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		AutoState turnRightState = new AutoState("<Turn Right State>");
+		TurnAction turnRightAction = new TurnAction("<Turn right action>",turnAngleDeg, true, turnSpeed);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(turnAngleDeg, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 										
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.35, false);  // don't reset gyro - use absolute heading (60 deg) 
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", driveForwardSpeed, false);  // don't reset gyro - use absolute heading (60 deg) 
 		TimeEvent timer4 = new TimeEvent(10.0);  // drive forward timer event -OR-
-		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer4);
 		driveState2.addEvent(ultra1);
@@ -458,22 +506,21 @@ public class AutoNetworkBuilder {
 		idleState2.addEvent(timer5);
 		
 		AutoState driveState3 = new AutoState("<Drive State 3>");
-		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", -0.35, true);
+		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", driveBackwardSpeed, true);
 		TimeEvent timer6 = new TimeEvent(1.0);  // drive forward timer event
 		driveState3.addAction(driveBackward);
 		driveState3.addEvent(timer6);
 		
 		AutoState turnRightState2 = new AutoState("<Turn Right State +180 deg and cam move>");
-		TurnAction turnRightAction2 = new TurnAction("<Turn right action>",180, true, 0.4);
+		TurnAction turnRightAction2 = new TurnAction("<Turn right action>",angleToTurnAroundDeg, true, turnAroundSpeed);
 		CameraAction camAct2 = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
-		GyroAngleEvent gyroRight2 = new GyroAngleEvent(180, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		GyroAngleEvent gyroRight2 = new GyroAngleEvent(angleToTurnAroundDeg, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState2.addAction(turnRightAction2);
 		turnRightState2.addAction(camAct2);
 		turnRightState2.addEvent(gyroRight2);
 		
-		// desired target at x=68, y=36 (assume 160x120 img)
-		double x = 68.0;
-		double y = 36.0; 
+		double x = NEAR_TARGET_X;
+		double y = NEAR_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State>");
 		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
@@ -530,12 +577,18 @@ public class AutoNetworkBuilder {
 	// 2) drive forward for a number of sec, then stop
 	// 3) WAIT for human player to pull gear
 	// 4) back up a number of sec
-	// 5) turn to the right +135 deg (toward boiler) and move camera up 
+	// 5) turn around (toward boiler) and move camera up 
 	// 6) calibrate to medium target
 	// 7) shoot until end of auto
 	private static AutoNetwork createDepositGearAndShootRedCenter() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear and Shoot (Red Center) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double driveBackwardSpeed = DRIVE_BACKWARD_SPEED;
+		double turnAroundSpeed = TURN_AROUND_SPEED;
+		double angleToTurnAroundDeg = 135.0;
+		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.GEAR_CAM_POS);
@@ -544,9 +597,9 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 								
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.35, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", driveForwardSpeed, true);
 		TimeEvent timer3 = new TimeEvent(10.0);  // drive forward timer event -OR-
-		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer3);
 		driveState.addEvent(ultra1);
@@ -558,22 +611,21 @@ public class AutoNetworkBuilder {
 		idleState2.addEvent(timer4);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", -0.35, true);
+		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", driveBackwardSpeed, true);
 		TimeEvent timer5 = new TimeEvent(1.0);  // drive forward timer event
 		driveState2.addAction(driveBackward);
 		driveState2.addEvent(timer5);
 		
-		AutoState turnRightState = new AutoState("<Turn Right State +135 deg and cam move>");
-		TurnAction turnRightAction = new TurnAction("<Turn right action>",135, true, 0.4);
+		AutoState turnRightState = new AutoState("<Turn around and cam move>");
+		TurnAction turnRightAction = new TurnAction("<Turn around action>",angleToTurnAroundDeg, true, turnAroundSpeed);
 		CameraAction camAct2 = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
-		GyroAngleEvent gyroRight = new GyroAngleEvent(135, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(angleToTurnAroundDeg, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addAction(camAct2);
 		turnRightState.addEvent(gyroRight);
 		
-		// desired target at x=76, y=57 (assume 160x120 img)
-		double x = 76.0;
-		double y = 57.0; 
+		double x = MEDIUM_TARGET_X;
+		double y = MEDIUM_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State>");
 		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
@@ -628,12 +680,20 @@ public class AutoNetworkBuilder {
 	// 4) drive forward, using camera feedback to steer then stop
 	// 5) WAIT for human player to pull gear
 	// 6) back up a number of sec
-	// 7) turn to the right +180 deg (toward boiler) and move camera up 
+	// 7) turn around (toward boiler) and move camera up 
 	// 8) calibrate to near target
 	// 9) shoot until end of auto
 	private static AutoNetwork createDepositGearAndShootRedRight() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear and Shoot (Red Right Side) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double turnAngleDeg = -60.0;
+		double turnSpeed = TURN_SPEED;
+		double driveBackwardSpeed = DRIVE_BACKWARD_SPEED;
+		double turnAroundSpeed = TURN_AROUND_SPEED;
+		double angleToTurnAroundDeg = 180.0;
+		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.GEAR_CAM_POS);
@@ -642,21 +702,21 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.25, false);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, false);
 		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
-		AutoState turnLeftState = new AutoState("<Turn Left State -60 deg>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-60, true, 0.25);
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(-60, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		AutoState turnLeftState = new AutoState("<Turn Left State>");
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",turnAngleDeg, true, turnSpeed);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(turnAngleDeg, true, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, false);
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", driveForwardSpeed, false);
 		TimeEvent timer3 = new TimeEvent(10.0);  // drive forward timer event -OR-
-		UltrasonicEvent ultra1 = new UltrasonicEvent(12.0);  // ultrasonic event triggers at 12 inches
+		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer3);
 		driveState2.addEvent(ultra1);
@@ -668,22 +728,21 @@ public class AutoNetworkBuilder {
 		idleState2.addEvent(timer5);
 		
 		AutoState driveState3 = new AutoState("<Drive State 3>");
-		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", -0.35, true);
+		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", driveBackwardSpeed, true);
 		TimeEvent timer6 = new TimeEvent(1.0);  // drive forward timer event
 		driveState3.addAction(driveBackward);
 		driveState3.addEvent(timer6);
 		
-		AutoState turnRightState = new AutoState("<Turn Right State +180 deg and cam move>");
-		TurnAction turnRightAction = new TurnAction("<Turn right action>",180, true, 0.4);
+		AutoState turnRightState = new AutoState("<Turn around and cam move>");
+		TurnAction turnRightAction = new TurnAction("<Turn around action>",angleToTurnAroundDeg, true, turnAroundSpeed);
 		CameraAction camAct2 = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
-		GyroAngleEvent gyroRight2 = new GyroAngleEvent(180, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		GyroAngleEvent gyroRight2 = new GyroAngleEvent(angleToTurnAroundDeg, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addAction(camAct2);
 		turnRightState.addEvent(gyroRight2);
 		
-		// desired target at x=68, y=36 (assume 160x120 img)
-		double x = 68.0;
-		double y = 36.0; 
+		double x = NEAR_TARGET_X;
+		double y = NEAR_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State>");
 		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
@@ -745,6 +804,10 @@ public class AutoNetworkBuilder {
 	private static AutoNetwork createDriveAndShootBlueLeft() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Left Side) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double turnAngleDeg = -135.0;
+		double turnSpeed = TURN_SPEED;
 				
 		AutoState camState = new AutoState("<Camera Move>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
@@ -753,20 +816,19 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
 		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
-		AutoState turnLeftState = new AutoState("<Turn Left State -135 deg>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-135, true, 0.5);
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(-135, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		AutoState turnLeftState = new AutoState("<Turn Left State>");
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",turnAngleDeg, true, turnSpeed);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(turnAngleDeg, true, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 
-		// desired target at x=68, y=36 (assume 160x120 img)
-		double x = 68.0;
-		double y = 36.0; 
+		double x = NEAR_TARGET_X;
+		double y = NEAR_TARGET_Y; 
 		
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
 		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3);  
@@ -820,6 +882,10 @@ public class AutoNetworkBuilder {
 	private static AutoNetwork createDriveAndShootBlueCenter() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Center) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double turnAngleDeg = -120.0;
+		double turnSpeed = TURN_SPEED;
 		
 		AutoState camState = new AutoState("<Camera Move>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
@@ -828,20 +894,19 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
 		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
-		AutoState turnLeftState = new AutoState("<Turn Left State -120 deg>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-120, true, 0.5);
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(-120, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		AutoState turnLeftState = new AutoState("<Turn Left State>");
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",turnAngleDeg, true, turnSpeed);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(turnAngleDeg, true, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 
-		// desired target at x=76, y=57 (assume 160x120 img)
-		double x = 76.0;
-		double y = 57.0; 
+		double x = MEDIUM_TARGET_X;
+		double y = MEDIUM_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
 		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3);  
@@ -895,6 +960,10 @@ public class AutoNetworkBuilder {
 	private static AutoNetwork createDriveAndShootBlueRight() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Right Side) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double turnAngleDeg = -110.0;
+		double turnSpeed = TURN_SPEED;
 		
 		AutoState camState = new AutoState("<Camera Move>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
@@ -903,20 +972,19 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
 		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
-		AutoState turnLeftState = new AutoState("<Turn Left State -110 deg>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-110, true, 0.5);
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(-110, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		AutoState turnLeftState = new AutoState("<Turn Left State>");
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",turnAngleDeg, true, turnSpeed);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(turnAngleDeg, true, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 
-		// desired target at x=80, y=77 (assume 160x120 img)
-		double x = 80.0;
-		double y = 77.0; 
+		double x = FAR_TARGET_X;
+		double y = FAR_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
 		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3);  
@@ -970,6 +1038,10 @@ public class AutoNetworkBuilder {
 	private static AutoNetwork createDriveAndShootRedLeft() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Left Side) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double turnAngleDeg = 110.0;
+		double turnSpeed = TURN_SPEED;
 		
 		AutoState camState = new AutoState("<Camera Move>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
@@ -978,20 +1050,19 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
 		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
-		AutoState turnRightState = new AutoState("<Turn Right State +110 deg>");
-		TurnAction turnRightAction = new TurnAction("<Turn Right action>",110, true, 0.5);
-		GyroAngleEvent gyroRight = new GyroAngleEvent(110, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		AutoState turnRightState = new AutoState("<Turn Right State>");
+		TurnAction turnRightAction = new TurnAction("<Turn Right action>",turnAngleDeg, true, turnSpeed);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(turnAngleDeg, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 
-		// desired target at x=80, y=77 (assume 160x120 img)
-		double x = 80.0;
-		double y = 77.0; 
+		double x = FAR_TARGET_X;
+		double y = FAR_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
 		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
@@ -1045,6 +1116,10 @@ public class AutoNetworkBuilder {
 	private static AutoNetwork createDriveAndShootRedCenter() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Center) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double turnAngleDeg = 120.0;
+		double turnSpeed = TURN_SPEED;
 		
 		AutoState camState = new AutoState("<Camera Move>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
@@ -1053,20 +1128,19 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
 		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
-		AutoState turnRightState = new AutoState("<Turn Right State +120 deg>");
-		TurnAction turnRightAction = new TurnAction("<Turn Right action>",120, true, 0.5);
-		GyroAngleEvent gyroRight = new GyroAngleEvent(120, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		AutoState turnRightState = new AutoState("<Turn Right State>");
+		TurnAction turnRightAction = new TurnAction("<Turn Right action>",turnAngleDeg, true, turnSpeed);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(turnAngleDeg, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 
-		// desired target at x=76, y=57 (assume 160x120 img)
-		double x = 76.0;
-		double y = 57.0; 
+		double x = MEDIUM_TARGET_X;
+		double y = MEDIUM_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
 		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
@@ -1120,6 +1194,10 @@ public class AutoNetworkBuilder {
 	private static AutoNetwork createDriveAndShootRedRight() {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Right Side) Network>");
+
+		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double turnAngleDeg = 135.0;
+		double turnSpeed = TURN_SPEED;
 		
 		AutoState camState = new AutoState("<Camera Move>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
@@ -1128,20 +1206,19 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.5, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
 		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
-		AutoState turnRightState = new AutoState("<Turn Right State +135 deg>");
-		TurnAction turnRightAction = new TurnAction("<Turn Right action>",135, true, 0.5);
-		GyroAngleEvent gyroRight = new GyroAngleEvent(135, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		AutoState turnRightState = new AutoState("<Turn Right State>");
+		TurnAction turnRightAction = new TurnAction("<Turn Right action>",turnAngleDeg, true, turnSpeed);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(turnAngleDeg, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 
-		// desired target at x=68, y=36 (assume 160x120 img)
-		double x = 68.0;
-		double y = 36.0; 
+		double x = NEAR_TARGET_X;
+		double y = NEAR_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
 		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
@@ -1198,9 +1275,8 @@ public class AutoNetworkBuilder {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Near) Network>");
 
-		// desired target at x=68, y=36 (assume 160x120 img)
-		double x = 68.0; 
-		double y = 36.0;
+		double x = NEAR_TARGET_X;
+		double y = NEAR_TARGET_Y; 
 				
 		AutoState camState = new AutoState("<Camera Move>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
@@ -1255,9 +1331,8 @@ public class AutoNetworkBuilder {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Medium) Network>");
 		
-		// desired target at x=76, y=57 (assume 160x120 img)
-		double x = 76.0; 
-		double y = 57.0;
+		double x = MEDIUM_TARGET_X;
+		double y = MEDIUM_TARGET_Y; 
 				
 		AutoState camState = new AutoState("<Camera Move>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
@@ -1312,9 +1387,8 @@ public class AutoNetworkBuilder {
 		
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Medium) Network>");
 
-		// desired target at x=80, y=77 (assume 160x120 img)
-		double x = 80.0; 
-		double y = 77.0;
+		double x = FAR_TARGET_X;
+		double y = FAR_TARGET_Y; 
 
 		AutoState camState = new AutoState("<Camera Move>");
 		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
