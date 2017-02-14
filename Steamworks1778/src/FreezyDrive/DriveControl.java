@@ -5,51 +5,43 @@ import Utility.SimpleUtil;
 public class DriveControl {
 	
 	double oldWheel, quickStopAccumulator;
-    private double throttleDeadband = 0.02;
+	
+	// "Deadband" is the dead zone of the joysticks, for throttle and steering
+    private double throttleDeadband = 0.04;
     private double wheelDeadband = 0.02;
 	
 	public DriveControl(){
 		
 	}
 	
-	public void calculateDrive(double throttle, double wheel, boolean isQuickTurn,boolean isHighGear){
-		
+	public void calculateDrive(double throttle, double wheel, boolean isQuickTurn,boolean isLowSensitivity){
 		
 		
 		double wheelNonLinearity;
 		wheel = handleDeadband(wheel, wheelDeadband);
         throttle = handleDeadband(throttle, throttleDeadband);
         
-		//System.out.println(throttle);
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Teleop/Throttle", throttle);		
-        
 		throttle = throttle / 0.6;
 		
         if(throttle > 0)
         	wheel = -wheel;
         
+        InputOutputComm.putDouble(InputOutputComm.LogTable.kDriveLog,"Teleop/Throttle", throttle);		
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kDriveLog,"Teleop/Wheel", wheel);
+		
         
         
 		double negInertia = wheel - oldWheel;
         oldWheel = wheel;
         
-        if (isHighGear) {
-            wheelNonLinearity = 0.6;
-            // Apply a sin function that's scaled to make it feel better.
-            wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel)
-                    / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
-            wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel)
-                    / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
-        } else {
-            wheelNonLinearity = 0.5;
-            // Apply a sin function that's scaled to make it feel better.
-            wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel)
-                    / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
-            wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel)
-                    / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
-            wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel)
-                    / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
-        }
+        wheelNonLinearity = 0.5;
+        // Apply a sin function that's scaled to make it feel better.
+        wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel)
+                / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
+        wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel)
+                / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
+        wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel)
+                / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
 		
         double sensitivity;
         double angularPower;
@@ -59,21 +51,16 @@ public class DriveControl {
         double negInertiaScalar;
         
         
-        if (isHighGear) {
-            negInertiaScalar = 4.0;
-            sensitivity =  .5; // what is the sensitivity
+     	if (wheel * negInertia > 0) {
+            negInertiaScalar = 2.5;
         } else {
-            if (wheel * negInertia > 0) {
-                negInertiaScalar = 2.5;
+            if (Math.abs(wheel) > 0.65) {
+                negInertiaScalar = 5.0;
             } else {
-                if (Math.abs(wheel) > 0.65) {
-                    negInertiaScalar = 5.0;
-                } else {
-                    negInertiaScalar = 3.0;
-                }
+                negInertiaScalar = 3.0;
             }
-            sensitivity = 1; // Constants.sensitivityLow.getDouble(); // was .85
         }
+        
 	
         double negInertiaPower = negInertia * negInertiaScalar;
         negInertiaAccumulator += negInertiaPower;
@@ -90,7 +77,14 @@ public class DriveControl {
         
         double rightPower,leftPower,overPower;
         
-        // Quickturn!
+        
+        if (isLowSensitivity){
+        	sensitivity = 0.5;	
+        } else {
+            sensitivity = 0.8;
+        }
+        
+        // Calculates quick turn (top right swtich)
         if (isQuickTurn) {
             if (Math.abs(linearPower) < 0.2) {
                 double alpha = 0.1;
@@ -98,11 +92,7 @@ public class DriveControl {
                         + alpha * 5 * -1 * SimpleUtil.limit(true, wheel, 1);
             }
             overPower = 1.0;
-            if (isHighGear) {
-                sensitivity = 1.0;
-            } else {
-                sensitivity = 1.0;
-            }
+            sensitivity = 1.0;
             angularPower = wheel;
         } else {
             overPower = 0.0;
@@ -115,20 +105,12 @@ public class DriveControl {
             } else {
                 quickStopAccumulator = 0.0;
             }
-        }
-        
-        
-        
-        
-        
-        overPower = 0.0;
-        angularPower = Math.abs(throttle) * wheel * sensitivity
-                - quickStopAccumulator;
+        }    
         
         rightPower = leftPower = linearPower;
         leftPower += angularPower;
         rightPower -= angularPower;
-
+        
         if (leftPower > 1.0) {
             rightPower -= overPower * (leftPower - 1.0);
             leftPower = 1.0;
@@ -145,13 +127,17 @@ public class DriveControl {
         
         
 		
-		// sets the final values for motor speed.
-			FreezyDrive.FreezyDriveTrain.ChangeSpeed(-leftPower,rightPower);
+		// sends final values to drive train
+		FreezyDrive.FreezyDriveTrain.ChangeSpeed(-leftPower,rightPower);
+		
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kDriveLog,"Teleop/leftPower", -leftPower);		
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kDriveLog,"Teleop/rightPower", rightPower);
 
 	}
 	
+	// calculates the deadband of the value
+	
 	public double handleDeadband(double val, double deadband) {
         return (Math.abs(val) > Math.abs(deadband)) ? val : 0.0;
-    }
-	
+	}
 }

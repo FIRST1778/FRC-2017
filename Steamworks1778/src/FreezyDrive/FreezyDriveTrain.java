@@ -1,29 +1,21 @@
 package FreezyDrive;
-import Utility.SimpleUtil;
 
 import com.ctre.CANTalon;
 
 public class FreezyDriveTrain {
 	
-	// Speed controller IDs
-	//private static final int LEFT_FRONT_TALON_ID = 8;
-	//private static final int LEFT_REAR_TALON_ID = 4;
-	//private static final int RIGHT_FRONT_TALON_ID = 3;
-	//private static final int RIGHT_REAR_TALON_ID = 7;
+	// TalonSRX IDs
 	private static final int LEFT_FRONT_TALON_ID = 3;
 	private static final int LEFT_REAR_TALON_ID = 7;
 	private static final int RIGHT_FRONT_TALON_ID = 8;
 	private static final int RIGHT_REAR_TALON_ID = 4;
 
+	// Initalizing TalonSRXs
 	private static CANTalon motorFrontL,motorFrontR;
 	private static CANTalon motorRearL,motorRearR;
 	private static boolean initialized = false;
 
 	private static DriveControl driveControl;
-	
-	private static double oldWheel, quickStopAccumulator;
-    private static double throttleDeadband = 0.02;
-    private static double wheelDeadband = 0.02;
 	
 	public static void initialize() {
 		
@@ -59,7 +51,7 @@ public class FreezyDriveTrain {
 	{
     	// drive command for all controllers
    	 	driveControl.calculateDrive(Controller.Driver_Throttle(), Controller.Driver_Steering(),
-   	 		Controller.Driver_isQuickTurn(), false);
+   	 		Controller.Driver_isQuickTurn(), false); // replace "false" with Controller.Driver_isLowSensitivity);
 		
 	}
 }

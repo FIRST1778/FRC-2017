@@ -5,10 +5,6 @@ package FreezyDrive;
 	For reference, all the button IDs are listed in the LogitechF310.java file.
 */
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import Utility.LogitechF310;
-import Utility.LogitechDualAction;
 import Utility.InterLinkElite;
 
 
@@ -46,7 +42,11 @@ public class Controller {
     }
     
     public static boolean Driver_isQuickTurn(){
-    	return !Driver.getRawButton(InterLinkElite.RIGHT_SWITCH);
+    	return Driver.getRawButton(InterLinkElite.RIGHT_SWITCH);
     }
+    
+    /*public static boolean Driver_isLowSensitivity(){
+    	return Driver.getRawButton();
+    }*/
     
 }
