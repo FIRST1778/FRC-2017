@@ -8,6 +8,7 @@ import StateMachine.AutoStateMachine;
 import Systems.BallManagement;
 import Systems.CameraControl;
 import Systems.ClimberAssembly;
+import Systems.RioDuinoAssembly;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 
@@ -33,6 +34,7 @@ public class Robot extends IterativeRobot {
         FreezyDriveTrain.initialize();
         CameraControl.initialize();
         ClimberAssembly.initialize();
+        RioDuinoAssembly.initialize();
         
 		autoSM = new AutoStateMachine();
 		
@@ -42,7 +44,8 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
     	InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"MainLog","autonomous mode...");
     	RPIComm.autoInit();
-    	    	
+    	RioDuinoAssembly.autonomousInit();
+    	
     	autoSM.start();
     }
 
@@ -64,6 +67,7 @@ public class Robot extends IterativeRobot {
     	FreezyDriveTrain.teleopInit();	
     	CameraControl.teleopInit();
     	ClimberAssembly.teleopInit();
+    	RioDuinoAssembly.teleopInit();
     }
     /**
      * This function is called periodically during operator control
@@ -80,6 +84,7 @@ public class Robot extends IterativeRobot {
     public void disabledInit() {
     	BallManagement.resetMotors();
     	RPIComm.disabledInit();
+    	RioDuinoAssembly.disabledInit();
     }
     
     /**

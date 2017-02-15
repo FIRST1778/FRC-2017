@@ -46,21 +46,21 @@ public class RioDuinoAssembly {
 	public static void autonomousInit() {
 	
 		setTeamColor();
-		SendString("colorGreen");
+		//SendString("colorGreen");
 		SendString("autoInit");
 	}
 	
 	public static void teleopInit() {
 		
 		setTeamColor();
-		SendString("colorGreen");
+		//SendString("colorGreen");
 		SendString("teleopInit");
 	}
 	
 	public static void testInit() {
 
 		setTeamColor();		
-		SendString("colorOrange");		
+		//SendString("colorOrange");		
 		SendString("testInit");
 	}
 	
