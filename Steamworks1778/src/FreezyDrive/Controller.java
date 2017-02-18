@@ -45,8 +45,8 @@ public class Controller {
     	return Driver.getRawButton(InterLinkElite.RIGHT_SWITCH);
     }
     
-    /*public static boolean Driver_isLowSensitivity(){
-    	return Driver.getRawButton();
-    }*/
+    public static boolean Driver_isLowSensitivity(){
+    	return Driver.getRawButton(5);
+    }
     
 }
