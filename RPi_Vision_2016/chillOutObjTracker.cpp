@@ -70,9 +70,12 @@ const Point lowLR(lowCenter.x + (lowSize.x/2), lowCenter.y + (lowSize.y/2));
 
 
 // video capture objects
-VideoCapture cap(0);     // get 'any' cam
-//VideoCapture cap("/dev/video1");    // get second camera - not used
+VideoCapture cap(0);     // get cam 0
+//VideoCapture cap(1);     // get cam 1
+//VideoCapture cap("/dev/video1");    // not used
+
 int descriptor = v4l2_open("/dev/video0",O_RDWR);   // v4l capture object
+//int descriptor = v4l2_open("/dev/video1",O_RDWR);   // v4l capture object
 
 void autoExposureOn()
 {
@@ -108,8 +111,8 @@ void draw_overlay(Mat& inImg)
 {
 		
 	// draw gear post guidelines
-	line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
-	line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
+	//line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
+	//line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
 	
 	// draw boxes for boiler
 	rectangle(inImg, highUL, highLR, Scalar(255, 0, 0), 1, 8, 0);					

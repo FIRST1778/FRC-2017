@@ -3,7 +3,7 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
-#include <networktables/NetworkTable.h>
+//#include <networktables/NetworkTable.h>
 
 #include <libv4l2.h>
 #include <linux/videodev2.h>
@@ -16,7 +16,7 @@
 
 using namespace cv;
 using namespace std;
-using namespace nt;
+//using namespace nt;
 
 // color filter params
 int minColor_h = 69;
@@ -69,9 +69,12 @@ const Point lowLR(lowCenter.x + (lowSize.x/2), lowCenter.y + (lowSize.y/2));
 
 
 // video capture objects
-VideoCapture cap(0);     // get 'any' cam
+VideoCapture cap(0);     // get cam 0
+//VideoCapture cap(1);	 // get cam 1
 //VideoCapture cap("/dev/video1");    // get second camera - not used
+
 int descriptor = v4l2_open("/dev/video0",O_RDWR);   // v4l capture object
+//int descriptor = v4l2_open("/dev/video1",O_RDWR);   // v4l capture object
 
 void autoExposureOn()
 {
@@ -159,8 +162,8 @@ void draw_overlay(Mat& inImg)
 {
 		
 	// draw gear post guidelines
-	line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
-	line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
+	//line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
+	//line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
 	
 	// draw boxes for boiler
 	rectangle(inImg, highUL, highLR, Scalar(255, 0, 0), 1, 8, 0);					
@@ -274,12 +277,14 @@ int main()
 	*/
 
 	// initialize network table for comm with the robot
+	/*
 	static std::shared_ptr<NetworkTable> table;
 	NetworkTable::SetIPAddress(roborio_ipaddr);
 	NetworkTable::SetClientMode();
 	NetworkTable::Initialize();
 	table = NetworkTable::GetTable("RPIComm/Data_Table");
 	table->PutBoolean("autoExposure",true);
+	*/
 	
 	// enable auto exposure for all modes - debug only - cannot localize target
 	//autoExposureOn();
@@ -380,6 +385,7 @@ int main()
 	// if target meets criteria, do stuff
 	if (targetDetected)
 	{
+		/*
 		// write target info out to roborio
 		table->PutNumber("targets",(float)1.0f);
 		//table->PutNumber("targetX",mc[targetIndex].x - imageCenterX);
@@ -389,7 +395,8 @@ int main()
 		table->PutNumber("targetArea",targetArea[targetIndex]);
 		table->PutNumber("frameWidth",(float)frameWidth);
 		table->PutNumber("frameHeight",(float)frameHeight);
-
+		*/
+		
 		// draw the target on one of the images
 		Scalar colorWhite = Scalar(255, 255, 255);  // white
 		Scalar colorGreen = Scalar(0, 255, 0);  // green
@@ -404,7 +411,7 @@ int main()
 	else
 	{
 		// let roborio know that no target is detected
-		table->PutNumber("targets",(float)0.0f);
+		//table->PutNumber("targets",(float)0.0f);
 		//printf("No target\n");
 	}
 

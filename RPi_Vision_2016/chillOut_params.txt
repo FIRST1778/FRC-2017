@@ -10,5 +10,5 @@ maxColor_s = 255
 minColor_v = 120
 maxColor_v = 214
 dilationFactor = 25
-maxExposure = 22
+maxExposure = 10
 
