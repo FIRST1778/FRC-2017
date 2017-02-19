@@ -45,9 +45,9 @@ int exposure_slider;
 // overlay variables - assuming capture of 160x120 dims
 
 // guidelines for gear placement
-const Point gearLineUpperCenter(80,80);
+const Point gearLineUpperCenter(65,100);
 const Point gearLineUpperBottom(40,120);
-const Point gearLineLowerCenter(80,90);
+const Point gearLineLowerCenter(70,100);
 const Point gearLineLowerBottom(50,120);
 
 // 9 ft
@@ -111,8 +111,8 @@ void draw_overlay(Mat& inImg)
 {
 		
 	// draw gear post guidelines
-	//line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
-	//line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
+	line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
+	line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
 	
 	// draw boxes for boiler
 	rectangle(inImg, highUL, highLR, Scalar(255, 0, 0), 1, 8, 0);					
@@ -138,7 +138,7 @@ int main()
 	clock_t startTime = clock();
 	clock_t duration;
 	double timeInSeconds;
-	double resetVideoTimeSec = 60.0;  // Release/reset VideoWriter every so many questions
+	double resetVideoTimeSec = 60.0;  // Release/reset VideoWriter every so many seconds
 	int resetCtr = 0;
 	
 	/********* OpenCV parameter section *******/
@@ -323,35 +323,38 @@ int main()
 		drawContours(contourImg, hulls, i, colorWhite, 2, 8, hierarchy, 0, Point());
 	}
 
-	// if target meets criteria, do stuff
-	if (targetDetected)
+	// if in auto targeting and target meets criteria, do stuff
+	if (autoCam) 
 	{
-		// write target info out to roborio
-		table->PutNumber("targets",(float)1.0f);
-		//table->PutNumber("targetX",mc[targetIndex].x - imageCenterX);
-		//table->PutNumber("targetY",mc[targetIndex].y - imageCenterY);
-		table->PutNumber("targetX",mc[targetIndex].x);
-		table->PutNumber("targetY",mc[targetIndex].y);
-		table->PutNumber("targetArea",targetArea[targetIndex]);
-		table->PutNumber("frameWidth",(float)frameWidth);
-		table->PutNumber("frameHeight",(float)frameHeight);
+		if (targetDetected)
+		{
+			// write target info out to roborio
+			table->PutNumber("targets",(float)1.0f);
+			//table->PutNumber("targetX",mc[targetIndex].x - imageCenterX);
+			//table->PutNumber("targetY",mc[targetIndex].y - imageCenterY);
+			table->PutNumber("targetX",mc[targetIndex].x);
+			table->PutNumber("targetY",mc[targetIndex].y);
+			table->PutNumber("targetArea",targetArea[targetIndex]);
+			table->PutNumber("frameWidth",(float)frameWidth);
+			table->PutNumber("frameHeight",(float)frameHeight);
 
-		// draw the target on one of the images
-		Scalar colorWhite = Scalar(255, 255, 255);  // white
-		Scalar colorGreen = Scalar(0, 255, 0);  // green
-		Scalar colorBlue = Scalar(255, 0, 0);  // blue
-		drawContours(inputImg, hulls, targetIndex, colorGreen, 2, 8, hierarchy, 0, Point());
-		circle(inputImg, mc[targetIndex], 3 ,colorBlue,2,6,0);
+			// draw the target on one of the images
+			Scalar colorWhite = Scalar(255, 255, 255);  // white
+			Scalar colorGreen = Scalar(0, 255, 0);  // green
+			Scalar colorBlue = Scalar(255, 0, 0);  // blue
+			drawContours(inputImg, hulls, targetIndex, colorGreen, 2, 8, hierarchy, 0, Point());
+			circle(inputImg, mc[targetIndex], 3 ,colorBlue,2,6,0);
 
-		//printf("Target area %3.0f detected at (%3.0f,%3.0f)\n",
-		//	targetArea[targetIndex], mc[targetIndex].x - imageCenterX,
-		//			     mc[targetIndex].y - imageCenterY);
-	}
-	else
-	{
-		// let roborio know that no target is detected
-		table->PutNumber("targets",(float)0.0f);
-		//printf("No target\n");
+			//printf("Target area %3.0f detected at (%3.0f,%3.0f)\n",
+			//	targetArea[targetIndex], mc[targetIndex].x - imageCenterX,
+			//			     mc[targetIndex].y - imageCenterY);
+		}
+		else
+		{
+			// let roborio know that no target is detected
+			table->PutNumber("targets",(float)0.0f);
+			//printf("No target\n");
+		}
 	}
 
 	// create output image with overlay

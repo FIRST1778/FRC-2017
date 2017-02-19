@@ -3,8 +3,6 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
-//#include <networktables/NetworkTable.h>
-
 #include <libv4l2.h>
 #include <linux/videodev2.h>
 #include <sys/ioctl.h>
@@ -16,7 +14,6 @@
 
 using namespace cv;
 using namespace std;
-//using namespace nt;
 
 // color filter params
 int minColor_h = 69;
@@ -44,9 +41,9 @@ int exposure_slider;
 // overlay variables - assuming capture of 160x120 dims
 
 // guidelines for gear placement
-const Point gearLineUpperCenter(80,80);
+const Point gearLineUpperCenter(65,100);
 const Point gearLineUpperBottom(40,120);
-const Point gearLineLowerCenter(80,90);
+const Point gearLineLowerCenter(70,100);
 const Point gearLineLowerBottom(50,120);
 
 // 9 ft
@@ -162,8 +159,8 @@ void draw_overlay(Mat& inImg)
 {
 		
 	// draw gear post guidelines
-	//line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
-	//line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
+	line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
+	line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
 	
 	// draw boxes for boiler
 	rectangle(inImg, highUL, highLR, Scalar(255, 0, 0), 1, 8, 0);					
@@ -189,7 +186,7 @@ int main()
 	clock_t startTime = clock();
 	clock_t duration;
 	double timeInSeconds;
-	double resetVideoTimeSec = 60.0;  // Release/reset VideoWriter every so many questions
+	double resetVideoTimeSec = 60.0;  // Release/reset VideoWriter every so many secs
 	int resetCtr = 0;
 	
 	/********* OpenCV parameter section *******/
@@ -275,16 +272,6 @@ int main()
 	else
 		overlayImg = Mat::zeros(Size(frameWidth, frameHeight),CV_8UC3);
 	*/
-
-	// initialize network table for comm with the robot
-	/*
-	static std::shared_ptr<NetworkTable> table;
-	NetworkTable::SetIPAddress(roborio_ipaddr);
-	NetworkTable::SetClientMode();
-	NetworkTable::Initialize();
-	table = NetworkTable::GetTable("RPIComm/Data_Table");
-	table->PutBoolean("autoExposure",true);
-	*/
 	
 	// enable auto exposure for all modes - debug only - cannot localize target
 	//autoExposureOn();
@@ -296,16 +283,16 @@ int main()
 
     // initialize frame size
     if (cap.isOpened()) {
-	cap.set(CV_CAP_PROP_FRAME_WIDTH,frameWidth);
-	cap.set(CV_CAP_PROP_FRAME_HEIGHT,frameHeight);
+		cap.set(CV_CAP_PROP_FRAME_WIDTH,frameWidth);
+		cap.set(CV_CAP_PROP_FRAME_HEIGHT,frameHeight);
     }
 
     // capture loop - runs forever
     while( cap.isOpened() )
     {
         Mat inputImg, src_gray, hsvImg, binaryImg;
-	Mat erosionImg, dilationImg, contourImg;
-	Mat outputImg;
+		Mat erosionImg, dilationImg, contourImg;
+		Mat outputImg;
 
 	vector<Vec4i> hierarchy;
 	vector<vector<Point>> contours;
@@ -384,19 +371,7 @@ int main()
 
 	// if target meets criteria, do stuff
 	if (targetDetected)
-	{
-		/*
-		// write target info out to roborio
-		table->PutNumber("targets",(float)1.0f);
-		//table->PutNumber("targetX",mc[targetIndex].x - imageCenterX);
-		//table->PutNumber("targetY",mc[targetIndex].y - imageCenterY);
-		table->PutNumber("targetX",mc[targetIndex].x);
-		table->PutNumber("targetY",mc[targetIndex].y);
-		table->PutNumber("targetArea",targetArea[targetIndex]);
-		table->PutNumber("frameWidth",(float)frameWidth);
-		table->PutNumber("frameHeight",(float)frameHeight);
-		*/
-		
+	{		
 		// draw the target on one of the images
 		Scalar colorWhite = Scalar(255, 255, 255);  // white
 		Scalar colorGreen = Scalar(0, 255, 0);  // green
@@ -411,7 +386,6 @@ int main()
 	else
 	{
 		// let roborio know that no target is detected
-		//table->PutNumber("targets",(float)0.0f);
 		//printf("No target\n");
 	}
 
