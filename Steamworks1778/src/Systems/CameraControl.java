@@ -62,11 +62,14 @@ public class CameraControl {
 		
 	}
 	
+	public static void autoInit() {
+		
+		setCameraLed(true);
+	}
+	
 	public static void teleopInit() {
 		
-		// turn off extra LEDs for teleop (not needed)
 		setCameraLed(false);
-
 	}
 	
 	public static void teleopPeriodic() {

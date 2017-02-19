@@ -44,8 +44,10 @@ public class BallManagement {
 	//private static final double motorSettings[] = { 0, 0, 100, 115, 130, 300, 300 };		    // Speed (Native) control settings
 
 	// 2:1 native speed settings
-	private static final double motorSettings[] = { 0, 0, 200, 230, 260, 300, 300 };		    // Speed (Native) control settings
+	//private static final double motorSettings[] = { 0, 0, 200, 230, 260, 300, 300 };		    // Speed (Native) control settings
 	
+	// (2.5):1 native speed settings
+	private static final double motorSettings[] = { 0, 0, 250, 287, 260, 325, 325 };		    // Speed (Native) control settings
 	
 	//private static final double motorSettings[] = { 0.0, 0.1, 0.375, 0.43, 0.5, 1.0, 1.0 };   // Vbus (%) control settings
 	private static final int NUM_MOTOR_SETTINGS = 7;
@@ -244,7 +246,18 @@ public class BallManagement {
 			setShooterStrength(MOTOR_OFF);
 		
 	}
-			
+
+	public static void autoInit() {
+		// release collector and gear tray
+    	collectorRelay.set(Relay.Value.kOff);
+    	gearTrayRelay1.set(Relay.Value.kOff);
+    	gearTrayRelay2.set(Relay.Value.kOff);
+				
+		resetMotors();
+		
+        initTriggerTime = Utility.getFPGATime();
+	}
+
 	public static void teleopInit() {
 		// release collector and gear tray
     	collectorRelay.set(Relay.Value.kOn);

@@ -44,6 +44,8 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
     	InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"MainLog","autonomous mode...");
     	RPIComm.autoInit();
+    	CameraControl.autoInit();
+    	BallManagement.autoInit();
     	RioDuinoAssembly.autonomousInit();
     	
     	autoSM.start();
