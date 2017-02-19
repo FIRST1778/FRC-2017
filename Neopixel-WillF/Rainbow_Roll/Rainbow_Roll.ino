@@ -1,5 +1,5 @@
 #include <FastLED.h>
-#define NUM_LEDS 60 //change back to 156
+#define NUM_LEDS 156 //change back to 156
 #define DATA_PIN 6
 #define BRIGHTNESS 75
 CRGB leds[NUM_LEDS];
