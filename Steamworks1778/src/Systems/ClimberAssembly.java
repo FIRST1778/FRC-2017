@@ -11,6 +11,9 @@ public class ClimberAssembly {
 	private static boolean initialized = false;
 	
 	private static final double CLIMBER_MOTOR_DEAD_ZONE = 0.05;
+
+	// apply inversion factor so that UP on the joystick is positive	
+	private static final double CLIMB_MOTOR_FACTOR = -0.5;
 	
 	private static CANTalon climberMotor;
 	private static Joystick gamepad;
@@ -31,12 +34,14 @@ public class ClimberAssembly {
 	public static void teleopPeriodic() {
 			
 		double climbValue = gamepad.getRawAxis(HardwareIDs.CLIMBER_MOTOR_AXIS);
-		if ((Math.abs(climbValue) < CLIMBER_MOTOR_DEAD_ZONE) || (climbValue < 0.0))
+		if ((Math.abs(climbValue) < CLIMBER_MOTOR_DEAD_ZONE) || (climbValue > 0.0))
 			climbValue= 0.0;
 		
 		// only send positive motor values (locking ratchet in place - no negative values!)
-		if (climbValue > 0.0)
+		if (climbValue < 0.0) {
+			climbValue *= CLIMB_MOTOR_FACTOR;      
 			climberMotor.set(climbValue);
+		}
 		
 		String climbValueStr = String.format("%.2f", climbValue);
 		InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"Climber/speed", climbValueStr);
