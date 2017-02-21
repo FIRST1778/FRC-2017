@@ -14,7 +14,7 @@ public class DriveControl {
 		
 	}
 	
-	public void calculateDrive(double throttle, double wheel, boolean isQuickTurn,boolean isLowSensitivity){
+	public void calculateDrive(double throttle, double wheel, boolean isQuickTurn){
 		
 		
 		double wheelNonLinearity;
@@ -77,12 +77,7 @@ public class DriveControl {
         
         double rightPower,leftPower,overPower;
         
-        
-        if (isLowSensitivity){
-        	sensitivity = 0.5;	
-        } else {
-            sensitivity = 0.8;
-        }
+        sensitivity = .85;        
         
         // Calculates quick turn (top right swtich)
         if (isQuickTurn) {

@@ -2,6 +2,7 @@ package StateMachine;
 
 import java.util.prefs.Preferences;
 
+import NetworkComm.InputOutputComm;
 import Systems.AutoDriveAssembly;
 import Systems.NavXSensor;
 
@@ -29,6 +30,23 @@ public class DriveForwardAction extends Action {
 		AutoDriveAssembly.initialize();
 	}
 	
+	private double getGyroAngle() {
+		//double gyroAngle = 0.0;
+		//double gyroAngle = NavXSensor.getYaw();  // -180 deg to +180 deg
+		double gyroAngle = NavXSensor.getAngle();  // continuous angle (can be larger than 360 deg)
+		
+		//System.out.println("autoPeriodicStraight:  Gyro angle = " + gyroAngle);
+			
+		// send output data for test & debug
+	    InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/IMU_Connected",NavXSensor.isConnected());
+	    InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/IMU_Calibrating",NavXSensor.isCalibrating());
+
+		//System.out.println("gyroAngle = " + gyroAngle);
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/GyroAngle", gyroAngle);		
+
+		return gyroAngle;
+	}
+	
 	// action entry
 	public void initialize() {
 		// do some drivey initialization
@@ -44,6 +62,10 @@ public class DriveForwardAction extends Action {
 		// do some drivey stuff
 				
 		AutoDriveAssembly.autoPeriodicStraight(speed);
+
+		// get gyro angle 
+		// (not used for anything else here except reporting to driver)
+		getGyroAngle();
 		
 		super.process();
 	}

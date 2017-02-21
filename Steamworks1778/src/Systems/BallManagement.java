@@ -21,10 +21,9 @@ public class BallManagement {
 	private static final double TRANSPORT_IN_LEVEL = 0.5;
 	private static final double TRANSPORT_OUT_LEVEL = -0.5;
 	
-	private static final double COLLECTOR_IN_LEVEL = 0.5;
-	private static final double COLLECTOR_OUT_LEVEL = -0.5;
+	private static final double COLLECTOR_IN_LEVEL = -0.75;
+	private static final double COLLECTOR_OUT_LEVEL = 0.75;
 	
-	private static final double AGITATOR_LEVEL = 0.8;
 	private static final double FEEDER_LEVEL = 0.3;
 	
 	//  10 100ms/s * (60 s/min) * (1 rev/12 Native Units)
@@ -47,9 +46,11 @@ public class BallManagement {
 	//private static final double motorSettings[] = { 0, 0, 200, 230, 260, 300, 300 };		    // Speed (Native) control settings
 	
 	// (2.5):1 native speed settings
-	private static final double motorSettings[] = { 0, 0, 250, 287, 260, 325, 325 };		    // Speed (Native) control settings
+	private static final double motorSettings[] = { 0, 0, 250, 287, 325, 350, 350 };		    // Speed (Native) control settings
 	
-	//private static final double motorSettings[] = { 0.0, 0.1, 0.375, 0.43, 0.5, 1.0, 1.0 };   // Vbus (%) control settings
+	// Percent VBus settings
+	//private static final double motorSettings[] = { 0.0, 0.0, 0.25, 0.5, 0.75, 1.0, 1.0 };   // Vbus (%) control settings
+
 	private static final int NUM_MOTOR_SETTINGS = 7;
 	
 	// relays to release collector and gear tray
@@ -59,11 +60,10 @@ public class BallManagement {
 	
 	// shooter and support motors
 	private static CANTalon shooterMotor, feederMotor;
-	private static Spark agitatorMotor;
 	
 	// collector & transport motors
-	private static CANTalon transportMotor;
-	private static Spark collectorMotor;
+	private static Spark transportMotor;
+	private static CANTalon collectorMotor;
 	
 	private static Joystick gamepad;
 		
@@ -87,16 +87,17 @@ public class BallManagement {
         gearTrayRelay2.set(Relay.Value.kOff);
 
 		// create motors
-		transportMotor = new CANTalon(HardwareIDs.TRANSPORT_TALON_ID);
-		collectorMotor = new Spark(HardwareIDs.COLLECTOR_PWM_ID);
+		transportMotor = new Spark(HardwareIDs.TRANSPORT_PWM_ID);
+		collectorMotor = new CANTalon(HardwareIDs.COLLECTOR_TALON_ID);
 		
 		feederMotor = new CANTalon(HardwareIDs.FEEDER_TALON_ID);
-		agitatorMotor = new Spark(HardwareIDs.AGITATOR_PWM_ID);
 		shooterMotor = new CANTalon(HardwareIDs.SHOOTER_TALON_ID);
 		
 		// set up shooter motor sensor
 		shooterMotor.reverseSensor(false);
 		shooterMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+
+		// FOR REFERENCE ONLY:
 		//shooterMotor.configEncoderCodesPerRev(12);   // use this ONLY if you are NOT reading Native units
 		
 		// USE FOR DEBUG ONLY:  configure shooter motor for open loop speed control
@@ -107,10 +108,10 @@ public class BallManagement {
 		shooterMotor.configNominalOutputVoltage(+0.0f, -0.0f);
 		shooterMotor.configPeakOutputVoltage(+12.0f, -12.0f);
 		shooterMotor.setProfile(0);
-		shooterMotor.setP(3);
+		shooterMotor.setP(0);
 		shooterMotor.setI(0);
 		shooterMotor.setD(0);
-		shooterMotor.setF(2.91);
+		shooterMotor.setF(2);
 
 		// make sure all motors are off
 		resetMotors();
@@ -123,9 +124,7 @@ public class BallManagement {
 	public static void resetMotors()
 	{		
 		shooterMotor.set(0);
-		feederMotor.set(0);
-		agitatorMotor.set(0);
-		
+		feederMotor.set(0);	
 		transportMotor.set(0);
 		collectorMotor.set(0);
 		
@@ -159,7 +158,7 @@ public class BallManagement {
 			new Thread() {
 				public void run() {
 					try {
-						Thread.sleep(1000);  // wait one sec before starting to feed
+						Thread.sleep(3000);  // wait a number of sec before starting to feed
 						startFeeding();		 // start feeder motors
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -174,11 +173,7 @@ public class BallManagement {
 	
 	public static void startFeeding() {
 		//System.out.println("starting feeders...");
-		
-        double agitatorLevel = AGITATOR_LEVEL;
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
-        agitatorMotor.set(agitatorLevel);
-		
+				
         double feederLevel = FEEDER_LEVEL;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
         feederMotor.set(feederLevel);	
@@ -187,9 +182,6 @@ public class BallManagement {
 	}
 	
 	public static void stopFeeding() {
-        double agitatorLevel = 0;
-		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
-        agitatorMotor.set(agitatorLevel);		
 		
         double feederLevel = 0;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
@@ -197,6 +189,20 @@ public class BallManagement {
         
         feeding = false;
 	}		
+	
+	public static void relaysOn() {
+		// release collector and gear tray
+    	collectorRelay.set(Relay.Value.kOn);
+    	gearTrayRelay1.set(Relay.Value.kOn);
+    	gearTrayRelay2.set(Relay.Value.kOn);		
+	}
+	
+	public static void relaysOff() {
+		// release collector and gear tray
+    	collectorRelay.set(Relay.Value.kOff);
+    	gearTrayRelay1.set(Relay.Value.kOff);
+    	gearTrayRelay2.set(Relay.Value.kOff);		
+	}
 	
 	private static void checkCollectorControls() {
 		
@@ -248,23 +254,29 @@ public class BallManagement {
 	}
 
 	public static void autoInit() {
-		// release collector and gear tray
-    	collectorRelay.set(Relay.Value.kOff);
-    	gearTrayRelay1.set(Relay.Value.kOff);
-    	gearTrayRelay2.set(Relay.Value.kOff);
 				
+		relaysOff();
 		resetMotors();
 		
         initTriggerTime = Utility.getFPGATime();
 	}
 
 	public static void teleopInit() {
-		// release collector and gear tray
-    	collectorRelay.set(Relay.Value.kOn);
-    	gearTrayRelay1.set(Relay.Value.kOn);
-    	gearTrayRelay2.set(Relay.Value.kOn);
 				
+		relaysOn();
 		resetMotors();
+		
+		// spawn a wait thread to turn relays back off after a number of seconds
+		new Thread() {
+			public void run() {
+				try {
+					Thread.sleep(3000);  // wait a number of sec before starting to feed
+					relaysOff();	 	 // turn relays off
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
 		
         initTriggerTime = Utility.getFPGATime();
         
@@ -275,13 +287,10 @@ public class BallManagement {
 		checkCollectorControls();
 		checkShooterControls();
 		
-		// DEBUG - report on shooter motor values		
+		// DEBUG - report on shooter motor native values		
 		double speed_rpm = shooterMotor.getSpeed() * NATIVE_TO_RPM_FACTOR;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ShooterRpm_Actual", speed_rpm);
-		
-		//double encVelocity = shooterMotor.getEncVelocity();
-		//InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/encVelocity", encVelocity);
-				
+						
 		double motorOutput = shooterMotor.getOutputVoltage()/shooterMotor.getBusVoltage();
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/motorOutput", motorOutput);
 

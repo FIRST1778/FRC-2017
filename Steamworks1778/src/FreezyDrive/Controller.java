@@ -42,7 +42,7 @@ public class Controller {
     }
     
     public static boolean Driver_isQuickTurn(){
-    	return Driver.getRawButton(InterLinkElite.RIGHT_SWITCH);
+    	return !Driver.getRawButton(InterLinkElite.RIGHT_SWITCH);
     }
     
     public static boolean Driver_isLowSensitivity(){

@@ -51,7 +51,7 @@ public class FreezyDriveTrain {
 	{
     	// drive command for all controllers
    	 	driveControl.calculateDrive(Controller.Driver_Throttle(), Controller.Driver_Steering(),
-   	 		Controller.Driver_isQuickTurn(), Controller.Driver_isLowSensitivity());
+   	 		Controller.Driver_isQuickTurn());
 		
 	}
 }

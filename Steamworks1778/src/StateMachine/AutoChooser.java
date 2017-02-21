@@ -28,41 +28,95 @@ public class AutoChooser {
 	public static final int DRIVE_AND_SHOOT_MEDIUM = 16;
 	public static final int DRIVE_AND_SHOOT_FAR = 17;
 	
-	int mode;
-	private SendableChooser chooser;
+	// internal selection class used for SendableChooser only
+	public class ModeSelection {
+		public int mode = DO_NOTHING;
+		ModeSelection(int mode) {
+			this.mode = mode;
+		}
+	}
 	
-	public AutoChooser() {
-		chooser = new SendableChooser();
-		
-		chooser.addDefault("DO_NOTHING", DO_NOTHING);
-		chooser.addObject("DRIVE_FORWARD", DRIVE_FORWARD);
-		
-		chooser.addObject("DEPOSIT_GEAR_LEFT", DEPOSIT_GEAR_LEFT);
-		chooser.addObject("DEPOSIT_GEAR_CENTER", DEPOSIT_GEAR_CENTER);
-		chooser.addObject("DEPOSIT_GEAR_RIGHT", DEPOSIT_GEAR_RIGHT);
+	int mode;
+	private SendableChooser<ModeSelection> chooser_basic;
+	private SendableChooser<ModeSelection> chooser_gears;
+	private SendableChooser<ModeSelection> chooser_combo;
+	private SendableChooser<ModeSelection> chooser_shoot;
+	private SendableChooser<ModeSelection> chooser_debug;
 
-		chooser.addObject("DEPOSIT_GEAR_AND_SHOOT_RED_CENTER", DEPOSIT_GEAR_AND_SHOOT_RED_CENTER);
-		chooser.addObject("DEPOSIT_GEAR_AND_SHOOT_RED_RIGHT", DEPOSIT_GEAR_AND_SHOOT_RED_RIGHT);
-		chooser.addObject("DEPOSIT_GEAR_AND_SHOOT_BLUE_LEFT", DEPOSIT_GEAR_AND_SHOOT_BLUE_LEFT);
-		chooser.addObject("DEPOSIT_GEAR_AND_SHOOT_BLUE_CENTER", DEPOSIT_GEAR_AND_SHOOT_BLUE_CENTER);
+	public AutoChooser() {
+
+		chooser_basic = new SendableChooser<ModeSelection>();
+		chooser_gears = new SendableChooser<ModeSelection>();
+		chooser_combo = new SendableChooser<ModeSelection>();
+		chooser_shoot = new SendableChooser<ModeSelection>();
+		chooser_debug = new SendableChooser<ModeSelection>();
 		
-		chooser.addObject("DRIVE_AND_SHOOT_BLUE_LEFT", DRIVE_AND_SHOOT_BLUE_LEFT);
-		chooser.addObject("DRIVE_AND_SHOOT_BLUE_CENTER", DRIVE_AND_SHOOT_BLUE_CENTER);
-		chooser.addObject("DRIVE_AND_SHOOT_BLUE_RIGHT", DRIVE_AND_SHOOT_BLUE_RIGHT);	
-		chooser.addObject("DRIVE_AND_SHOOT_RED_LEFT", DRIVE_AND_SHOOT_RED_LEFT);
-		chooser.addObject("DRIVE_AND_SHOOT_RED_CENTER", DRIVE_AND_SHOOT_RED_CENTER);
-		chooser.addObject("DRIVE_AND_SHOOT_RED_RIGHT", DRIVE_AND_SHOOT_RED_RIGHT);
+		chooser_basic.addDefault("DO_NOTHING", new ModeSelection(DO_NOTHING));
+		chooser_basic.addObject("DRIVE_FORWARD", new ModeSelection(DRIVE_FORWARD));
+		
+		chooser_gears.addDefault("DO_NOTHING", new ModeSelection(DO_NOTHING));
+		chooser_gears.addObject("DEPOSIT_GEAR_LEFT", new ModeSelection(DEPOSIT_GEAR_LEFT));
+		chooser_gears.addObject("DEPOSIT_GEAR_CENTER", new ModeSelection(DEPOSIT_GEAR_CENTER));
+		chooser_gears.addObject("DEPOSIT_GEAR_RIGHT", new ModeSelection(DEPOSIT_GEAR_RIGHT));
+
+		chooser_combo.addDefault("DO_NOTHING", new ModeSelection(DO_NOTHING));
+		chooser_combo.addObject("DEPOSIT_GEAR_AND_SHOOT_RED_CENTER", new ModeSelection(DEPOSIT_GEAR_AND_SHOOT_RED_CENTER));
+		chooser_combo.addObject("DEPOSIT_GEAR_AND_SHOOT_RED_RIGHT", new ModeSelection(DEPOSIT_GEAR_AND_SHOOT_RED_RIGHT));
+		chooser_combo.addObject("DEPOSIT_GEAR_AND_SHOOT_BLUE_LEFT", new ModeSelection(DEPOSIT_GEAR_AND_SHOOT_BLUE_LEFT));
+		chooser_combo.addObject("DEPOSIT_GEAR_AND_SHOOT_BLUE_CENTER", new ModeSelection(DEPOSIT_GEAR_AND_SHOOT_BLUE_CENTER));
+		
+		chooser_shoot.addDefault("DO_NOTHING", new ModeSelection(DO_NOTHING));
+		chooser_shoot.addObject("DRIVE_AND_SHOOT_BLUE_LEFT", new ModeSelection(DRIVE_AND_SHOOT_BLUE_LEFT));
+		chooser_shoot.addObject("DRIVE_AND_SHOOT_BLUE_CENTER", new ModeSelection(DRIVE_AND_SHOOT_BLUE_CENTER));
+		chooser_shoot.addObject("DRIVE_AND_SHOOT_BLUE_RIGHT", new ModeSelection(DRIVE_AND_SHOOT_BLUE_RIGHT));	
+		chooser_shoot.addObject("DRIVE_AND_SHOOT_RED_LEFT", new ModeSelection(DRIVE_AND_SHOOT_RED_LEFT));
+		chooser_shoot.addObject("DRIVE_AND_SHOOT_RED_CENTER", new ModeSelection(DRIVE_AND_SHOOT_RED_CENTER));
+		chooser_shoot.addObject("DRIVE_AND_SHOOT_RED_RIGHT", new ModeSelection(DRIVE_AND_SHOOT_RED_RIGHT));
 
 		// debug networks
-		chooser.addObject("DRIVE_AND_SHOOT_NEAR", DRIVE_AND_SHOOT_NEAR);
-		chooser.addObject("DRIVE_AND_SHOOT_MEDIUM", DRIVE_AND_SHOOT_MEDIUM);
-		chooser.addObject("DRIVE_AND_SHOOT_FAR", DRIVE_AND_SHOOT_FAR);
+		chooser_debug.addDefault("DO_NOTHING", new ModeSelection(DO_NOTHING));
+		chooser_debug.addObject("DRIVE_AND_SHOOT_NEAR", new ModeSelection(DRIVE_AND_SHOOT_NEAR));
+		chooser_debug.addObject("DRIVE_AND_SHOOT_MEDIUM", new ModeSelection(DRIVE_AND_SHOOT_MEDIUM));
+		chooser_debug.addObject("DRIVE_AND_SHOOT_FAR", new ModeSelection(DRIVE_AND_SHOOT_FAR));
 		
-		SmartDashboard.putData("Auto_Mode_Chooser", chooser);
+		SmartDashboard.putData("AutoChooser_Basic", chooser_basic);
+		SmartDashboard.putData("AutoChooser_Gears", chooser_gears);
+		SmartDashboard.putData("AutoChooser_Combo", chooser_combo);
+		SmartDashboard.putData("AutoChooser_Shoot", chooser_shoot);
+		SmartDashboard.putData("AutoChooser_Debug", chooser_debug);
 	}
 	
 	public int getAutoChoice() {
-		return (int) chooser.getSelected();
+		
+		// scans choosers in order, returns the first to have action
+		
+		// check basic
+		ModeSelection selection = chooser_basic.getSelected();
+		if (selection.mode != DO_NOTHING)
+			return selection.mode;	
+
+		// check gears
+		selection = chooser_gears.getSelected();
+		if (selection.mode != DO_NOTHING)
+			return selection.mode;	
+		
+		// check combo
+		selection = chooser_combo.getSelected();
+		if (selection.mode != DO_NOTHING)
+			return selection.mode;	
+
+		// check shoot
+		selection = chooser_shoot.getSelected();
+		if (selection.mode != DO_NOTHING)
+			return selection.mode;	
+
+		// check debug
+		selection = chooser_debug.getSelected();
+		if (selection.mode != DO_NOTHING)
+			return selection.mode;	
+
+		// default - do nothing
+		return DO_NOTHING;
 	}
 
 }
