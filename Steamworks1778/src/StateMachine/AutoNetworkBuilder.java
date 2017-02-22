@@ -26,9 +26,9 @@ public class AutoNetworkBuilder {
 	private final static double FAR_TARGET_Y = 77.0;
 	
 	// general control parameters (affects ALL networks)
-	private final static double DRIVE_FORWARD_SPEED = 0.35;
-	private final static double DRIVE_BACKWARD_SPEED = -0.35;
-	private final static double TURN_SPEED = 0.25;
+	private final static double DRIVE_FORWARD_SPEED = 0.25;
+	private final static double DRIVE_BACKWARD_SPEED = -0.25;
+	private final static double TURN_SPEED = 0.35;
 	private final static double TURN_AROUND_SPEED = 0.4;
 	private final static double ULTRASONIC_DIST_INCHES = 12.0;
 	
@@ -166,10 +166,10 @@ public class AutoNetworkBuilder {
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
 		TimeEvent timer2 = new TimeEvent(15.0);  // drive forward timer event -OR-
-		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
+		//UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
-		driveState.addEvent(ultra1);
+		//driveState.addEvent(ultra1);
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
 		IdleAction deadEnd = new IdleAction("<Dead End Action>");
@@ -318,12 +318,14 @@ public class AutoNetworkBuilder {
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
 		TurnAction turnLeftAction = new TurnAction("<Turn left action>",angleToTurnDeg, true, turnSpeed);
 		GyroAngleEvent gyroLeft = new GyroAngleEvent(angleToTurnDeg, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		TimeEvent timer2a = new TimeEvent(0.35);  // turn timer event
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
+		turnLeftState.addEvent(timer2a);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
 		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", driveForwardSpeed, false);
-		TimeEvent timer3 = new TimeEvent(10.0);  // drive forward timer event -OR-
+		TimeEvent timer3 = new TimeEvent(5.0);  // drive forward timer event -OR-
 		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer3);
