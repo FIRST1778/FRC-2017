@@ -318,10 +318,8 @@ public class AutoNetworkBuilder {
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
 		TurnAction turnLeftAction = new TurnAction("<Turn left action>",angleToTurnDeg, true, turnSpeed);
 		GyroAngleEvent gyroLeft = new GyroAngleEvent(angleToTurnDeg, true, GyroAngleEvent.AnglePolarity.kLessThan);
-		TimeEvent timer2a = new TimeEvent(0.35);  // turn timer event
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
-		turnLeftState.addEvent(timer2a);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
 		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", driveForwardSpeed, false);

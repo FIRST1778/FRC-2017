@@ -8,6 +8,7 @@ import StateMachine.AutoStateMachine;
 import Systems.BallManagement;
 import Systems.CameraControl;
 import Systems.ClimberAssembly;
+import Systems.NavXSensor;
 import Systems.RioDuinoAssembly;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
@@ -58,7 +59,10 @@ public class Robot extends IterativeRobot {
     	RPIComm.updateValues();
     	
     	autoSM.process();
-    	
+ 
+    	// debug only
+    	//getGyroAngle();
+   	
     }
 
     public void teleopInit() {
@@ -74,6 +78,24 @@ public class Robot extends IterativeRobot {
     /**
      * This function is called periodically during operator control
      */
+    
+	private double getGyroAngle() {
+		//double gyroAngle = 0.0;
+		//double gyroAngle = NavXSensor.getYaw();  // -180 deg to +180 deg
+		double gyroAngle = NavXSensor.getAngle();  // continuous angle (can be larger than 360 deg)
+		
+		//System.out.println("getGyroAngle:  Gyro angle = " + gyroAngle);
+			
+		// send output data for test & debug
+	    InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/IMU_Connected",NavXSensor.isConnected());
+	    InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/IMU_Calibrating",NavXSensor.isCalibrating());
+
+		//System.out.println("gyroAngle = " + gyroAngle);
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"Auto/GyroAngle", gyroAngle);		
+
+		return gyroAngle;
+	}
+
     public void teleopPeriodic() {
     	
     	RPIComm.updateValues();  

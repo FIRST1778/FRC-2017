@@ -10,7 +10,7 @@ public class HardwareIDs {
 
 	// Relays
 	public static final int COLLECTOR_RELAY_CHANNEL = 0;
-	public static final int GEAR_TRAY_RELAY_CHANNEL_1 = 1;
+	//public static final int GEAR_TRAY_RELAY_CHANNEL_1 = 1;
 	public static final int GEAR_TRAY_RELAY_CHANNEL_2 = 2;
 	public static final int CAMERA_LED_RELAY_CHANNEL = 3;
 	
@@ -21,6 +21,7 @@ public class HardwareIDs {
 	// PWM devices	
 	public static final int CAMERA_SERVO_PWM_ID = 0;
 	public static final int TRANSPORT_PWM_ID= 1;
+	public static final int GEAR_TRAY_PWM_ID = 2;
 
 	// Climber Hardware
 	public static final int CLIMBER_TALON_ID = 12;

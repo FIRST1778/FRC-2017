@@ -75,7 +75,7 @@ public class CameraControl {
 	public static void teleopPeriodic() {
 		double currentPos = positionServo.get();
 		
-		if (gamepad.getRawButton(HardwareIDs.CAMERA_CONTROL_BUTTON) == false)
+		if (gamepad.getRawButton(HardwareIDs.CAMERA_CONTROL_BUTTON) == true)
 		{
 			if (Math.abs(currentPos - BOILER_CAM_POS) > SERVO_POS_TOLERANCE)
 				moveToPos(BOILER_CAM_POS);

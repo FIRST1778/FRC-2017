@@ -55,7 +55,7 @@ public class BallManagement {
 	
 	// relays to release collector and gear tray
 	private static Relay collectorRelay;
-	private static Relay gearTrayRelay1;
+	private static Spark gearTraySpark;
 	private static Relay gearTrayRelay2;
 	
 	// shooter and support motors
@@ -80,9 +80,8 @@ public class BallManagement {
         collectorRelay = new Relay(HardwareIDs.COLLECTOR_RELAY_CHANNEL,Relay.Direction.kForward);
         collectorRelay.set(Relay.Value.kOff);
                 
-        // create and reset gear tray relays
-        gearTrayRelay1 = new Relay(HardwareIDs.GEAR_TRAY_RELAY_CHANNEL_1,Relay.Direction.kForward);
-        gearTrayRelay1.set(Relay.Value.kOff);
+        // create and reset gear tray spark & relay
+        gearTraySpark = new Spark(HardwareIDs.GEAR_TRAY_PWM_ID);
         gearTrayRelay2 = new Relay(HardwareIDs.GEAR_TRAY_RELAY_CHANNEL_2,Relay.Direction.kForward);
         gearTrayRelay2.set(Relay.Value.kOff);
 
@@ -193,14 +192,14 @@ public class BallManagement {
 	public static void relaysOn() {
 		// release collector and gear tray
     	collectorRelay.set(Relay.Value.kOn);
-    	gearTrayRelay1.set(Relay.Value.kOn);
+    	gearTraySpark.set(1.0);
     	gearTrayRelay2.set(Relay.Value.kOn);		
 	}
 	
 	public static void relaysOff() {
 		// release collector and gear tray
     	collectorRelay.set(Relay.Value.kOff);
-    	gearTrayRelay1.set(Relay.Value.kOff);
+    	gearTraySpark.set(0.0);
     	gearTrayRelay2.set(Relay.Value.kOff);		
 	}
 	
@@ -267,6 +266,7 @@ public class BallManagement {
 		resetMotors();
 		
 		// spawn a wait thread to turn relays back off after a number of seconds
+		/*
 		new Thread() {
 			public void run() {
 				try {
@@ -277,6 +277,7 @@ public class BallManagement {
 				}
 			}
 		}.start();
+		*/
 		
         initTriggerTime = Utility.getFPGATime();
         
