@@ -19,7 +19,7 @@ using namespace std;
 using namespace nt;
 
 // color filter params
-int minColor_h = 69;
+int minColor_h = 0;
 int minColor_s = 0;
 int minColor_v = 0;
 
@@ -32,7 +32,7 @@ double maxArea = 30000.0;
 
 int dilationFactor = 5;
 float exposure = 0.0;
-float maxExposure = 15.0;
+float maxExposure = 100.0;
 bool autoCam = false;
 
 int hue_min_slider, hue_max_slider;
@@ -218,7 +218,7 @@ int main()
 	table->SetDefaultBoolean("autoCam",false);
 		
 	// debug only - auto
-	set_exposure(0);
+	//set_exposure(0);
 
     // initialize frame size
     if (cap.isOpened()) {
