@@ -47,20 +47,20 @@ const Point gearLineLowerCenter(70,100);
 const Point gearLineLowerBottom(50,120);
 
 // 9 ft
-const Point highCenter(68,36);
-const Point highSize(20,10);
+const Point highCenter(58,47);
+const Point highSize(20,9);
 const Point highUL(highCenter.x - (highSize.x/2), highCenter.y - (highSize.y/2));
 const Point highLR(highCenter.x + (highSize.x/2), highCenter.y + (highSize.y/2));
 
 // 12 ft 6 in
-const Point middleCenter(76,57);
+const Point middleCenter(60,57);
 const Point middleSize(18,7);
 const Point middleUL(middleCenter.x - (middleSize.x/2), middleCenter.y - (middleSize.y/2));
 const Point middleLR(middleCenter.x + (middleSize.x/2), middleCenter.y + (middleSize.y/2));
 
 // 20 ft
-const Point lowCenter(80,77);
-const Point lowSize(12,5);
+const Point lowCenter(62,67);
+const Point lowSize(16,5);
 const Point lowUL(lowCenter.x - (lowSize.x/2), lowCenter.y - (lowSize.y/2));
 const Point lowLR(lowCenter.x + (lowSize.x/2), lowCenter.y + (lowSize.y/2));
 
@@ -159,8 +159,8 @@ void draw_overlay(Mat& inImg)
 {
 		
 	// draw gear post guidelines
-	line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
-	line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
+	//line(inImg,gearLineUpperCenter,gearLineUpperBottom,Scalar(0,255,255), 1, 8);
+	//line(inImg,gearLineLowerCenter,gearLineLowerBottom,Scalar(0,255,255), 1, 8);
 	
 	// draw boxes for boiler
 	rectangle(inImg, highUL, highLR, Scalar(255, 0, 0), 1, 8, 0);					

@@ -13,17 +13,17 @@ import Systems.CameraControl;
 
 public class AutoNetworkBuilder {
 		
-	// desired target for near at x=68, y=36 (assume 160x120 img)
-	private final static double NEAR_TARGET_X = 68.0;
-	private final static double NEAR_TARGET_Y = 36.0;
+	// desired target for near shot (assume 160x120 img)
+	private final static double NEAR_TARGET_X = 58.0;
+	private final static double NEAR_TARGET_Y = 47.0;
 	
-	// desired target for medium at x=76, y=57 (assume 160x120 img)
-	private final static double MEDIUM_TARGET_X = 76.0;
+	// desired target for medium shot (assume 160x120 img)
+	private final static double MEDIUM_TARGET_X = 60.0;
 	private final static double MEDIUM_TARGET_Y = 57.0;
 
-	// desired target for far at x=80, y=77 (assume 160x120 img)
-	private final static double FAR_TARGET_X = 80.0;
-	private final static double FAR_TARGET_Y = 77.0;
+	// desired target for far shot (assume 160x120 img)
+	private final static double FAR_TARGET_X = 62.0;
+	private final static double FAR_TARGET_Y = 67.0;
 	
 	// general control parameters (affects ALL networks)
 	private final static double DRIVE_FORWARD_SPEED = 0.25;
