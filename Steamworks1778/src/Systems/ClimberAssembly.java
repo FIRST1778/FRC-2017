@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Relay;
 public class ClimberAssembly {
 	private static boolean initialized = false;
 	
-	private static final double CLIMBER_MOTOR_DEAD_ZONE = 0.2;
+	private static final double CLIMBER_MOTOR_DEAD_ZONE = 0.1;
 
 	// apply speed conversion factor from joystick to motor
 	// UP joystick = NEG motor throttle = correct!
@@ -39,10 +39,10 @@ public class ClimberAssembly {
 		double newClimbValue = gamepad.getRawAxis(HardwareIDs.CLIMBER_MOTOR_AXIS);
 		
 		// convert joystick value into motor speed value
-		if ((Math.abs(newClimbValue) < CLIMBER_MOTOR_DEAD_ZONE) || (newClimbValue > 0.0))
-			newClimbValue= 0.0;
-		else if ((Math.abs(newClimbValue) >= CLIMBER_MOTOR_DEAD_ZONE) && (newClimbValue < 0.0))
-			newClimbValue *= CLIMB_MOTOR_FACTOR;      
+		if ((Math.abs(newClimbValue) >= CLIMBER_MOTOR_DEAD_ZONE) && (newClimbValue < 0.0))
+			newClimbValue *= CLIMB_MOTOR_FACTOR; 
+		else 
+			newClimbValue = 0.0;
 		
 		// if current climber motor is set to this value already, just return
 		if (newClimbValue == currentClimbValue)
