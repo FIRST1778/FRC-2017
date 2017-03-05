@@ -51,19 +51,19 @@ const Point gearLineLowerCenter(70,100);
 const Point gearLineLowerBottom(50,120);
 
 // Near goal shot
-const Point highCenter(58,47);
+const Point highCenter(58,25);
 const Point highSize(20,9);
 const Point highUL(highCenter.x - (highSize.x/2), highCenter.y - (highSize.y/2));
 const Point highLR(highCenter.x + (highSize.x/2), highCenter.y + (highSize.y/2));
 
 // Medium goal shot
-const Point middleCenter(60,57);
+const Point middleCenter(60,40);
 const Point middleSize(18,7);
 const Point middleUL(middleCenter.x - (middleSize.x/2), middleCenter.y - (middleSize.y/2));
 const Point middleLR(middleCenter.x + (middleSize.x/2), middleCenter.y + (middleSize.y/2));
 
 // Far goal shot
-const Point lowCenter(62,67);
+const Point lowCenter(62,55);
 const Point lowSize(16,5);
 const Point lowUL(lowCenter.x - (lowSize.x/2), lowCenter.y - (lowSize.y/2));
 const Point lowLR(lowCenter.x + (lowSize.x/2), lowCenter.y + (lowSize.y/2));

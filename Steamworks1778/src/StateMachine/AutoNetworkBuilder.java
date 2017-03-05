@@ -15,15 +15,15 @@ public class AutoNetworkBuilder {
 		
 	// desired target for near shot (assume 160x120 img)
 	private final static double NEAR_TARGET_X = 58.0;
-	private final static double NEAR_TARGET_Y = 47.0;
+	private final static double NEAR_TARGET_Y = 25.0;
 	
 	// desired target for medium shot (assume 160x120 img)
 	private final static double MEDIUM_TARGET_X = 60.0;
-	private final static double MEDIUM_TARGET_Y = 57.0;
+	private final static double MEDIUM_TARGET_Y = 40.0;
 
 	// desired target for far shot (assume 160x120 img)
 	private final static double FAR_TARGET_X = 62.0;
-	private final static double FAR_TARGET_Y = 67.0;
+	private final static double FAR_TARGET_Y = 55.0;
 	
 	// general control parameters (affects ALL networks)
 	private final static double DRIVE_FORWARD_SPEED = 0.25;
@@ -155,6 +155,7 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Drive Forward Network>");
 		
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double driveForwardTime = 15.0;
 		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
@@ -165,11 +166,11 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
-		TimeEvent timer2 = new TimeEvent(15.0);  // drive forward timer event -OR-
-		//UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event -OR-
+		UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
-		//driveState.addEvent(ultra1);
+		driveState.addEvent(ultra1);
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
 		IdleAction deadEnd = new IdleAction("<Dead End Action>");
@@ -197,8 +198,9 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear (left side) Network>");
 		
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double driveForwardTime = 2.35;
 		double turnSpeed = TURN_SPEED;
-		double angleToTurnDeg = 60.0;
+		double angleToTurnDeg = 55.0;
 		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 
 		AutoState camState = new AutoState("<Move Camera>");
@@ -209,7 +211,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
-		TimeEvent timer2 = new TimeEvent(1.25);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
@@ -299,8 +301,9 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear (Right Side) Network>");
 		
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double driveForwardTime = 2.35;
 		double turnSpeed = TURN_SPEED;
-		double angleToTurnDeg = -60.0;
+		double angleToTurnDeg = -55.0;
 		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
@@ -311,7 +314,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, false);
-		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
@@ -365,7 +368,7 @@ public class AutoNetworkBuilder {
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
 		double driveBackwardSpeed = DRIVE_BACKWARD_SPEED;
 		double turnAroundSpeed = TURN_AROUND_SPEED;
-		double angleToTurnAroundDeg = -135.0;
+		double angleToTurnAroundDeg = -95.0;
 		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
@@ -466,7 +469,8 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear and shoot (blue left side) Network>");
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
-		double turnAngleDeg = 60.0;
+		double driveForwardTime = 2.35;
+		double turnAngleDeg = 55.0;
 		double turnSpeed = TURN_SPEED;
 		double driveBackwardSpeed = DRIVE_BACKWARD_SPEED;
 		double turnAroundSpeed = TURN_AROUND_SPEED;
@@ -481,7 +485,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
-		TimeEvent timer2 = new TimeEvent(1.25);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
@@ -587,7 +591,7 @@ public class AutoNetworkBuilder {
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
 		double driveBackwardSpeed = DRIVE_BACKWARD_SPEED;
 		double turnAroundSpeed = TURN_AROUND_SPEED;
-		double angleToTurnAroundDeg = 135.0;
+		double angleToTurnAroundDeg = 95.0;
 		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
@@ -688,7 +692,8 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear and Shoot (Red Right Side) Network>");
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
-		double turnAngleDeg = -60.0;
+		double driveForwardTime = 2.35;
+		double turnAngleDeg = -55.0;
 		double turnSpeed = TURN_SPEED;
 		double driveBackwardSpeed = DRIVE_BACKWARD_SPEED;
 		double turnAroundSpeed = TURN_AROUND_SPEED;
@@ -703,7 +708,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, false);
-		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
@@ -806,7 +811,8 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Left Side) Network>");
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
-		double turnAngleDeg = -135.0;
+		double driveForwardTime = 1.0;
+		double turnAngleDeg = -95.0;
 		double turnSpeed = TURN_SPEED;
 				
 		AutoState camState = new AutoState("<Camera Move>");
@@ -817,7 +823,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
-		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
@@ -884,7 +890,8 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Center) Network>");
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
-		double turnAngleDeg = -120.0;
+		double driveForwardTime = 1.0;
+		double turnAngleDeg = -95.0;
 		double turnSpeed = TURN_SPEED;
 		
 		AutoState camState = new AutoState("<Camera Move>");
@@ -895,7 +902,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
-		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
@@ -962,6 +969,7 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Right Side) Network>");
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double driveForwardTime = 1.0;
 		double turnAngleDeg = -110.0;
 		double turnSpeed = TURN_SPEED;
 		
@@ -973,7 +981,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
-		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
@@ -1040,6 +1048,7 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Left Side) Network>");
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double driveForwardTime = 1.0;
 		double turnAngleDeg = 110.0;
 		double turnSpeed = TURN_SPEED;
 		
@@ -1051,7 +1060,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
-		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
@@ -1118,6 +1127,7 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Center) Network>");
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double driveForwardTime = 1.0;
 		double turnAngleDeg = 120.0;
 		double turnSpeed = TURN_SPEED;
 		
@@ -1129,7 +1139,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
-		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
@@ -1196,6 +1206,7 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Right Side) Network>");
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
+		double driveForwardTime = 1.0;
 		double turnAngleDeg = 135.0;
 		double turnSpeed = TURN_SPEED;
 		
@@ -1207,7 +1218,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", driveForwardSpeed, true);
-		TimeEvent timer2 = new TimeEvent(1.0);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(driveForwardTime);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
