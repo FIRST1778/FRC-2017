@@ -64,6 +64,7 @@ public class BallManagement {
 	// collector & transport motors
 	private static Spark transportMotor;
 	private static CANTalon collectorMotor;
+	private static boolean collectorEnabled = false;
 	
 	private static Joystick gamepad;
 		
@@ -189,21 +190,40 @@ public class BallManagement {
         feeding = false;
 	}		
 	
-	public static void relaysOn() {
+	public static void gearTrayOn() {
 		// release collector and gear tray
-    	collectorRelay.set(Relay.Value.kOn);
     	gearTraySpark.set(1.0);
     	gearTrayRelay2.set(Relay.Value.kOn);		
 	}
 	
-	public static void relaysOff() {
+	public static void gearTrayOff() {
 		// release collector and gear tray
-    	collectorRelay.set(Relay.Value.kOff);
     	gearTraySpark.set(0.0);
     	gearTrayRelay2.set(Relay.Value.kOff);		
 	}
 	
+	public static void collectorOn() {
+    	collectorRelay.set(Relay.Value.kOn);
+    	collectorEnabled = true;
+	}
+	
+	public static void collectorOff() {
+    	collectorRelay.set(Relay.Value.kOff);
+    	collectorEnabled = false;
+	}
+	
 	private static void checkCollectorControls() {
+		
+		if (gamepad.getRawButton(HardwareIDs.COLLECTOR_CONTROL_BUTTON))  {
+			if (!collectorEnabled)
+				collectorOn();
+			// just turn on, don't turn off until disabled
+			//else
+			//	collectorOff();
+		}
+		
+		if (!collectorEnabled)
+			return;
 		
 		// transport control
 		double transportLevel = gamepad.getRawAxis(HardwareIDs.TRANSPORT_IN_AXIS);
@@ -254,7 +274,8 @@ public class BallManagement {
 
 	public static void autoInit() {
 				
-		relaysOff();
+		gearTrayOff();
+		collectorOff();
 		resetMotors();
 		
         initTriggerTime = Utility.getFPGATime();
@@ -262,7 +283,8 @@ public class BallManagement {
 
 	public static void teleopInit() {
 				
-		relaysOn();
+		gearTrayOn();
+		collectorOff();
 		resetMotors();
 		
 		// spawn a wait thread to turn relays back off after a number of seconds
@@ -271,7 +293,7 @@ public class BallManagement {
 			public void run() {
 				try {
 					Thread.sleep(3000);  // wait a number of sec before starting to feed
-					relaysOff();	 	 // turn relays off
+					gearTrayOff();	 	 // turn relays off
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

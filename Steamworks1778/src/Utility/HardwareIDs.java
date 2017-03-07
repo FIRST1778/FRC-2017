@@ -22,6 +22,7 @@ public class HardwareIDs {
 	public static final int CAMERA_SERVO_PWM_ID = 0;
 	public static final int TRANSPORT_PWM_ID= 1;
 	public static final int GEAR_TRAY_PWM_ID = 2;
+	public static final int PROTOBOT_PWM_ID = 3;    // used for protobot spark only
 
 	// Climber Hardware
 	public static final int CLIMBER_TALON_ID = 12;
@@ -36,6 +37,7 @@ public class HardwareIDs {
 	// copilot (gamepad) controls
 	public static final int COLLECTOR_IN_AXIS = 2;
 	public static final int COLLECTOR_OUT_BUTTON = 5;
+	public static final int COLLECTOR_CONTROL_BUTTON = 8;
 
 	public static final int TRANSPORT_IN_AXIS = 3;
 	public static final int TRANSPORT_OUT_BUTTON = 6;
@@ -45,7 +47,6 @@ public class HardwareIDs {
 	public static final int FIRE_LOW_BUTTON = 3;
 	public static final int HOLD_BUTTON = 4;
 	
-	public static final int CLIMBER_CONTROL_BUTTON = 8;
 	public static final int CLIMBER_MOTOR_AXIS = 5;
 	
 	// Digital IO (DIO) channels
