@@ -34,8 +34,8 @@ public class RPIComm {
 	private static double driveRight;
 	
 	// Robot targeting speed (% how fast it moves and turns)
-	private static final double DRIVE_SPEED_X = 0.2;
-	private static final double DRIVE_SPEED_Y = 0.2;
+	private static final double DRIVE_SPEED_X = 0.4;
+	private static final double DRIVE_SPEED_Y = 0.4;
 	
 	// Number of loops to perform to guarantee the robot is lined up with the target
 	private static final int IS_CENTERED_DELAY = 15;

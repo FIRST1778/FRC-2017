@@ -25,10 +25,18 @@ public class AutoNetworkBuilder {
 	private final static double FAR_TARGET_X = 62.0;
 	private final static double FAR_TARGET_Y = 55.0;
 	
+	// target calibration speeds
+	private final static double CAL_SPEED_COARSE_X = 0.4;
+	private final static double CAL_SPEED_COARSE_Y = 0.4;
+	private final static double CAL_SPEED_FINE_X = 0.3;
+	private final static double CAL_SPEED_FINE_Y = 0.35;
+	private final static double CAL_SPEED_EXTRAFINE_X = 0.3;
+	private final static double CAL_SPEED_EXTRAFINE_Y = 0.0;
+
 	// general control parameters (affects ALL networks)
-	private final static double DRIVE_FORWARD_SPEED = 0.25;
-	private final static double DRIVE_BACKWARD_SPEED = -0.25;
-	private final static double TURN_SPEED = 0.35;
+	private final static double DRIVE_FORWARD_SPEED = 0.4;
+	private final static double DRIVE_BACKWARD_SPEED = -0.4;
+	private final static double TURN_SPEED = 0.4;
 	private final static double TURN_AROUND_SPEED = 0.4;
 	private final static double ULTRASONIC_DIST_INCHES = 12.0;
 	
@@ -409,19 +417,19 @@ public class AutoNetworkBuilder {
 		double y = MEDIUM_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y); 
 		CalibratedEvent calEvent = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_COARSE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -527,19 +535,19 @@ public class AutoNetworkBuilder {
 		double y = NEAR_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y); 
 		CalibratedEvent calEvent = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -632,19 +640,19 @@ public class AutoNetworkBuilder {
 		double y = MEDIUM_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y); 
 		CalibratedEvent calEvent = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -750,19 +758,19 @@ public class AutoNetworkBuilder {
 		double y = NEAR_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y); 
 		CalibratedEvent calEvent = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -812,7 +820,7 @@ public class AutoNetworkBuilder {
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
 		double driveForwardTime = 1.0;
-		double turnAngleDeg = -95.0;
+		double turnAngleDeg = -135.0;
 		double turnSpeed = TURN_SPEED;
 				
 		AutoState camState = new AutoState("<Camera Move>");
@@ -837,19 +845,19 @@ public class AutoNetworkBuilder {
 		double y = NEAR_TARGET_Y; 
 		
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3);  
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y);  
 		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -916,19 +924,19 @@ public class AutoNetworkBuilder {
 		double y = MEDIUM_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3);  
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y);  
 		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -995,19 +1003,19 @@ public class AutoNetworkBuilder {
 		double y = FAR_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3);  
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y);  
 		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -1074,19 +1082,19 @@ public class AutoNetworkBuilder {
 		double y = FAR_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y); 
 		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -1128,7 +1136,7 @@ public class AutoNetworkBuilder {
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
 		double driveForwardTime = 1.0;
-		double turnAngleDeg = 120.0;
+		double turnAngleDeg = 95.0;
 		double turnSpeed = TURN_SPEED;
 		
 		AutoState camState = new AutoState("<Camera Move>");
@@ -1153,19 +1161,19 @@ public class AutoNetworkBuilder {
 		double y = MEDIUM_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y); 
 		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -1232,19 +1240,19 @@ public class AutoNetworkBuilder {
 		double y = NEAR_TARGET_Y; 
 
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3); 
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y); 
 		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -1296,19 +1304,19 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 		
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3);  
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y);  
 		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -1352,19 +1360,19 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 		
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3);  
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y);  
 		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15); 
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 		
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0); 
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
@@ -1396,7 +1404,7 @@ public class AutoNetworkBuilder {
 	// 4) Shoot at high goal until end of auto
 	private static AutoNetwork createDriveAndShootFar() {
 		
-		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Medium) Network>");
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Far) Network>");
 
 		double x = FAR_TARGET_X;
 		double y = FAR_TARGET_Y; 
@@ -1408,19 +1416,19 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 		
 		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, 0.2, 0.3);  
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y);  
 		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
 		targetCalState.addAction(calTarget);
 		targetCalState.addEvent(calEvent1);
 		
 		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, 0.15, 0.15);  
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y);  
 		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
 		targetCalState2.addAction(calTarget2);
 		targetCalState2.addEvent(calEvent2);
 
 		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, 0.15, 0.0);  
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y);  
 		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
 		targetCalState3.addAction(calTarget3);
 		targetCalState3.addEvent(calEvent3);
