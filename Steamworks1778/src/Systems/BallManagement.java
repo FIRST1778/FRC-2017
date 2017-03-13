@@ -10,6 +10,7 @@ import Utility.HardwareIDs;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Utility;
 
@@ -25,6 +26,7 @@ public class BallManagement {
 	private static final double COLLECTOR_OUT_LEVEL = 0.75;
 	
 	private static final double FEEDER_LEVEL = 0.3;
+	private static final double AGITATOR_LEVEL = 0.25;
 	
 	//  10 100ms/s * (60 s/min) * (1 rev/12 Native Units)
 	private static final double NATIVE_TO_RPM_FACTOR = 10 * 60 / 12;
@@ -60,6 +62,7 @@ public class BallManagement {
 	
 	// shooter and support motors
 	private static CANTalon shooterMotor, feederMotor;
+	private static Servo agitatorServo;
 	
 	// collector & transport motors
 	private static Spark transportMotor;
@@ -86,12 +89,13 @@ public class BallManagement {
         gearTrayRelay2 = new Relay(HardwareIDs.GEAR_TRAY_RELAY_CHANNEL_2,Relay.Direction.kForward);
         gearTrayRelay2.set(Relay.Value.kOff);
 
-		// create motors
+		// create motors & servos
 		transportMotor = new Spark(HardwareIDs.TRANSPORT_PWM_ID);
 		collectorMotor = new CANTalon(HardwareIDs.COLLECTOR_TALON_ID);
 		
 		feederMotor = new CANTalon(HardwareIDs.FEEDER_TALON_ID);
 		shooterMotor = new CANTalon(HardwareIDs.SHOOTER_TALON_ID);
+		agitatorServo = new Servo(HardwareIDs.AGITATOR_PWM_ID);
 		
 		// set up shooter motor sensor
 		shooterMotor.reverseSensor(false);
@@ -111,7 +115,7 @@ public class BallManagement {
 		shooterMotor.setP(0);
 		shooterMotor.setI(0);
 		shooterMotor.setD(0);
-		shooterMotor.setF(2);
+		shooterMotor.setF(1);
 
 		// make sure all motors are off
 		resetMotors();
@@ -127,6 +131,7 @@ public class BallManagement {
 		feederMotor.set(0);	
 		transportMotor.set(0);
 		collectorMotor.set(0);
+		agitatorServo.set(0.5);
 		
 		feeding = false;
 	}
@@ -172,11 +177,16 @@ public class BallManagement {
 	}
 	
 	public static void startFeeding() {
-		//System.out.println("starting feeders...");
+		//System.out.println("starting feeder & agitator...");
 				
         double feederLevel = FEEDER_LEVEL;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
-        feederMotor.set(feederLevel);	
+        feederMotor.set(feederLevel);
+        
+        
+        double agitatorLevel = AGITATOR_LEVEL;
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
+        agitatorServo.set(agitatorLevel);
                 
         feeding = true;
 	}
@@ -186,6 +196,10 @@ public class BallManagement {
         double feederLevel = 0;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
         feederMotor.set(feederLevel);	
+        
+        double agitatorLevel = 0.5;
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
+        agitatorServo.set(agitatorLevel);
         
         feeding = false;
 	}		
@@ -320,6 +334,9 @@ public class BallManagement {
 		double closedLoopError = shooterMotor.getClosedLoopError();
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/closedLoopError", closedLoopError);
 		
+		double agitatorFb = agitatorServo.getPosition();
+		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorPos", agitatorFb);		
+
 	}
 	
 }

@@ -206,9 +206,9 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear (left side) Network>");
 		
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
-		double driveForwardTime = 2.35;
+		double driveForwardTime = 1.0;
 		double turnSpeed = TURN_SPEED;
-		double angleToTurnDeg = 55.0;
+		double angleToTurnDeg = 45.0;
 		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 
 		AutoState camState = new AutoState("<Move Camera>");
@@ -309,9 +309,9 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear (Right Side) Network>");
 		
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
-		double driveForwardTime = 2.35;
+		double driveForwardTime = 1.0;
 		double turnSpeed = TURN_SPEED;
-		double angleToTurnDeg = -55.0;
+		double angleToTurnDeg = -45.0;
 		double ultrasonicDistInches = ULTRASONIC_DIST_INCHES;
 		
 		AutoState camState = new AutoState("<Move Camera>");
@@ -477,8 +477,8 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear and shoot (blue left side) Network>");
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
-		double driveForwardTime = 2.35;
-		double turnAngleDeg = 55.0;
+		double driveForwardTime = 1.0;
+		double turnAngleDeg = 45.0;
 		double turnSpeed = TURN_SPEED;
 		double driveBackwardSpeed = DRIVE_BACKWARD_SPEED;
 		double turnAroundSpeed = TURN_AROUND_SPEED;
@@ -700,8 +700,8 @@ public class AutoNetworkBuilder {
 		AutoNetwork autoNet = new AutoNetwork("<Deposit Gear and Shoot (Red Right Side) Network>");
 
 		double driveForwardSpeed = DRIVE_FORWARD_SPEED;
-		double driveForwardTime = 2.35;
-		double turnAngleDeg = -55.0;
+		double driveForwardTime = 1.0;
+		double turnAngleDeg = -45.0;
 		double turnSpeed = TURN_SPEED;
 		double driveBackwardSpeed = DRIVE_BACKWARD_SPEED;
 		double turnAroundSpeed = TURN_AROUND_SPEED;

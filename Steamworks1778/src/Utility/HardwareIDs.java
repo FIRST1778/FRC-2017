@@ -23,6 +23,7 @@ public class HardwareIDs {
 	public static final int TRANSPORT_PWM_ID= 1;
 	public static final int GEAR_TRAY_PWM_ID = 2;
 	public static final int PROTOBOT_PWM_ID = 3;    // used for protobot spark only
+	public static final int AGITATOR_PWM_ID = 4;
 
 	// Climber Hardware
 	public static final int CLIMBER_TALON_ID = 12;
