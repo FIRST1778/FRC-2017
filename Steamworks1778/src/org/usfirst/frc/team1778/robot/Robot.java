@@ -10,6 +10,7 @@ import Systems.CameraControl;
 import Systems.ClimberAssembly;
 import Systems.NavXSensor;
 import Systems.RioDuinoAssembly;
+import Systems.UltrasonicSensor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 
@@ -46,6 +47,7 @@ public class Robot extends IterativeRobot {
     	InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"MainLog","autonomous mode...");
     	RPIComm.autoInit();
     	CameraControl.autoInit();
+    	UltrasonicSensor.autoInit();
     	BallManagement.autoInit();
     	RioDuinoAssembly.autonomousInit();
     	

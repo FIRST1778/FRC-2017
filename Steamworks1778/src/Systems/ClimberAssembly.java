@@ -18,10 +18,11 @@ public class ClimberAssembly {
 	private static final double CLIMB_MOTOR_FACTOR = 1.0;
 	
 	// COMPETITION BOT climber
-	//private static CANTalon climberMotor;
+	private static CANTalon climberMotor;
 	
-	// DEBUG climber only (PROTOBOT)
-	private static Spark climberMotor;
+	//******* DEBUG climber only (PROTOBOT)******
+	//private static Spark climberMotor;
+	//*******************************************
 	
 	private static Joystick gamepad;
 	private static double currentClimbValue = 0.0;
@@ -30,10 +31,10 @@ public class ClimberAssembly {
 		if (initialized)
 			return;
 		
-		//climberMotor = new CANTalon(HardwareIDs.CLIMBER_TALON_ID);
+		climberMotor = new CANTalon(HardwareIDs.CLIMBER_TALON_ID);
 		
-		// DEBUG only - PROTOBOT
-		climberMotor = new Spark(HardwareIDs.PROTOBOT_PWM_ID);
+		//************ DEBUG only - PROTOBOT ***************
+		//climberMotor = new Spark(HardwareIDs.PROTOBOT_PWM_ID);
 				
 		gamepad = new Joystick(HardwareIDs.GAMEPAD_ID);
 		

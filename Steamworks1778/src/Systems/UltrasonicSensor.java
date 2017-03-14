@@ -19,6 +19,14 @@ public class UltrasonicSensor {
 		}
 	}
 	
+	public static void autoInit()
+	{
+		if (!initialized)
+			initialize();
+		
+		ultrasonicDevice.setEnabled(true);
+	}
+	
 	public static double getRange() {
 		if (!initialized)
 			initialize();

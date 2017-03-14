@@ -24,6 +24,14 @@ public class BallManagement {
 	
 	private static final double COLLECTOR_IN_LEVEL = -0.75;
 	private static final double COLLECTOR_OUT_LEVEL = 0.75;
+
+	/*
+	private static final double TRANSPORT_IN_LEVEL = 1.0;
+	private static final double TRANSPORT_OUT_LEVEL = -1.0;
+	
+	private static final double COLLECTOR_IN_LEVEL = -1.0;
+	private static final double COLLECTOR_OUT_LEVEL = 1.0;
+	*/
 	
 	private static final double FEEDER_LEVEL = 0.3;
 	private static final double AGITATOR_LEVEL = 0.25;
@@ -48,7 +56,7 @@ public class BallManagement {
 	//private static final double motorSettings[] = { 0, 0, 200, 230, 260, 300, 300 };		    // Speed (Native) control settings
 	
 	// (2.5):1 native speed settings
-	private static final double motorSettings[] = { 0, 0, 250, 287, 325, 350, 350 };		    // Speed (Native) control settings
+	private static final double motorSettings[] = { 0, 0, 60, 120, 180, 350, 350 };		    // Speed (Native) control settings
 	
 	// Percent VBus settings
 	//private static final double motorSettings[] = { 0.0, 0.0, 0.25, 0.5, 0.75, 1.0, 1.0 };   // Vbus (%) control settings
@@ -112,10 +120,10 @@ public class BallManagement {
 		shooterMotor.configNominalOutputVoltage(+0.0f, -0.0f);
 		shooterMotor.configPeakOutputVoltage(+12.0f, -12.0f);
 		shooterMotor.setProfile(0);
-		shooterMotor.setP(0);
+		shooterMotor.setP(1.5);
 		shooterMotor.setI(0);
 		shooterMotor.setD(0);
-		shooterMotor.setF(1);
+		shooterMotor.setF(9);
 
 		// make sure all motors are off
 		resetMotors();
