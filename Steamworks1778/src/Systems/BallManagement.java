@@ -56,7 +56,7 @@ public class BallManagement {
 	//private static final double motorSettings[] = { 0, 0, 200, 230, 260, 300, 300 };		    // Speed (Native) control settings
 	
 	// (2.5):1 native speed settings
-	private static final double motorSettings[] = { 0, 0, 60, 120, 180, 350, 350 };		    // Speed (Native) control settings
+	private static final double motorSettings[] = { 0, 0, 59, 85, 85, 350, 350 };		    // Speed (Native) control settings
 	
 	// Percent VBus settings
 	//private static final double motorSettings[] = { 0.0, 0.0, 0.25, 0.5, 0.75, 1.0, 1.0 };   // Vbus (%) control settings
@@ -119,12 +119,28 @@ public class BallManagement {
 		shooterMotor.changeControlMode(TalonControlMode.Speed);
 		shooterMotor.configNominalOutputVoltage(+0.0f, -0.0f);
 		shooterMotor.configPeakOutputVoltage(+12.0f, -12.0f);
+		
+		// set PID(F) for shooter motor (one profile only)
 		shooterMotor.setProfile(0);
-		shooterMotor.setP(1.5);
+		shooterMotor.setP(3.45);
 		shooterMotor.setI(0);
-		shooterMotor.setD(0);
-		shooterMotor.setF(9);
+		shooterMotor.setD(0.25);
+		shooterMotor.setF(9.175);
 
+		/*
+		shooterMotor.setProfile(MOTOR_LOW);
+		shooterMotor.setP(3.45);
+		shooterMotor.setI(0);
+		shooterMotor.setD(0.25);
+		shooterMotor.setF(9.175);
+
+		shooterMotor.setProfile(MOTOR_MEDIUM);
+		shooterMotor.setP(3.45);
+		shooterMotor.setI(0);
+		shooterMotor.setD(0.25);
+		shooterMotor.setF(9.175);
+		*/
+		
 		// make sure all motors are off
 		resetMotors();
 		
@@ -162,6 +178,7 @@ public class BallManagement {
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ShooterRpm_Target", shooter_rpm);		
 		
 		//System.out.println("shooter motor speed..");
+		//shooterMotor.setProfile(newIndex);
 		shooterMotor.set(motorSettings[newIndex]);	
 		
 		// if shooter is not off and we're not feeding (i.e. motor is spinning up from being off)
