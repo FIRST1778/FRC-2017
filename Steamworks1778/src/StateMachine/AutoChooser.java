@@ -18,15 +18,12 @@ public class AutoChooser {
 
 	public static final int DRIVE_AND_SHOOT_BLUE_LEFT = 9;
 	public static final int DRIVE_AND_SHOOT_BLUE_CENTER = 10;
-	public static final int DRIVE_AND_SHOOT_BLUE_RIGHT = 11;
-	public static final int DRIVE_AND_SHOOT_RED_LEFT = 12;
-	public static final int DRIVE_AND_SHOOT_RED_CENTER = 13;
-	public static final int DRIVE_AND_SHOOT_RED_RIGHT = 14;
+	public static final int DRIVE_AND_SHOOT_RED_CENTER = 11;
+	public static final int DRIVE_AND_SHOOT_RED_RIGHT = 12;
 
 	// debug networks
-	public static final int DRIVE_AND_SHOOT_NEAR = 15;
-	public static final int DRIVE_AND_SHOOT_MEDIUM = 16;
-	public static final int DRIVE_AND_SHOOT_FAR = 17;
+	public static final int DRIVE_AND_SHOOT_NEAR = 13;
+	public static final int DRIVE_AND_SHOOT_MEDIUM = 14;
 	
 	// internal selection class used for SendableChooser only
 	public class ModeSelection {
@@ -68,8 +65,6 @@ public class AutoChooser {
 		chooser_shoot.addDefault("DO_NOTHING", new ModeSelection(DO_NOTHING));
 		chooser_shoot.addObject("DRIVE_AND_SHOOT_BLUE_LEFT", new ModeSelection(DRIVE_AND_SHOOT_BLUE_LEFT));
 		chooser_shoot.addObject("DRIVE_AND_SHOOT_BLUE_CENTER", new ModeSelection(DRIVE_AND_SHOOT_BLUE_CENTER));
-		chooser_shoot.addObject("DRIVE_AND_SHOOT_BLUE_RIGHT", new ModeSelection(DRIVE_AND_SHOOT_BLUE_RIGHT));	
-		chooser_shoot.addObject("DRIVE_AND_SHOOT_RED_LEFT", new ModeSelection(DRIVE_AND_SHOOT_RED_LEFT));
 		chooser_shoot.addObject("DRIVE_AND_SHOOT_RED_CENTER", new ModeSelection(DRIVE_AND_SHOOT_RED_CENTER));
 		chooser_shoot.addObject("DRIVE_AND_SHOOT_RED_RIGHT", new ModeSelection(DRIVE_AND_SHOOT_RED_RIGHT));
 
@@ -77,7 +72,6 @@ public class AutoChooser {
 		chooser_debug.addDefault("DO_NOTHING", new ModeSelection(DO_NOTHING));
 		chooser_debug.addObject("DRIVE_AND_SHOOT_NEAR", new ModeSelection(DRIVE_AND_SHOOT_NEAR));
 		chooser_debug.addObject("DRIVE_AND_SHOOT_MEDIUM", new ModeSelection(DRIVE_AND_SHOOT_MEDIUM));
-		chooser_debug.addObject("DRIVE_AND_SHOOT_FAR", new ModeSelection(DRIVE_AND_SHOOT_FAR));
 		
 		SmartDashboard.putData("AutoChooser_Basic", chooser_basic);
 		SmartDashboard.putData("AutoChooser_Gears", chooser_gears);

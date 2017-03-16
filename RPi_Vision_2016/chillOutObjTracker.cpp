@@ -50,23 +50,23 @@ const Point gearLineUpperBottom(40,120);
 const Point gearLineLowerCenter(70,100);
 const Point gearLineLowerBottom(50,120);
 
-// Near goal shot
-const Point highCenter(58,25);
-const Point highSize(20,9);
+// Near Goal
+const Point highCenter(60,35);
+const Point highSize(18,13);
 const Point highUL(highCenter.x - (highSize.x/2), highCenter.y - (highSize.y/2));
 const Point highLR(highCenter.x + (highSize.x/2), highCenter.y + (highSize.y/2));
 
-// Medium goal shot
-const Point middleCenter(60,40);
-const Point middleSize(18,7);
+// Medium Goal
+const Point middleCenter(63,57);
+const Point middleSize(14,11);
 const Point middleUL(middleCenter.x - (middleSize.x/2), middleCenter.y - (middleSize.y/2));
 const Point middleLR(middleCenter.x + (middleSize.x/2), middleCenter.y + (middleSize.y/2));
 
-// Far goal shot
-const Point lowCenter(62,55);
-const Point lowSize(16,5);
-const Point lowUL(lowCenter.x - (lowSize.x/2), lowCenter.y - (lowSize.y/2));
-const Point lowLR(lowCenter.x + (lowSize.x/2), lowCenter.y + (lowSize.y/2));
+// Far Goal - Not Used
+//const Point lowCenter(54,55);
+//const Point lowSize(16,5);
+//const Point lowUL(lowCenter.x - (lowSize.x/2), lowCenter.y - (lowSize.y/2));
+//const Point lowLR(lowCenter.x + (lowSize.x/2), lowCenter.y + (lowSize.y/2));
 
 
 // video capture objects
@@ -117,9 +117,8 @@ void draw_overlay(Mat& inImg)
 	// draw boxes for boiler
 	rectangle(inImg, highUL, highLR, Scalar(255, 0, 0), 1, 8, 0);					
 	rectangle(inImg,middleUL,middleLR, Scalar(0, 255, 0), 1, 8, 0);					
-	rectangle(inImg,lowUL,lowLR, Scalar(0, 0, 255), 1, 8, 0);
+	//rectangle(inImg,lowUL,lowLR, Scalar(0, 0, 255), 1, 8, 0);
 
-	// draw lines
 }
 
 int main()
@@ -206,7 +205,7 @@ int main()
 	NetworkTable::Initialize();
 	table = NetworkTable::GetTable("RPIComm/Data_Table");
 	
-	// enable auto exposure for all modes
+	// DEBUG ONLY - enable auto exposure for all modes
 	//autoExposureOn();
 
 	// disable auto exposure for all modes
@@ -214,6 +213,7 @@ int main()
 	autoExposureOff();
 	exposure = maxExposure;
 	set_exposure(exposure);
+
 	autoCam = false;
 	table->SetDefaultBoolean("autoCam",false);
 		
