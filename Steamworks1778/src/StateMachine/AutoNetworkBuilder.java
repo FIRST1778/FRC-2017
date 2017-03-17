@@ -215,14 +215,14 @@ public class AutoNetworkBuilder {
 		driveState.addEvent(timer2);
 		
 		AutoState turnRightState = new AutoState("<Turn Right State>");
-		TurnAction turnRightAction = new TurnAction("<Turn right action>",45.0, true, 0.3);
-		GyroAngleEvent gyroRight = new GyroAngleEvent(45.0, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		TurnAction turnRightAction = new TurnAction("<Turn right action>",55.0, true, 0.3);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(55.0, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 										
 		AutoState driveState2 = new AutoState("<Drive State 2>");
 		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.2, false);  // don't reset gyro - use absolute heading (60 deg) 
-		TimeEvent timer4 = new TimeEvent(1.5);  // drive forward timer event -OR-
+		TimeEvent timer4 = new TimeEvent(3.5);  // drive forward timer event -OR-
 		//UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer4);
@@ -267,7 +267,7 @@ public class AutoNetworkBuilder {
 								
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.3, true);
-		TimeEvent timer3 = new TimeEvent(2.0);  // drive forward timer event -OR-
+		TimeEvent timer3 = new TimeEvent(2.5);  // drive forward timer event -OR-
 		//UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer3);
@@ -313,8 +313,8 @@ public class AutoNetworkBuilder {
 		driveState.addEvent(timer2);
 		
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-45.0, true, 0.3);
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(-45.0, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-55.0, true, 0.3);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(-55.0, true, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 		

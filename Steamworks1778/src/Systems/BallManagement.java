@@ -49,32 +49,32 @@ public class BallManagement {
 	public static final int MOTOR_VERY_HIGH = 5;
 	public static final int MOTOR_MAX = 6;
 
-	// 1:1 native speed settings
+	// 1:1 native speed settings (debug reference only)
 	//private static final double motorSettings[] = { 0, 0, 100, 115, 130, 300, 300 };		    // Speed (Native) control settings
 
-	// 2:1 native speed settings
+	// 2:1 native speed settings (debug reference only)
 	//private static final double motorSettings[] = { 0, 0, 200, 230, 260, 300, 300 };		    // Speed (Native) control settings
 	
-	// (2.5):1 native speed settings
-	private static final double motorSettings[] = { 0, 0, 59, 85, 85, 350, 350 };		    // Speed (Native) control settings
+	// Competition bot calibrated native speed settings
+	private static final double motorSettings[] = { 0, 0, 59, 85, 85, 100, 100 };		    // Speed (Native) control settings
 	
-	// Percent VBus settings
+	// Percent VBus settings (debug reference only)
 	//private static final double motorSettings[] = { 0.0, 0.0, 0.25, 0.5, 0.75, 1.0, 1.0 };   // Vbus (%) control settings
 
 	private static final int NUM_MOTOR_SETTINGS = 7;
 	
 	// relays to release collector and gear tray
 	private static Relay collectorRelay;
-	private static Spark gearTraySpark;
-	private static Relay gearTrayRelay2;
+	private static Spark gearTraySpark;    // first gear tray solenoid controlled by Spark
+	private static Relay gearTrayRelay2;   // second gear tray solenoid controlled by Relay
 	
 	// shooter and support motors
-	private static CANTalon shooterMotor, feederMotor;
-	private static Servo agitatorServo;
+	private static CANTalon shooterMotor, feederMotor; 
+	private static Servo agitatorServo;		// moves balls around in the bin (prevents jams)
 	
 	// collector & transport motors
-	private static Spark transportMotor;
-	private static CANTalon collectorMotor;
+	private static Spark transportMotor;		// moves balls from collector to bin
+	private static CANTalon collectorMotor;		// collects balls from floor
 	private static boolean collectorEnabled = false;
 	
 	private static Joystick gamepad;
@@ -124,22 +124,8 @@ public class BallManagement {
 		shooterMotor.setProfile(0);
 		shooterMotor.setP(3.45);
 		shooterMotor.setI(0);
-		shooterMotor.setD(0.25);
+		shooterMotor.setD(0.5);
 		shooterMotor.setF(9.175);
-
-		/*
-		shooterMotor.setProfile(MOTOR_LOW);
-		shooterMotor.setP(3.45);
-		shooterMotor.setI(0);
-		shooterMotor.setD(0.25);
-		shooterMotor.setF(9.175);
-
-		shooterMotor.setProfile(MOTOR_MEDIUM);
-		shooterMotor.setP(3.45);
-		shooterMotor.setI(0);
-		shooterMotor.setD(0.25);
-		shooterMotor.setF(9.175);
-		*/
 		
 		// make sure all motors are off
 		resetMotors();
@@ -188,7 +174,7 @@ public class BallManagement {
 			new Thread() {
 				public void run() {
 					try {
-						Thread.sleep(3000);  // wait a number of sec before starting to feed
+						Thread.sleep(2000);  // wait a number of sec before starting to feed
 						startFeeding();		 // start feeder motors
 					} catch (Exception e) {
 						e.printStackTrace();
