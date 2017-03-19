@@ -309,6 +309,7 @@ public class BallManagement {
 	public static void teleopInit() {
 				
 		gearTrayOn();
+		//collectorOn();  // turned on via gamepad now
 		collectorOff();
 		resetMotors();
 		

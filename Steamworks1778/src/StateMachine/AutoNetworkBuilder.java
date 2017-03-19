@@ -169,7 +169,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true);
-		TimeEvent timer2 = new TimeEvent(10.0);  // drive forward timer event -OR-
+		TimeEvent timer2 = new TimeEvent(8.0);  // drive forward timer event -OR-
 		//UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
@@ -210,7 +210,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true);
-		TimeEvent timer2 = new TimeEvent(2.5);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(1.9);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
@@ -266,8 +266,8 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 								
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.3, true);
-		TimeEvent timer3 = new TimeEvent(2.5);  // drive forward timer event -OR-
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.2, true);
+		TimeEvent timer3 = new TimeEvent(4.0);  // drive forward timer event -OR-
 		//UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer3);
@@ -308,7 +308,7 @@ public class AutoNetworkBuilder {
 
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, false);
-		TimeEvent timer2 = new TimeEvent(2.5);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(1.9);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
 		
