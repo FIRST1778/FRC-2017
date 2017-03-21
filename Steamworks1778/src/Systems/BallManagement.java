@@ -42,26 +42,24 @@ public class BallManagement {
 	private static final double DEAD_ZONE_THRESHOLD = 0.05;
 	
 	public static final int MOTOR_OFF = 0;
-	public static final int MOTOR_VERY_LOW = 1;
+	public static final int MOTOR_AUTO = 1;
 	public static final int MOTOR_LOW = 2;
 	public static final int MOTOR_MEDIUM = 3;
 	public static final int MOTOR_HIGH = 4;
-	public static final int MOTOR_VERY_HIGH = 5;
-	public static final int MOTOR_MAX = 6;
 
 	// 1:1 native speed settings (debug reference only)
-	//private static final double motorSettings[] = { 0, 0, 100, 115, 130, 300, 300 };		    // Speed (Native) control settings
+	//private static final double motorSettings[] = { 0, 0, 100, 115, 130 };		    // Speed (Native) control settings
 
 	// 2:1 native speed settings (debug reference only)
-	//private static final double motorSettings[] = { 0, 0, 200, 230, 260, 300, 300 };		    // Speed (Native) control settings
+	//private static final double motorSettings[] = { 0, 0, 200, 230, 260 };		    // Speed (Native) control settings
 	
 	// Competition bot calibrated native speed settings
-	private static final double motorSettings[] = { 0, 0, 59, 85, 85, 100, 100 };		    // Speed (Native) control settings
+	private static final double motorSettings[] = { 0, 59, 59, 85, 85 };		    // Speed (Native) control settings
 	
 	// Percent VBus settings (debug reference only)
-	//private static final double motorSettings[] = { 0.0, 0.0, 0.25, 0.5, 0.75, 1.0, 1.0 };   // Vbus (%) control settings
+	//private static final double motorSettings[] = { 0.0, 0.0, 0.25, 0.5, 0.75};   // Vbus (%) control settings
 
-	private static final int NUM_MOTOR_SETTINGS = 7;
+	private static final int NUM_MOTOR_SETTINGS = 5;
 	
 	// relays to release collector and gear tray
 	private static Relay collectorRelay;
@@ -152,7 +150,7 @@ public class BallManagement {
 			initialize();
 		
 		// if out of range, just return
-		if ((newIndex > MOTOR_MAX) || (newIndex < MOTOR_OFF))
+		if ((newIndex > MOTOR_HIGH) || (newIndex < MOTOR_OFF))
 			return;
 		
 		if (newIndex == MOTOR_OFF) {
@@ -195,7 +193,7 @@ public class BallManagement {
         feederMotor.set(feederLevel);
         
         
-        double agitatorLevel = AGITATOR_LEVEL;
+        double agitatorLevel = AGITATOR_LEVEL;  // set to something on either side of 0.5 for continuous servo motion
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
         agitatorServo.set(agitatorLevel);
                 
@@ -208,7 +206,7 @@ public class BallManagement {
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
         feederMotor.set(feederLevel);	
         
-        double agitatorLevel = 0.5;
+        double agitatorLevel = 0.5;  // 0.5 is considered 'zero movement' for a continuous servo
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
         agitatorServo.set(agitatorLevel);
         

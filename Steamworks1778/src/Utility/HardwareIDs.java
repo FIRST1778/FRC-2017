@@ -34,6 +34,7 @@ public class HardwareIDs {
 
 	// driver (interlink) controls
 	public static final int CAMERA_CONTROL_BUTTON = 1;
+	public static final int CAMERA_LED_STROBE_BUTTON = 5;
 	
 	// copilot (gamepad) controls
 	public static final int COLLECTOR_IN_AXIS = 2;

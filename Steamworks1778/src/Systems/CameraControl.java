@@ -27,6 +27,7 @@ public class CameraControl {
 	
 	// Relay for extra LEDs
 	private static Relay cameraLedRelay;
+	private static boolean ledState = false;
 	
 	// camera position servo
 	private static Servo positionServo;
@@ -41,6 +42,8 @@ public class CameraControl {
 		positionServo = new Servo(HardwareIDs.CAMERA_SERVO_PWM_ID);
 		
 		gamepad = new Joystick(HardwareIDs.DRIVER_CONTROL_ID);
+		
+		ledState = false;
 		
 		initialized = true;
 	}
@@ -58,9 +61,11 @@ public class CameraControl {
 		
 		if (state == true) {
 			cameraLedRelay.set(Relay.Value.kOn);
+			ledState = true;
 		}
 		else {
-			cameraLedRelay.set(Relay.Value.kOff);			
+			cameraLedRelay.set(Relay.Value.kOff);
+			ledState = false;
 		}
 		
 	}
@@ -78,6 +83,7 @@ public class CameraControl {
 	public static void teleopPeriodic() {
 		double currentPos = positionServo.get();
 		
+		// switch to control camera servo
 		if (gamepad.getRawButton(HardwareIDs.CAMERA_CONTROL_BUTTON) == true)
 		{
 			if (Math.abs(currentPos - BOILER_CAM_POS) > SERVO_POS_TOLERANCE)
@@ -88,6 +94,15 @@ public class CameraControl {
 			if (Math.abs(currentPos - GEAR_CAM_POS) > SERVO_POS_TOLERANCE)
 				moveToPos(GEAR_CAM_POS);
 		}
-			
+
+		// button to strobe camera LED rings
+		if ((gamepad.getRawButton(HardwareIDs.CAMERA_LED_STROBE_BUTTON) == true) && (!ledState))
+		{
+			setCameraLed(true);
+		}
+		else if ((gamepad.getRawButton(HardwareIDs.CAMERA_LED_STROBE_BUTTON) == false) && (ledState))
+		{
+			setCameraLed(false);
+		}
 	}
 }
