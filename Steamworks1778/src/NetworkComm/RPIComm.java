@@ -81,7 +81,8 @@ public class RPIComm {
     	
 		reset();
 		
-		table.putBoolean("autoCam", true);
+		//table.putBoolean("autoCam", true);
+		table.putBoolean("autoCam", false);  // keep camera auto exposure on with RPi
     }
     
     public static void teleopInit() {

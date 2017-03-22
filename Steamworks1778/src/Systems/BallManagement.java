@@ -307,8 +307,8 @@ public class BallManagement {
 	public static void teleopInit() {
 				
 		gearTrayOn();
-		collectorOn();
-		//collectorOff();  
+		//collectorOn();
+		collectorOff();    // keep collector off until gamepad control pressed
 		resetMotors();
 		
 		// spawn a wait thread to turn relays back off after a number of seconds
