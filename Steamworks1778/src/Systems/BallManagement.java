@@ -24,14 +24,6 @@ public class BallManagement {
 	
 	private static final double COLLECTOR_IN_LEVEL = -0.75;
 	private static final double COLLECTOR_OUT_LEVEL = 0.75;
-
-	/*
-	private static final double TRANSPORT_IN_LEVEL = 1.0;
-	private static final double TRANSPORT_OUT_LEVEL = -1.0;
-	
-	private static final double COLLECTOR_IN_LEVEL = -1.0;
-	private static final double COLLECTOR_OUT_LEVEL = 1.0;
-	*/
 	
 	private static final double FEEDER_LEVEL = 0.3;
 	private static final double AGITATOR_LEVEL = 0.25;
@@ -169,7 +161,7 @@ public class BallManagement {
 			new Thread() {
 				public void run() {
 					try {
-						Thread.sleep(2000);  // wait a number of sec before starting to feed
+						Thread.sleep(1000);  // wait one second before starting to feed
 						startFeeding();		 // start feeder motors
 					} catch (Exception e) {
 						e.printStackTrace();
