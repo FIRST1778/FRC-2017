@@ -5,6 +5,7 @@ import Utility.HardwareIDs;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Utility;
 
 public class CameraControl {
 	private static boolean initialized = false;
@@ -31,11 +32,18 @@ public class CameraControl {
 	
 	// camera position servo
 	private static Servo positionServo;
-	
+
+	// wait 0.25 s between button pushes on shooter
+    private static final int TRIGGER_CYCLE_WAIT_US = 250000;
+    private static double initTriggerTime;
+
 	public static void initialize() {
 		if (initialized)
 			return;
 		
+		// reset trigger init time
+		initTriggerTime = Utility.getFPGATime();		
+
 		cameraLedRelay = new Relay(HardwareIDs.CAMERA_LED_RELAY_CHANNEL,Relay.Direction.kForward);
 		cameraLedRelay.set(Relay.Value.kOff);
 		
@@ -81,6 +89,14 @@ public class CameraControl {
 	}
 	
 	public static void teleopPeriodic() {
+
+		// fire controls - using a timer to debounce
+		double currentTime = Utility.getFPGATime();
+
+		// if not enough time has passed, no polling allowed!
+		if ((currentTime - initTriggerTime) < TRIGGER_CYCLE_WAIT_US)
+			return;
+		
 		double currentPos = positionServo.get();
 		
 		// switch to control camera servo
@@ -104,5 +120,9 @@ public class CameraControl {
 		{
 			setCameraLed(false);
 		}
+		
+		// reset trigger init time
+		initTriggerTime = Utility.getFPGATime();		
+
 	}
 }

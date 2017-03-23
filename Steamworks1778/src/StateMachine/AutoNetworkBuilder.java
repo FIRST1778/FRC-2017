@@ -361,7 +361,7 @@ public class AutoNetworkBuilder {
 
 		// Shoot state
 		AutoState shootState = new AutoState("<Shoot state - auto>");
-		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO);
+		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO_BLUE);
 		TimeEvent timer2 = new TimeEvent(8.0);  // shooting timer event
 		shootState.addAction(shootAct);
 		shootState.addEvent(timer2);
@@ -424,7 +424,7 @@ public class AutoNetworkBuilder {
 
 		// Shoot state
 		AutoState shootState = new AutoState("<Shoot state - auto>");
-		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO);
+		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO_RED);
 		TimeEvent timer2 = new TimeEvent(8.0);  // shooting timer event
 		shootState.addAction(shootAct);
 		shootState.addEvent(timer2);
@@ -1118,7 +1118,7 @@ public class AutoNetworkBuilder {
 		
 		// Shoot state - keep shooting until end of auto (do not leave state)
 		AutoState shootState = new AutoState("<Shoot state - auto>");
-		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO);
+		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO_BLUE);
 		shootState.addAction(shootAct);
 				
 		// connect each event with a state to move to
@@ -1195,7 +1195,7 @@ public class AutoNetworkBuilder {
 		
 		// Shoot state - keep shooting until end of auto (do not leave state)
 		AutoState shootState = new AutoState("<Shoot state - auto>");
-		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO);
+		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO_RED);
 		shootState.addAction(shootAct);
 				
 		// connect each event with a state to move to

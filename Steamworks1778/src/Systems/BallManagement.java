@@ -42,24 +42,19 @@ public class BallManagement {
 	private static final double DEAD_ZONE_THRESHOLD = 0.05;
 	
 	public static final int MOTOR_OFF = 0;
-	public static final int MOTOR_AUTO = 1;
-	public static final int MOTOR_LOW = 2;
-	public static final int MOTOR_MEDIUM = 3;
-	public static final int MOTOR_HIGH = 4;
+	public static final int MOTOR_AUTO_BLUE = 1;
+	public static final int MOTOR_AUTO_RED = 2;
+	public static final int MOTOR_LOW = 3;
+	public static final int MOTOR_MEDIUM = 4;
+	public static final int MOTOR_HIGH = 5;
 
-	// 1:1 native speed settings (debug reference only)
-	//private static final double motorSettings[] = { 0, 0, 100, 115, 130 };		    // Speed (Native) control settings
-
-	// 2:1 native speed settings (debug reference only)
-	//private static final double motorSettings[] = { 0, 0, 200, 230, 260 };		    // Speed (Native) control settings
-	
 	// Competition bot calibrated native speed settings
-	private static final double motorSettings[] = { 0, 59, 59, 85, 85 };		    // Speed (Native) control settings
+	private static final double motorSettings[] = { 0, 59, 59, 59, 85, 85 };	    // Speed (Native) control settings
 	
 	// Percent VBus settings (debug reference only)
-	//private static final double motorSettings[] = { 0.0, 0.0, 0.25, 0.5, 0.75};   // Vbus (%) control settings
+	//private static final double motorSettings[] = { 0.0, 0.0, 0.0, 0.25, 0.5, 0.75};   // Vbus (%) control settings
 
-	private static final int NUM_MOTOR_SETTINGS = 5;
+	private static final int NUM_MOTOR_SETTINGS = 6;
 	
 	// relays to release collector and gear tray
 	private static Relay collectorRelay;
@@ -77,7 +72,6 @@ public class BallManagement {
 	
 	private static Joystick gamepad;
 		
-	
 	// wait 0.25 s between button pushes on shooter
     private static final int TRIGGER_CYCLE_WAIT_US = 250000;
     private static double initTriggerTime;
@@ -85,7 +79,10 @@ public class BallManagement {
 	public static void initialize() {
 		if (initialized)
 			return;
-		
+
+		// reset trigger init time
+		initTriggerTime = Utility.getFPGATime();		
+
         // create and reset collector relay
         collectorRelay = new Relay(HardwareIDs.COLLECTOR_RELAY_CHANNEL,Relay.Direction.kForward);
         collectorRelay.set(Relay.Value.kOff);
