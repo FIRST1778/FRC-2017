@@ -9,10 +9,9 @@ public class HardwareIDs {
 	public static final int RIGHT_REAR_TALON_ID = 4;
 
 	// Relays
-	public static final int COLLECTOR_RELAY_CHANNEL = 0;
-	//public static final int GEAR_TRAY_RELAY_CHANNEL_1 = 1;
+	public static final int CAMERA_LED_RELAY_CHANNEL = 0;
+	public static final int GEAR_TRAY_RELAY_CHANNEL_1 = 1;
 	public static final int GEAR_TRAY_RELAY_CHANNEL_2 = 2;
-	public static final int CAMERA_LED_RELAY_CHANNEL = 3;
 	
 	public static final int SHOOTER_TALON_ID = 6;
 	public static final int FEEDER_TALON_ID = 11;
@@ -20,10 +19,9 @@ public class HardwareIDs {
 
 	// PWM devices	
 	public static final int CAMERA_SERVO_PWM_ID = 0;
-	public static final int TRANSPORT_PWM_ID= 1;
-	public static final int GEAR_TRAY_PWM_ID = 2;
-	public static final int PROTOBOT_PWM_ID = 3;    // used for protobot spark only
-	public static final int AGITATOR_PWM_ID = 4;
+	public static final int COLLECTOR_SOLENOID_PWM_ID = 1;
+	public static final int TRANSPORT_PWM_ID= 2;
+	public static final int AGITATOR_PWM_ID = 3;
 
 	// Climber Hardware
 	public static final int CLIMBER_TALON_ID = 12;

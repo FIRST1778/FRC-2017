@@ -49,8 +49,9 @@ public class BallManagement {
 	private static final int NUM_MOTOR_SETTINGS = 6;
 	
 	// relays to release collector and gear tray
-	private static Relay collectorRelay;
-	private static Spark gearTraySpark;    // first gear tray solenoid controlled by Spark
+	//private static Relay collectorRelay;
+	private static Spark collectorSolenoid;
+	private static Relay gearTrayRelay;   // first gear tray solenoid controlled by Relay
 	private static Relay gearTrayRelay2;   // second gear tray solenoid controlled by Relay
 	
 	// shooter and support motors
@@ -76,11 +77,11 @@ public class BallManagement {
 		initTriggerTime = Utility.getFPGATime();		
 
         // create and reset collector relay
-        collectorRelay = new Relay(HardwareIDs.COLLECTOR_RELAY_CHANNEL,Relay.Direction.kForward);
-        collectorRelay.set(Relay.Value.kOff);
+		collectorSolenoid = new Spark(HardwareIDs.COLLECTOR_SOLENOID_PWM_ID);
                 
         // create and reset gear tray spark & relay
-        gearTraySpark = new Spark(HardwareIDs.GEAR_TRAY_PWM_ID);
+        gearTrayRelay = new Relay(HardwareIDs.GEAR_TRAY_RELAY_CHANNEL_1,Relay.Direction.kForward);
+        gearTrayRelay.set(Relay.Value.kOff);
         gearTrayRelay2 = new Relay(HardwareIDs.GEAR_TRAY_RELAY_CHANNEL_2,Relay.Direction.kForward);
         gearTrayRelay2.set(Relay.Value.kOff);
 
@@ -204,23 +205,23 @@ public class BallManagement {
 	
 	public static void gearTrayOn() {
 		// release collector and gear tray
-    	gearTraySpark.set(1.0);
+    	gearTrayRelay.set(Relay.Value.kOn);		
     	gearTrayRelay2.set(Relay.Value.kOn);		
 	}
 	
 	public static void gearTrayOff() {
 		// release collector and gear tray
-    	gearTraySpark.set(0.0);
+    	gearTrayRelay.set(Relay.Value.kOff);		
     	gearTrayRelay2.set(Relay.Value.kOff);		
 	}
 	
 	public static void collectorOn() {
-    	collectorRelay.set(Relay.Value.kOn);
+		collectorSolenoid.set(1.0);
     	collectorEnabled = true;
 	}
 	
 	public static void collectorOff() {
-    	collectorRelay.set(Relay.Value.kOff);
+		collectorSolenoid.set(0.0);
     	collectorEnabled = false;
 	}
 	
