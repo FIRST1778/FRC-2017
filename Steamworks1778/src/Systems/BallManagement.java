@@ -26,7 +26,7 @@ public class BallManagement {
 	private static final double COLLECTOR_OUT_LEVEL = 0.75;
 	
 	private static final double FEEDER_LEVEL = 0.3;
-	private static final double AGITATOR_LEVEL = 0.25;
+	private static final double AGITATOR_LEVEL = 0.75;
 	
 	//  10 100ms/s * (60 s/min) * (1 rev/12 Native Units)
 	private static final double NATIVE_TO_RPM_FACTOR = 10 * 60 / 12;
@@ -41,7 +41,7 @@ public class BallManagement {
 	public static final int MOTOR_HIGH = 5;
 
 	// Competition bot calibrated native speed settings
-	private static final double motorSettings[] = { 0, 59, 59, 59, 85, 85 };	    // Speed (Native) control settings
+	private static final double motorSettings[] = { 0, 50, 50, 59, 85, 85 };	    // Speed (Native) control settings
 	
 	// Percent VBus settings (debug reference only)
 	//private static final double motorSettings[] = { 0.0, 0.0, 0.0, 0.25, 0.5, 0.75};   // Vbus (%) control settings
