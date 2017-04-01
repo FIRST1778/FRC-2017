@@ -26,7 +26,7 @@ public class BallManagement {
 	private static final double COLLECTOR_OUT_LEVEL = 0.75;
 	
 	private static final double FEEDER_LEVEL = 0.3;
-	private static final double AGITATOR_LEVEL = 0.75;
+	private static final double AGITATOR_LEVEL = 0.5;
 	
 	//  10 100ms/s * (60 s/min) * (1 rev/12 Native Units)
 	private static final double NATIVE_TO_RPM_FACTOR = 10 * 60 / 12;
@@ -56,7 +56,8 @@ public class BallManagement {
 	
 	// shooter and support motors
 	private static CANTalon shooterMotor, feederMotor; 
-	private static Servo agitatorServo;		// moves balls around in the bin (prevents jams)
+	//private static Servo agitatorServo;		// moves balls around in the bin (prevents jams)
+	private static Spark agitatorServo;    // Not really a Spark - a continuous rotation servo
 	
 	// collector & transport motors
 	private static Spark transportMotor;		// moves balls from collector to bin
@@ -88,10 +89,11 @@ public class BallManagement {
 		// create motors & servos
 		transportMotor = new Spark(HardwareIDs.TRANSPORT_PWM_ID);
 		collectorMotor = new CANTalon(HardwareIDs.COLLECTOR_TALON_ID);
+		//agitatorServo = new Servo(HardwareIDs.AGITATOR_PWM_ID);
+		agitatorServo = new Spark(HardwareIDs.AGITATOR_PWM_ID);
 		
 		feederMotor = new CANTalon(HardwareIDs.FEEDER_TALON_ID);
 		shooterMotor = new CANTalon(HardwareIDs.SHOOTER_TALON_ID);
-		agitatorServo = new Servo(HardwareIDs.AGITATOR_PWM_ID);
 		
 		// set up shooter motor sensor
 		shooterMotor.reverseSensor(false);
@@ -129,7 +131,8 @@ public class BallManagement {
 		feederMotor.set(0);	
 		transportMotor.set(0);
 		collectorMotor.set(0);
-		agitatorServo.set(0.5);
+		agitatorServo.set(0);
+
 		
 		feeding = false;
 	}
@@ -183,7 +186,7 @@ public class BallManagement {
         feederMotor.set(feederLevel);
         
         
-        double agitatorLevel = AGITATOR_LEVEL;  // set to something on either side of 0.5 for continuous servo motion
+        double agitatorLevel = AGITATOR_LEVEL;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
         agitatorServo.set(agitatorLevel);
                 
@@ -196,9 +199,9 @@ public class BallManagement {
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
         feederMotor.set(feederLevel);	
         
-        double agitatorLevel = 0.5;  // 0.5 is considered 'zero movement' for a continuous servo
+        double agitatorLevel = 0; 
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
-        agitatorServo.set(agitatorLevel);
+        agitatorServo.set(0);
         
         feeding = false;
 	}		

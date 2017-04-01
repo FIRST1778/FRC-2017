@@ -1,6 +1,8 @@
 package Systems;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+
 import NetworkComm.InputOutputComm;
 import Utility.HardwareIDs;
 
@@ -14,29 +16,164 @@ public class AutoDriveAssembly {
 	private static final double GYRO_CORRECT_COEFF = 0.03;
 		
 	// speed controllers and drive class
-	private static CANTalon mFrontLeft, mBackLeft, mFrontRight, mBackRight;
+	private static CANTalon mFrontLeft, mFrontRight;
+	private static CANTalon mBackLeft, mBackRight;
 	
 	// used as angle baseline (if we don't reset gyro)
 	private static double initialAngle = 0.0;
-	    	        
+	
+	// protobot encoder variables
+	public static final boolean RIGHT_REVERSE = true;
+	public static final boolean LEFT_REVERSE = false;
+	private static final int ENCODER_PULSES_PER_REV = 250;  // E4P-250
+	private static final double INCHES_PER_REV = (6 * 3.14159);   // 6-in diameter wheel
+		
 	// static initializer
 	public static void initialize()
 	{
 		if (!initialized) {
+			
+			// instantiate motor control objects
 	        mFrontLeft = new CANTalon(HardwareIDs.LEFT_FRONT_TALON_ID);
-	        mBackLeft = new CANTalon(HardwareIDs.LEFT_REAR_TALON_ID);
+	        mFrontLeft.reverseOutput(LEFT_REVERSE);
+			mBackLeft = new CANTalon(HardwareIDs.LEFT_REAR_TALON_ID);
+	        mFrontLeft.reverseOutput(LEFT_REVERSE);
 	        mFrontRight = new CANTalon(HardwareIDs.RIGHT_FRONT_TALON_ID);
+	        mFrontRight.reverseOutput(RIGHT_REVERSE);  // right motor inverted
 	        mBackRight = new CANTalon(HardwareIDs.RIGHT_REAR_TALON_ID);
-	        	        	
-	        // initialize the NavXSensor
+	        mBackRight.reverseOutput(RIGHT_REVERSE);   // right motor inverted
+
+	        // configure left front motor encoder and PID
+	        mFrontLeft.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+	        mFrontLeft.configEncoderCodesPerRev(ENCODER_PULSES_PER_REV);
+	        mFrontLeft.reverseSensor(LEFT_REVERSE);   
+	        mFrontLeft.setProfile(0);
+	        mFrontLeft.setP(6.0);
+	        mFrontLeft.setI(0);
+	        mFrontLeft.setD(1.5);
+	        mFrontLeft.setF(2.0);
+	        mFrontLeft.setMotionMagicCruiseVelocity(0);
+	        mFrontLeft.setMotionMagicAcceleration(0);
+	        
+	        // configure right front motor encoder and PID
+	        mFrontRight.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+	        mFrontRight.configEncoderCodesPerRev(ENCODER_PULSES_PER_REV);
+	        mFrontRight.reverseSensor(RIGHT_REVERSE);
+	        mFrontRight.setProfile(0);
+	        mFrontRight.setP(6.0);
+	        mFrontRight.setI(0);
+	        mFrontRight.setD(1.5);
+	        mFrontRight.setF(2.0);
+	        mFrontRight.setMotionMagicCruiseVelocity(0);
+	        mFrontRight.setMotionMagicAcceleration(0);
+
+	        // initialize the NavXSensor (gyro)
 	        NavXSensor.initialize();
-	        	        
+	        	        	        
 	        initialized = true;
 		}
 	}
+	
+	private static void resetMotors()
+	{
+		// disable brake mode (all motors on coast)
+	    mFrontLeft.enableBrakeMode(false);
+		mFrontRight.enableBrakeMode(false);
+		mBackLeft.enableBrakeMode(false);
+		mBackRight.enableBrakeMode(false);
+		InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/BrakeMode", false);
+		
+		// reset control mode to VBus mode (% pwr) 
+		mFrontLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		mFrontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		mBackLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		mBackRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 
+		// turn all motors to zero power
+		mFrontLeft.set(0);
+		mFrontRight.set(0);
+		mBackLeft.set(0);
+		mBackLeft.set(0);
+		
+	}
+		
+	private static void configureMotorsVbus() 
+	{
+		if (!initialized)
+			initialize();
+		
+		// for auto - brake mode enabled
+	    mFrontLeft.enableBrakeMode(true);
+		mFrontRight.enableBrakeMode(true);
+		mBackLeft.enableBrakeMode(true);
+		mBackRight.enableBrakeMode(true);
+		InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/BrakeMode", true);
+		
+		// set control mode to VBus mode (% pwr) 
+		mFrontLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		mFrontRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		mBackLeft.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		mBackRight.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 
-	public static void autoInit(boolean resetGyro) {
+		// turn all motors to zero power		
+		mFrontLeft.set(0);
+		mFrontRight.set(0);
+		mBackLeft.set(0);
+		mBackLeft.set(0);
+		
+	}
+
+	private static void configureMotorsMagic() 
+	{
+		if (!initialized)
+			initialize();
+		
+		// for auto - brake mode enabled
+	    mFrontLeft.enableBrakeMode(true);
+		mFrontRight.enableBrakeMode(true);
+		mBackLeft.enableBrakeMode(true);
+		mBackRight.enableBrakeMode(true);
+		InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/BrakeMode", true);
+		
+        // configure left and right front motors for magic motion (closed-loop position control)
+		mFrontRight.changeControlMode(CANTalon.TalonControlMode.MotionMagic);
+        mFrontLeft.changeControlMode(CANTalon.TalonControlMode.MotionMagic);	
+
+        // Assign back right to follow front right
+        mBackRight.changeControlMode(CANTalon.TalonControlMode.Follower);
+        mBackRight.set(HardwareIDs.RIGHT_FRONT_TALON_ID);
+        
+        // Assign back left to follow front left
+        mBackLeft.changeControlMode(CANTalon.TalonControlMode.Follower);
+        mBackRight.set(HardwareIDs.LEFT_FRONT_TALON_ID);		
+        
+	}
+
+	public static void resetPos()
+	{
+		if (!initialized)
+			initialize();
+		
+		// reset front left and right encoder pulses to zero
+		mFrontLeft.setPosition(0);
+		mFrontRight.setPosition(0);
+	}	 	        
+
+	public static double getDistanceInches() {
+		
+		// query encoder for pulses so far
+		double rightPos = mFrontRight.getPosition() * INCHES_PER_REV;
+		double leftPos = mFrontLeft.getPosition() * INCHES_PER_REV;
+				
+		String posStr = String.format("%.2f", rightPos);
+		InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"Auto/EncoderRight", posStr);
+		posStr = String.format("%.2f", leftPos);
+		InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"Auto/EncoderLeft", posStr);
+		
+		return rightPos;
+	}
+	
+	public static void autoInit(boolean resetGyro, boolean magicMotion) {
 				
 		if (resetGyro) {
 			NavXSensor.reset();
@@ -44,9 +181,19 @@ public class AutoDriveAssembly {
 		}
 		else
 			initialAngle = NavXSensor.getAngle();
+
+		if (magicMotion)
+			// configure motors for magic motion
+			configureMotorsMagic();
+		else
+			// configure motors for normal VBus control
+			configureMotorsVbus();
+		
+		// set current position to zero
+		resetPos();
    	}
 					
-	public static void autoPeriodicStraight(double speed) {
+	public static void autoGyroStraight(double speed) {
 		// autonomous operation of drive straight - uses gyro
 		
 		double gyroAngle = NavXSensor.getAngle();
@@ -63,15 +210,35 @@ public class AutoDriveAssembly {
 		// adjust speed of left and right sides
 		drive(leftSpeed, rightSpeed, 0.0);		 
 	}
+	
+	public static void autoMagicStraight(double targetPosRevs, double speedRpm) {
+		
+        // left front drive straight - uses motion magic
+		mFrontLeft.setMotionMagicCruiseVelocity(speedRpm);
+		mFrontLeft.setMotionMagicAcceleration(speedRpm);
+		mFrontLeft.set(targetPosRevs);
+		
+        // right front drive straight - uses motion magic
+		mFrontRight.setMotionMagicCruiseVelocity(speedRpm);
+		mFrontRight.setMotionMagicAcceleration(speedRpm);
+		mFrontRight.set(targetPosRevs);	
+		
+		// left and right back motors are following front motors
+	}
 
 	public static void autoStop() {
-		drive(0.0, 0.0, 0.0);
+		//drive(0.0, 0.0, 0.0);
+		resetMotors();
 	}
 		
 	public static void teleopInit() {
 	}
 	
 	public static void teleopPeriodic() {	
+	}
+	
+	public static void disabledInit( )  {
+		resetMotors();
 	}
 	
 	// CORE DRIVE METHOD

@@ -51,7 +51,7 @@ public class DriveForwardAction extends Action {
 	public void initialize() {
 		// do some drivey initialization
 		
-		AutoDriveAssembly.autoInit(resetGyro);
+		AutoDriveAssembly.autoInit(resetGyro, false);
 		
 		super.initialize();
 	}
@@ -61,7 +61,7 @@ public class DriveForwardAction extends Action {
 		
 		// do some drivey stuff
 				
-		AutoDriveAssembly.autoPeriodicStraight(speed);
+		AutoDriveAssembly.autoGyroStraight(speed);
 
 		// get gyro angle 
 		// (not used for anything else here except reporting to driver)

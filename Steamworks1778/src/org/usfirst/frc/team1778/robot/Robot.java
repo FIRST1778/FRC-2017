@@ -5,6 +5,7 @@ import FreezyDrive.FreezyDriveTrain;
 import NetworkComm.InputOutputComm;
 import NetworkComm.RPIComm;
 import StateMachine.AutoStateMachine;
+import Systems.AutoDriveAssembly;
 import Systems.BallManagement;
 import Systems.CameraControl;
 import Systems.ClimberAssembly;
@@ -45,9 +46,9 @@ public class Robot extends IterativeRobot {
     
     public void autonomousInit() {
     	InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"MainLog","autonomous mode...");
+    	AutoDriveAssembly.autoInit(true, false);
     	RPIComm.autoInit();
     	CameraControl.autoInit();
-    	UltrasonicSensor.autoInit();
     	BallManagement.autoInit();
     	RioDuinoAssembly.autonomousInit();
     	
@@ -63,6 +64,7 @@ public class Robot extends IterativeRobot {
     	autoSM.process();
  
     	// debug only
+    	AutoDriveAssembly.getDistanceInches();
     	//getGyroAngle();
    	
     }
@@ -108,6 +110,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void disabledInit() {
+    	AutoDriveAssembly.disabledInit();
     	BallManagement.resetMotors();
     	RPIComm.disabledInit();
     	RioDuinoAssembly.disabledInit();

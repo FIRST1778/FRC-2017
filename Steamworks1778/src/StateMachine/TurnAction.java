@@ -43,7 +43,7 @@ public class TurnAction extends Action {
 			initialAngle = 0.0;
 		
 		// initialize motor assembly for auto
-		AutoDriveAssembly.autoInit(resetGyro);
+		AutoDriveAssembly.autoInit(resetGyro, false);
 		
 		super.initialize();
 	}
