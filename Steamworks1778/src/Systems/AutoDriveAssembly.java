@@ -28,6 +28,12 @@ public class AutoDriveAssembly {
 	private static final int ENCODER_PULSES_PER_REV = 250;  // E4P-250
 	private static final double INCHES_PER_REV = (6 * 3.14159);   // 6-in diameter wheel
 		
+	// PIDF values
+	private static final double P_COEFF = 6.0;
+	private static final double I_COEFF = 0;
+	private static final double D_COEFF = 20.0;
+	private static final double F_COEFF = 1.9;
+	
 	// static initializer
 	public static void initialize()
 	{
@@ -35,35 +41,34 @@ public class AutoDriveAssembly {
 			
 			// instantiate motor control objects
 	        mFrontLeft = new CANTalon(HardwareIDs.LEFT_FRONT_TALON_ID);
-	        mFrontLeft.reverseOutput(LEFT_REVERSE);
+	        mFrontLeft.reverseOutput(LEFT_REVERSE);	   // left motor PID not inverted
 			mBackLeft = new CANTalon(HardwareIDs.LEFT_REAR_TALON_ID);
-	        mFrontLeft.reverseOutput(LEFT_REVERSE);
-	        mFrontRight = new CANTalon(HardwareIDs.RIGHT_FRONT_TALON_ID);
-	        mFrontRight.reverseOutput(RIGHT_REVERSE);  // right motor inverted
+
+			mFrontRight = new CANTalon(HardwareIDs.RIGHT_FRONT_TALON_ID);
+	        mFrontRight.reverseOutput(RIGHT_REVERSE);  // right motor PID output inverted
 	        mBackRight = new CANTalon(HardwareIDs.RIGHT_REAR_TALON_ID);
-	        mBackRight.reverseOutput(RIGHT_REVERSE);   // right motor inverted
 
 	        // configure left front motor encoder and PID
 	        mFrontLeft.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 	        mFrontLeft.configEncoderCodesPerRev(ENCODER_PULSES_PER_REV);
-	        mFrontLeft.reverseSensor(LEFT_REVERSE);   
+	        mFrontLeft.reverseSensor(LEFT_REVERSE);   // left motor encoder not inverted
 	        mFrontLeft.setProfile(0);
-	        mFrontLeft.setP(6.0);
-	        mFrontLeft.setI(0);
-	        mFrontLeft.setD(1.5);
-	        mFrontLeft.setF(2.0);
+	        mFrontLeft.setP(P_COEFF);
+	        mFrontLeft.setI(I_COEFF);
+	        mFrontLeft.setD(D_COEFF);
+	        mFrontLeft.setF(F_COEFF);
 	        mFrontLeft.setMotionMagicCruiseVelocity(0);
 	        mFrontLeft.setMotionMagicAcceleration(0);
 	        
 	        // configure right front motor encoder and PID
 	        mFrontRight.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 	        mFrontRight.configEncoderCodesPerRev(ENCODER_PULSES_PER_REV);
-	        mFrontRight.reverseSensor(RIGHT_REVERSE);
+	        mFrontRight.reverseSensor(RIGHT_REVERSE);   // right motor encoder inverted
 	        mFrontRight.setProfile(0);
-	        mFrontRight.setP(6.0);
-	        mFrontRight.setI(0);
-	        mFrontRight.setD(1.5);
-	        mFrontRight.setF(2.0);
+	        mFrontRight.setP(P_COEFF);
+	        mFrontRight.setI(I_COEFF);
+	        mFrontRight.setD(D_COEFF);
+	        mFrontRight.setF(F_COEFF);
 	        mFrontRight.setMotionMagicCruiseVelocity(0);
 	        mFrontRight.setMotionMagicAcceleration(0);
 
@@ -222,6 +227,21 @@ public class AutoDriveAssembly {
 		mFrontRight.setMotionMagicCruiseVelocity(speedRpm);
 		mFrontRight.setMotionMagicAcceleration(speedRpm);
 		mFrontRight.set(targetPosRevs);	
+		
+		// left and right back motors are following front motors
+	}
+	
+	public static void autoMagicTurn(double targetPosRevsLeft, double targetPosRevsRight, double speedRpm) {
+		
+        // left front drive straight - uses motion magic
+		mFrontLeft.setMotionMagicCruiseVelocity(speedRpm);
+		mFrontLeft.setMotionMagicAcceleration(speedRpm);
+		mFrontLeft.set(targetPosRevsLeft);
+		
+        // right front drive straight - uses motion magic
+		mFrontRight.setMotionMagicCruiseVelocity(speedRpm);
+		mFrontRight.setMotionMagicAcceleration(speedRpm);
+		mFrontRight.set(targetPosRevsRight);	
 		
 		// left and right back motors are following front motors
 	}
