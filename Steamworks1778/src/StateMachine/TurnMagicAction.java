@@ -36,7 +36,7 @@ public class TurnMagicAction extends Action {
 	public void initialize() {
 				
 		// initialize motor assembly for auto - use motion magic (closed loop control targets)
-		AutoDriveAssembly.autoInit(true, true);
+		AutoDriveAssembly.autoInit(true, 0.0, true);
 		AutoDriveAssembly.autoMagicTurn(leftRevs, rightRevs, speedToTurn);
 		
 		super.initialize();

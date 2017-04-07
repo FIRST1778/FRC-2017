@@ -157,19 +157,21 @@ public class AutoNetworkBuilder {
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
 
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true, 0.0);
+		//DistanceEvent dist1 = new DistanceEvent(60.0);  // 60 inches = 5 ft
+		TimeEvent timer1a = new TimeEvent(1.25);  // timer event
+		driveState.addAction(driveForward);
+		//driveState.addEvent(dist1);
+		driveState.addEvent(timer1a);
+		
 		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.175, true);
-		DistanceEvent dist1 = new DistanceEvent(60.0);  // 60 inches = 5 ft
-		driveState.addAction(driveForward);
-		driveState.addEvent(dist1);
-		*/
-		
-		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(10.0);  // drive forward timer event
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
+		*/
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
 		IdleAction deadEnd = new IdleAction("<Dead End Action>");
@@ -202,23 +204,23 @@ public class AutoNetworkBuilder {
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
 
-		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true);
-		TimeEvent timer2 = new TimeEvent(1.9);  // drive forward timer event
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true, 0.0);
+		TimeEvent timer2 = new TimeEvent(1.29);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
-		*/
 		
+		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(4.0);  // drive forward timer event - 4 seconds to settle
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
+		*/
 		
 		AutoState turnRightState = new AutoState("<Turn Right State>");
-		TurnAction turnRightAction = new TurnAction("<Turn right action>",55.0, false, 0.3);
-		GyroAngleEvent gyroRight = new GyroAngleEvent(55.0, false, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		TurnAction turnRightAction = new TurnAction("<Turn right action>", 60.0, 0.3, false);   // don't reset gyro - use absolute heading 60 deg
+		GyroAngleEvent gyroRight = new GyroAngleEvent(60.0, false, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 		
@@ -231,15 +233,14 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, true);  // don't reset gyro - use absolute heading (60 deg) 
-		//DistanceEvent dist2 = new DistanceEvent(60.0);
-		TimeEvent timer4 = new TimeEvent(2.5);
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, false, 60.0);  // don't reset gyro - use absolute heading (60 deg) 
+		TimeEvent timer4 = new TimeEvent(3.0);
+		//TimeEvent timer4 = new TimeEvent(1.0);
 		driveState2.addAction(driveForward2);
-		//driveState2.addEvent(dist2);
 		driveState2.addEvent(timer4);
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
-		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true);  // reset gyro
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true, 0.0);  // reset gyro
 		IdleAction deadEnd = new IdleAction("<Dead End Action>");
 		idleState2.addAction(driveForward4);
 		idleState2.addAction(deadEnd);
@@ -247,14 +248,13 @@ public class AutoNetworkBuilder {
 		// connect each event with a state to move to
 		camState.associateNextState(driveState);
 		driveState.associateNextState(turnRightState);
-		//turnRightState.associateNextState(driveState2);
-		//driveState2.associateNextState(idleState2);
-		turnRightState.associateNextState(idleState2);
+		turnRightState.associateNextState(driveState2);
+		driveState2.associateNextState(idleState2);
 						
 		autoNet.addState(camState);
 		autoNet.addState(driveState);
 		autoNet.addState(turnRightState);
-		//autoNet.addState(driveState2);
+		autoNet.addState(driveState2);
 		autoNet.addState(idleState2);
 				
 		return autoNet;
@@ -275,8 +275,8 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 								
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.25, true);
-		TimeEvent timer3 = new TimeEvent(4.0);  // drive forward timer event -OR-
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.25, true, 0.0);
+		TimeEvent timer3 = new TimeEvent(4.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer3);
 		
@@ -311,23 +311,23 @@ public class AutoNetworkBuilder {
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
 
-		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, false);
-		TimeEvent timer2 = new TimeEvent(1.9);  // drive forward timer event
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true, 0.0);
+		TimeEvent timer2 = new TimeEvent(1.33);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
-		*/
 		
+		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(4.0);  // drive forward timer event
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
+		*/
 		
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-55.0, false, 0.3);
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(-55.0, false, GyroAngleEvent.AnglePolarity.kLessThan);
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-60.0, 0.3, false);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(-60.0, false, GyroAngleEvent.AnglePolarity.kLessThan);  // don't reset gyro - use heading -60 deg
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 		
@@ -340,30 +340,28 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, false);
-		//DistanceEvent dist2 = new DistanceEvent(60.0);
-		TimeEvent timer4 = new TimeEvent(2.5); 
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, false, -60.0);   // don't reset gyro - use heading -60 deg
+		TimeEvent timer4 = new TimeEvent(3.0); 
+		//TimeEvent timer4 = new TimeEvent(1.0); 
 		driveState2.addAction(driveForward2);
-		//driveState2.addEvent(dist2);
 		driveState2.addEvent(timer4);
 		
 		AutoState idleState2 = new AutoState("<Idle State 2>");
 		IdleAction deadEnd = new IdleAction("<Dead End Action>");
-		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true);  // reset gyro 
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true, 0.0);  // reset gyro 
 		idleState2.addAction(deadEnd);
 		idleState2.addAction(driveForward4);
 				
 		// connect each event with a state to move to
 		camState.associateNextState(driveState);
 		driveState.associateNextState(turnLeftState);
-		//turnLeftState.associateNextState(driveState2);
-		//driveState2.associateNextState(idleState2);
-		turnLeftState.associateNextState(idleState2);
+		turnLeftState.associateNextState(driveState2);
+		driveState2.associateNextState(idleState2);
 						
 		autoNet.addState(camState);
 		autoNet.addState(driveState);
 		autoNet.addState(turnLeftState);
-		//autoNet.addState(driveState2);
+		autoNet.addState(driveState2);
 		autoNet.addState(idleState2);
 		
 		return autoNet;
@@ -385,22 +383,22 @@ public class AutoNetworkBuilder {
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
 
-		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.4, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.4, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
-	    */
 		
+		/*
 		AutoState driveState = new AutoState("<Drive Magic State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
-
+		*/
+		
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-145, true, 0.3);
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-145, 0.4, true);     // don't reset gyro - use -145 deg heading
 		GyroAngleEvent gyroLeft = new GyroAngleEvent(-145, true, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
@@ -438,22 +436,22 @@ public class AutoNetworkBuilder {
 		camState.addAction(camAct);		
 		camState.addEvent(timer1);
 
-		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.4, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.4, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
-		*/
 		
+		/*
 		AutoState driveState = new AutoState("<Drive Magic State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
+		*/
 		
 		AutoState turnRightState = new AutoState("<Turn Right State>");
-		TurnAction turnRightAction = new TurnAction("<Turn Right action>",145, true, 0.3);
+		TurnAction turnRightAction = new TurnAction("<Turn Right action>",145, 0.4, true);     // don't reset gyro - use 145 deg heading
 		GyroAngleEvent gyroRight = new GyroAngleEvent(145, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
@@ -501,19 +499,19 @@ public class AutoNetworkBuilder {
 		shootState.addEvent(timer2);
 
 		AutoState driveState = new AutoState("<Drive Backward State>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Backward Action>", -0.3, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Backward Action>", -0.3, true, 0.0);
 		TimeEvent timer3 = new TimeEvent(0.5);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer3);
 		
 		AutoState turnRightState = new AutoState("<Turn right State>");
-		TurnAction turnRightAction = new TurnAction("<Turn right action>",90, true, 0.4);
+		TurnAction turnRightAction = new TurnAction("<Turn right action>",90, 0.4, true);
 		GyroAngleEvent gyroRight = new GyroAngleEvent(90, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 		
 		AutoState driveState2 = new AutoState("<Drive Forward State>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action>", 0.4, true);
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action>", 0.4, true, 0.0);
 		TimeEvent timer4 = new TimeEvent(2.0);  // drive forward timer event
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer4);
@@ -564,19 +562,19 @@ public class AutoNetworkBuilder {
 		shootState.addEvent(timer2);
 
 		AutoState driveState = new AutoState("<Drive Backward State>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Backward Action>", -0.3, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Backward Action>", -0.3, true, 0.0);
 		TimeEvent timer3 = new TimeEvent(0.5);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer3);
 		
 		AutoState turnLeftState = new AutoState("<Turn left State>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-90, true, 0.4);
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-90, 0.4, true);
 		GyroAngleEvent gyroLeft = new GyroAngleEvent(-90, true, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 		
 		AutoState driveState2 = new AutoState("<Drive Forward State>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action>", 0.4, true);
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action>", 0.4, true, 0.0);
 		TimeEvent timer4 = new TimeEvent(2.0);  // drive forward timer event
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer4);
@@ -776,7 +774,7 @@ public class AutoNetworkBuilder {
 		idleState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action - Slow>", 0.5, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action - Slow>", 0.5, true, 0.0);
 		IdleAction doSomething4 = new IdleAction("<Placeholder Action 4>");
 		IdleAction doSomething5 = new IdleAction("<Placeholder Action 5>");
 		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
@@ -818,7 +816,7 @@ public class AutoNetworkBuilder {
 		idleState.addEvent(timer1);
 
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action - Slow>", 0.5, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action - Slow>", 0.5, true, 0.0);
 		IdleAction doSomething4 = new IdleAction("<Placeholder Action 4>");
 		IdleAction doSomething5 = new IdleAction("<Placeholder Action 5>");
 		driveState.addAction(driveForward);
@@ -856,49 +854,49 @@ public class AutoNetworkBuilder {
 		idleState.addEvent(timer1);
 
 		AutoState driveState1 = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward1 = new DriveForwardAction("<Drive Forward Action 1>", 0.75, true);
+		DriveForwardAction driveForward1 = new DriveForwardAction("<Drive Forward Action 1>", 0.75, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(1.5);  // drive forward timer event
 		driveState1.addAction(driveForward1);
 		driveState1.addEvent(timer2);
 		
 		AutoState turnLeftState = new AutoState("<Turn Left State -90 deg>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-90, true, 0.5);
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-90, 0.5, true);
 		GyroAngleEvent gyroLeft = new GyroAngleEvent(-90, true, GyroAngleEvent.AnglePolarity.kLessThan);  // gyro angle event for -90 deg
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 			
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.75, true);
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.75, true, 0.0);
 		TimeEvent timer3 = new TimeEvent(1.5);  // drive forward timer event
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer3);
 		
 		AutoState aboutFaceRightState = new AutoState("<About Face Right State +180 deg>");
-		TurnAction aboutFaceRightAction = new TurnAction("<About Face right action>",180, true, 0.5);
+		TurnAction aboutFaceRightAction = new TurnAction("<About Face right action>",180, 0.5, true);
 		GyroAngleEvent gyroAboutFaceRight = new GyroAngleEvent(180, true, GyroAngleEvent.AnglePolarity.kGreaterThan);  // gyro angle event for +180 deg
 		aboutFaceRightState.addAction(aboutFaceRightAction);
 		aboutFaceRightState.addEvent(gyroAboutFaceRight);
 
 		AutoState driveState3 = new AutoState("<Drive State 3>");
-		DriveForwardAction driveForward3 = new DriveForwardAction("<Drive Forward Action 3>", 0.75, true);
+		DriveForwardAction driveForward3 = new DriveForwardAction("<Drive Forward Action 3>", 0.75, true, 0.0);
 		TimeEvent timer4 = new TimeEvent(1.5);  // drive forward timer event
 		driveState3.addAction(driveForward3);
 		driveState3.addEvent(timer4);
 
 		AutoState turnRightState = new AutoState("<Turn Right State +90 deg>");
-		TurnAction turnRightAction = new TurnAction("<Turn right action>",90, true, 0.5);
+		TurnAction turnRightAction = new TurnAction("<Turn right action>",90, 0.5, true);
 		GyroAngleEvent gyroRight = new GyroAngleEvent(90, true, GyroAngleEvent.AnglePolarity.kGreaterThan);  // gyro angle event for +90 deg
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 
 		AutoState driveState4 = new AutoState("<Drive State 4>");
-		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4>", 0.75, true);
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4>", 0.75, true, 0.0);
 		TimeEvent timer5 = new TimeEvent(1.5);  // drive forward timer event
 		driveState4.addAction(driveForward4);
 		driveState4.addEvent(timer5);
 
 		AutoState aboutFaceLeftState = new AutoState("<About Face Left State -180 deg>");
-		TurnAction aboutFaceLeftAction = new TurnAction("<About Face left action>",-180, true, 0.5);
+		TurnAction aboutFaceLeftAction = new TurnAction("<About Face left action>",-180, 0.5, true);
 		GyroAngleEvent gyroAboutFaceLeft = new GyroAngleEvent(-180, true, GyroAngleEvent.AnglePolarity.kLessThan);  // gyro angle event for -180 deg
 		aboutFaceLeftState.addAction(aboutFaceLeftAction);
 		aboutFaceLeftState.addEvent(gyroAboutFaceLeft);
@@ -957,49 +955,49 @@ public class AutoNetworkBuilder {
 		idleState.addEvent(timer1);
 
 		AutoState driveState1 = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward1 = new DriveForwardAction("<Drive Forward Action 1>", 0.75, false);
+		DriveForwardAction driveForward1 = new DriveForwardAction("<Drive Forward Action 1>", 0.75, false, 0.0);
 		TimeEvent timer2 = new TimeEvent(1.5);  // drive forward timer event
 		driveState1.addAction(driveForward1);
 		driveState1.addEvent(timer2);
 		
 		AutoState turnLeftState = new AutoState("<Turn to -90 deg>");
-		TurnAction turnLeftAction = new TurnAction("<Turn to -90 deg action>",-90, false, 0.5);
+		TurnAction turnLeftAction = new TurnAction("<Turn to -90 deg action>",-90, 0.5, false);
 		GyroAngleEvent gyroLeft = new GyroAngleEvent(-90, false, GyroAngleEvent.AnglePolarity.kLessThan);  // gyro angle event for -90 deg
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 			
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.75, false);
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.75, false, -90);
 		TimeEvent timer3 = new TimeEvent(1.5);  // drive forward timer event
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer3);
 		
 		AutoState aboutFaceRightState = new AutoState("<Turn to 90 deg>");
-		TurnAction aboutFaceRightAction = new TurnAction("<Turn to 90 deg action>",90, false, 0.5);
+		TurnAction aboutFaceRightAction = new TurnAction("<Turn to 90 deg action>", 90, 0.5, false);
 		GyroAngleEvent gyroAboutFaceRight = new GyroAngleEvent(90, false, GyroAngleEvent.AnglePolarity.kGreaterThan);  // gyro angle event for +180 deg
 		aboutFaceRightState.addAction(aboutFaceRightAction);
 		aboutFaceRightState.addEvent(gyroAboutFaceRight);
 
 		AutoState driveState3 = new AutoState("<Drive State 3>");
-		DriveForwardAction driveForward3 = new DriveForwardAction("<Drive Forward Action 3>", 0.75, false);
+		DriveForwardAction driveForward3 = new DriveForwardAction("<Drive Forward Action 3>", 0.75, false, 90);
 		TimeEvent timer4 = new TimeEvent(1.5);  // drive forward timer event
 		driveState3.addAction(driveForward3);
 		driveState3.addEvent(timer4);
 
 		AutoState turnRightState = new AutoState("<Turn to 180 deg>");
-		TurnAction turnRightAction = new TurnAction("<Turn to 180 deg action>",180, false, 0.5);
+		TurnAction turnRightAction = new TurnAction("<Turn to 180 deg action>",180, 0.5, false);
 		GyroAngleEvent gyroRight = new GyroAngleEvent(180, false, GyroAngleEvent.AnglePolarity.kGreaterThan);  // gyro angle event for +90 deg
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 
 		AutoState driveState4 = new AutoState("<Drive State 4>");
-		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4>", 0.75, false);
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4>", 0.75, false, 180);
 		TimeEvent timer5 = new TimeEvent(1.5);  // drive forward timer event
 		driveState4.addAction(driveForward4);
 		driveState4.addEvent(timer5);
 
 		AutoState aboutFaceLeftState = new AutoState("<Turn to 0 deg>");
-		TurnAction aboutFaceLeftAction = new TurnAction("<Turn to 0 deg action>",0, false, 0.5);
+		TurnAction aboutFaceLeftAction = new TurnAction("<Turn to 0 deg action>", 0, 0.5, false);
 		GyroAngleEvent gyroAboutFaceLeft = new GyroAngleEvent(0, false, GyroAngleEvent.AnglePolarity.kLessThan);  // gyro angle event for -180 deg
 		aboutFaceLeftState.addAction(aboutFaceLeftAction);
 		aboutFaceLeftState.addEvent(gyroAboutFaceLeft);
@@ -1053,7 +1051,7 @@ public class AutoNetworkBuilder {
 		idleState.addEvent(timer1);
 
 		AutoState driveState1 = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward1 = new DriveForwardAction("<Drive Forward Action 1>", 0.3, false);
+		DriveForwardAction driveForward1 = new DriveForwardAction("<Drive Forward Action 1>", 0.3, false, 0);
 		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
 		driveState1.addAction(driveForward1);
 		driveState1.addEvent(timer2);
@@ -1067,13 +1065,13 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState turnRightState = new AutoState("<Turn to 180 deg>");
-		TurnAction turnRightAction = new TurnAction("<Turn to 180 deg action>", 175, false, 0.3);
+		TurnAction turnRightAction = new TurnAction("<Turn to 180 deg action>", 180, 0.3, false);
 		GyroAngleEvent gyroRight = new GyroAngleEvent(175, false, GyroAngleEvent.AnglePolarity.kGreaterThan);  // gyro angle event for -90 deg
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 	
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.3, false);
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.3, false, 180);
 		TimeEvent timer3 = new TimeEvent(2.0);  // drive forward timer event
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer3);
@@ -1087,7 +1085,7 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState turnLeftState = new AutoState("<Turn to 0 deg>");
-		TurnAction turnLeftAction = new TurnAction("<Turn to 0 deg action>", 5, false, 0.3);
+		TurnAction turnLeftAction = new TurnAction("<Turn to 0 deg action>", 5, 0.3, false);
 		GyroAngleEvent gyroLeft = new GyroAngleEvent(5, false, GyroAngleEvent.AnglePolarity.kLessThan);  // gyro angle event for +90 deg
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
@@ -1127,7 +1125,7 @@ public class AutoNetworkBuilder {
 		idleState.addEvent(timer1);
 		
 		AutoState turnLeftState = new AutoState("<Turn Left State -1080 deg>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-1080, true, 0.5);
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-1080, 0.5, true);
 		GyroAngleEvent gyroLeft = new GyroAngleEvent(-1080, true, GyroAngleEvent.AnglePolarity.kLessThan);  // gyro angle event for -90 deg
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
@@ -1139,7 +1137,7 @@ public class AutoNetworkBuilder {
 		idleState2.addEvent(timer2);
 		
 		AutoState turnRightState = new AutoState("<Turn Right State +1080 deg>");
-		TurnAction turnRightAction = new TurnAction("<Turn right action>",1080, true,  0.5);
+		TurnAction turnRightAction = new TurnAction("<Turn right action>",1080,  0.5, true);
 		GyroAngleEvent gyroRight = new GyroAngleEvent(1080, true, GyroAngleEvent.AnglePolarity.kGreaterThan);  // gyro angle event for +90 deg
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
@@ -1237,7 +1235,7 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 								
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.3, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.3, true, 0.0);
 		TimeEvent timer3 = new TimeEvent(3.0);  // drive forward timer event -OR-
 		//UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
@@ -1251,13 +1249,13 @@ public class AutoNetworkBuilder {
 		idleState2.addEvent(timer4);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", -0.3, true);
+		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", -0.3, true, 0.0);
 		TimeEvent timer5 = new TimeEvent(1.0);  // drive forward timer event
 		driveState2.addAction(driveBackward);
 		driveState2.addEvent(timer5);
 		
 		AutoState turnLeftState = new AutoState("<Turn around and cam move>");
-		TurnAction turnLeftAction = new TurnAction("<Turn around action>",-95.0, true, 0.4);
+		TurnAction turnLeftAction = new TurnAction("<Turn around action>",-95.0, 0.4, true);
 		CameraAction camAct2 = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
 		GyroAngleEvent gyroRight = new GyroAngleEvent(-95.0, true, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
@@ -1337,7 +1335,7 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer1);
 								
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.3, true);
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action 1>", 0.3, true, 0.0);
 		TimeEvent timer3 = new TimeEvent(3.0);  // drive forward timer event -OR-
 		//UltrasonicEvent ultra1 = new UltrasonicEvent(ultrasonicDistInches);  // ultrasonic event triggers at 12 inches
 		driveState.addAction(driveForward);
@@ -1351,13 +1349,13 @@ public class AutoNetworkBuilder {
 		idleState2.addEvent(timer4);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", -0.3, true);
+		DriveForwardAction driveBackward = new DriveForwardAction("<Drive Backward Action>", -0.3, true, 0.0);
 		TimeEvent timer5 = new TimeEvent(1.0);  // drive forward timer event
 		driveState2.addAction(driveBackward);
 		driveState2.addEvent(timer5);
 		
 		AutoState turnRightState = new AutoState("<Turn around and cam move>");
-		TurnAction turnRightAction = new TurnAction("<Turn around action>",95, true, 0.4);
+		TurnAction turnRightAction = new TurnAction("<Turn around action>",95, 0.4, true);
 		CameraAction camAct2 = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
 		GyroAngleEvent gyroRight = new GyroAngleEvent(95, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);

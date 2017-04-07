@@ -11,21 +11,24 @@ public class DriveForwardAction extends Action {
 	private String name;
 	private double speed = 0.0;
 	private boolean resetGyro = true;
+	private double headingDeg = 0.0;
 	
-	public DriveForwardAction(double speed, boolean resetGyro)
+	public DriveForwardAction(double speed, boolean resetGyro, double headingDeg)
 	{
 		this.name = "<Drive Forward Action>";		
 		this.speed = speed;
 		this.resetGyro = resetGyro;
+		this.headingDeg = headingDeg;   // absolute heading to use if not resetting gyro
 
 		AutoDriveAssembly.initialize();
 	}
 	
-	public DriveForwardAction(String name, double speed, boolean resetGyro)
+	public DriveForwardAction(String name, double speed, boolean resetGyro, double headingDeg)
 	{
 		this.name =  name;
 		this.speed = speed;
 		this.resetGyro = resetGyro;
+		this.headingDeg = headingDeg;   // absolute heading to use if not resetting gyro
 				
 		AutoDriveAssembly.initialize();
 	}
@@ -51,7 +54,7 @@ public class DriveForwardAction extends Action {
 	public void initialize() {
 		// do some drivey initialization
 		
-		AutoDriveAssembly.autoInit(resetGyro, false);
+		AutoDriveAssembly.autoInit(resetGyro, headingDeg, false);
 		
 		super.initialize();
 	}

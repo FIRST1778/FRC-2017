@@ -26,7 +26,8 @@ public class BallManagement {
 	private static final double COLLECTOR_OUT_LEVEL = 0.75;
 	
 	private static final double FEEDER_LEVEL = 0.3;
-	private static final double AGITATOR_LEVEL = 0.5;
+	private static final double AGITATOR_ON = 0.75;
+	private static final double AGITATOR_OFF = 0.5;
 	
 	//  10 100ms/s * (60 s/min) * (1 rev/12 Native Units)
 	private static final double NATIVE_TO_RPM_FACTOR = 10 * 60 / 12;
@@ -41,7 +42,7 @@ public class BallManagement {
 	public static final int MOTOR_HIGH = 5;
 
 	// Competition bot calibrated native speed settings
-	private static final double motorSettings[] = { 0, 50, 50, 59, 85, 85 };	    // Speed (Native) control settings
+	private static final double motorSettings[] = { 0, 45, 45, 45, 50, 55};	    // Speed (Native) control settings
 	
 	// Percent VBus settings (debug reference only)
 	//private static final double motorSettings[] = { 0.0, 0.0, 0.0, 0.25, 0.5, 0.75};   // Vbus (%) control settings
@@ -131,8 +132,7 @@ public class BallManagement {
 		feederMotor.set(0);	
 		transportMotor.set(0);
 		collectorMotor.set(0);
-		agitatorServo.set(0);
-
+		agitatorServo.set(AGITATOR_OFF);
 		
 		feeding = false;
 	}
@@ -186,7 +186,7 @@ public class BallManagement {
         feederMotor.set(feederLevel);
         
         
-        double agitatorLevel = AGITATOR_LEVEL;
+        double agitatorLevel = AGITATOR_ON;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
         agitatorServo.set(agitatorLevel);
                 
@@ -199,9 +199,9 @@ public class BallManagement {
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
         feederMotor.set(feederLevel);	
         
-        double agitatorLevel = 0; 
+        double agitatorLevel = AGITATOR_OFF;  // setting half will turn off continuous servo
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
-        agitatorServo.set(0);
+        agitatorServo.set(agitatorLevel);
         
         feeding = false;
 	}		
@@ -218,6 +218,8 @@ public class BallManagement {
     	gearTrayRelay2.set(Relay.Value.kOff);		
 	}
 	
+	// no longer used
+	/*
 	public static void collectorOn() {
 		collectorSolenoid.set(1.0);
     	collectorEnabled = true;
@@ -227,19 +229,17 @@ public class BallManagement {
 		collectorSolenoid.set(0.0);
     	collectorEnabled = false;
 	}
+	*/
 	
 	private static void checkCollectorControls() {
 		
-		if (gamepad.getRawButton(HardwareIDs.COLLECTOR_CONTROL_BUTTON))  {
-			if (!collectorEnabled)
-				collectorOn();
-			// just turn on, don't turn off until disabled
-			//else
-			//	collectorOff();
-		}
+		//if (gamepad.getRawButton(HardwareIDs.COLLECTOR_CONTROL_BUTTON))  {
+		//	if (!collectorEnabled)
+		//		collectorOn();
+		//}
 		
-		if (!collectorEnabled)
-			return;
+		//if (!collectorEnabled)
+		//	return;
 		
 		// transport control
 		double transportLevel = gamepad.getRawAxis(HardwareIDs.TRANSPORT_IN_AXIS);
@@ -252,7 +252,8 @@ public class BallManagement {
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/TransportLevel", transportLevel);		
 		transportMotor.set(transportLevel);
 		
-		// collector control
+		// collector control - no longer used
+		/*
 		double collectorLevel = gamepad.getRawAxis(HardwareIDs.COLLECTOR_IN_AXIS);
 		if (Math.abs(collectorLevel) > DEAD_ZONE_THRESHOLD)
 			collectorLevel = COLLECTOR_IN_LEVEL;
@@ -262,6 +263,7 @@ public class BallManagement {
 			collectorLevel = 0.0;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/CollectorLevel", collectorLevel);
 		collectorMotor.set(collectorLevel);
+		*/
 		
 	}
 	
@@ -291,7 +293,7 @@ public class BallManagement {
 	public static void autoInit() {
 				
 		gearTrayOff();
-		collectorOff();
+		//collectorOff();
 		resetMotors();
 		
         initTriggerTime = Utility.getFPGATime();
@@ -300,8 +302,7 @@ public class BallManagement {
 	public static void teleopInit() {
 				
 		gearTrayOn();
-		//collectorOn();
-		collectorOff();    // keep collector off until gamepad control pressed
+		//collectorOff();    // keep collector off until gamepad control pressed
 		resetMotors();
 		
 		// spawn a wait thread to turn relays back off after a number of seconds

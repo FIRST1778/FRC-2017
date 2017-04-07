@@ -25,7 +25,8 @@ public class AutoDriveAssembly {
 	// protobot encoder variables
 	public static final boolean RIGHT_REVERSE = true;
 	public static final boolean LEFT_REVERSE = false;
-	private static final int ENCODER_PULSES_PER_REV = 250;  // E4P-250
+	//private static final int ENCODER_PULSES_PER_REV = 250;  // E4P-250 - on the protobot front motors
+	private static final int ENCODER_PULSES_PER_REV = 250;  // E4P-250  - on the competition bot front motors
 	private static final double INCHES_PER_REV = (6 * 3.14159);   // 6-in diameter wheel
 		
 	// PIDF values
@@ -145,12 +146,12 @@ public class AutoDriveAssembly {
         mFrontLeft.changeControlMode(CANTalon.TalonControlMode.MotionMagic);	
 
         // Assign back right to follow front right
-        mBackRight.changeControlMode(CANTalon.TalonControlMode.Follower);
-        mBackRight.set(HardwareIDs.RIGHT_FRONT_TALON_ID);
+        //mBackRight.changeControlMode(CANTalon.TalonControlMode.Follower);
+        //mBackRight.set(HardwareIDs.RIGHT_FRONT_TALON_ID);
         
         // Assign back left to follow front left
-        mBackLeft.changeControlMode(CANTalon.TalonControlMode.Follower);
-        mBackRight.set(HardwareIDs.LEFT_FRONT_TALON_ID);		
+        //mBackLeft.changeControlMode(CANTalon.TalonControlMode.Follower);
+        //mBackRight.set(HardwareIDs.LEFT_FRONT_TALON_ID);		
         
 	}
 
@@ -178,14 +179,15 @@ public class AutoDriveAssembly {
 		return rightPos;
 	}
 	
-	public static void autoInit(boolean resetGyro, boolean magicMotion) {
+	public static void autoInit(boolean resetGyro, double headingDeg, boolean magicMotion) {
 				
 		if (resetGyro) {
 			NavXSensor.reset();
 			initialAngle = 0.0;
 		}
 		else
-			initialAngle = NavXSensor.getAngle();
+			//initialAngle = NavXSensor.getAngle();
+			initialAngle = headingDeg;				// target heading if not resetting gyro
 
 		if (magicMotion)
 			// configure motors for magic motion
@@ -247,7 +249,7 @@ public class AutoDriveAssembly {
 	}
 
 	public static void autoStop() {
-		//drive(0.0, 0.0, 0.0);
+		drive(0.0, 0.0, 0.0);
 		resetMotors();
 	}
 		

@@ -10,25 +10,26 @@ public class TurnAction extends Action {
 	private double angleToTurn = 0.0;
 	private double speedToTurn = 0.3;
 	private boolean resetGyro = true;
+	private double headingDeg = 0.0;   // heading to use if not resetting gyro
 	
 	private double initialAngle = 0.0;
 		
-	public TurnAction(double angleToTurn, boolean resetGyro, double speed)
+	public TurnAction(double angleToTurn, double speed, boolean resetGyro)
 	{
 		this.name = "<Turn Action>";
-		this.angleToTurn = angleToTurn;
-		this.resetGyro = resetGyro;
+		this.angleToTurn = angleToTurn;  // absolute heading to use if not resetting gyro
 		this.speedToTurn = speed;
+		this.resetGyro = resetGyro;
 				
 		AutoDriveAssembly.initialize();
 	}
 	
-	public TurnAction(String name, double angleToTurn, boolean resetGyro, double speed)
+	public TurnAction(String name, double angleToTurn, double speed, boolean resetGyro)
 	{
 		this.name =  name;
-		this.angleToTurn = angleToTurn;
-		this.resetGyro = resetGyro;
+		this.angleToTurn = angleToTurn; // absolute heading to use if not resetting gyro
 		this.speedToTurn = speed;
+		this.resetGyro = resetGyro;
 		
 		AutoDriveAssembly.initialize();
 	}
@@ -37,13 +38,15 @@ public class TurnAction extends Action {
 	public void initialize() {
 		
 		// if we're not resetting the gyro, we'll want to see what angle it is to start
-		if (!resetGyro)
-			initialAngle = NavXSensor.getAngle();
-		else
+		if (resetGyro) {
+			NavXSensor.reset();
 			initialAngle = 0.0;
+		} 
+		else
+			initialAngle = NavXSensor.getAngle();
 		
 		// initialize motor assembly for auto
-		AutoDriveAssembly.autoInit(resetGyro, false);
+		AutoDriveAssembly.autoInit(resetGyro, initialAngle, false);
 		
 		super.initialize();
 	}

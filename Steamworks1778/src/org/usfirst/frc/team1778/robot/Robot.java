@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot {
     
     public void autonomousInit() {
     	InputOutputComm.putString(InputOutputComm.LogTable.kMainLog,"MainLog","autonomous mode...");
-    	AutoDriveAssembly.autoInit(true, false);
+    	AutoDriveAssembly.autoInit(true, 0.0, false);
     	RPIComm.autoInit();
     	CameraControl.autoInit();
     	BallManagement.autoInit();
