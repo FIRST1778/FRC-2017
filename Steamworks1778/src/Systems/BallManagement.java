@@ -57,8 +57,7 @@ public class BallManagement {
 	
 	// shooter and support motors
 	private static CANTalon shooterMotor, feederMotor; 
-	//private static Servo agitatorServo;		// moves balls around in the bin (prevents jams)
-	private static Spark agitatorServo;    // Not really a Spark - a continuous rotation servo
+	private static Spark agitatorServo;    //  continuous rotation servo control modeled as Spark PWM
 	
 	// collector & transport motors
 	private static Spark transportMotor;		// moves balls from collector to bin
@@ -90,8 +89,7 @@ public class BallManagement {
 		// create motors & servos
 		transportMotor = new Spark(HardwareIDs.TRANSPORT_PWM_ID);
 		collectorMotor = new CANTalon(HardwareIDs.COLLECTOR_TALON_ID);
-		//agitatorServo = new Servo(HardwareIDs.AGITATOR_PWM_ID);
-		agitatorServo = new Spark(HardwareIDs.AGITATOR_PWM_ID);
+		agitatorServo = new Spark(HardwareIDs.AGITATOR_PWM_ID);    // continuous servo control modeled as Spark PWM
 		
 		feederMotor = new CANTalon(HardwareIDs.FEEDER_TALON_ID);
 		shooterMotor = new CANTalon(HardwareIDs.SHOOTER_TALON_ID);
@@ -142,20 +140,29 @@ public class BallManagement {
 		if (!initialized)
 			initialize();
 		
-		// if out of range, just return
+		// if out of range, just return...
+		
 		if ((newIndex > MOTOR_HIGH) || (newIndex < MOTOR_OFF))
 			return;
 		
+		// if turning off motors...
+		
 		if (newIndex == MOTOR_OFF) {
-			stopFeeding();  // turn off feeder motors
+			stopFeeding();  // turn off feeder & agitator motors
+			shooterMotor.set(motorSettings[MOTOR_OFF]);	  // turn off shooter
+			
+			// reset trigger init time
+			initTriggerTime = Utility.getFPGATime();		
+
+			return;
 		}
+		
+		// if turning on motors...
 		
 		//System.out.println("Motor Strength = " + motorSettings[newIndex]);
 		double shooter_rpm = motorSettings[newIndex] * NATIVE_TO_RPM_FACTOR;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ShooterRpm_Target", shooter_rpm);		
 		
-		//System.out.println("shooter motor speed..");
-		//shooterMotor.setProfile(newIndex);
 		shooterMotor.set(motorSettings[newIndex]);	
 		
 		// if shooter is not off and we're not feeding (i.e. motor is spinning up from being off)

@@ -29,11 +29,19 @@ public class AutoDriveAssembly {
 	private static final int ENCODER_PULSES_PER_REV = 250;  // E4P-250  - on the competition bot front motors
 	private static final double INCHES_PER_REV = (6 * 3.14159);   // 6-in diameter wheel
 		
-	// PIDF values
+	// PIDF values - protobot
+	/*
 	private static final double P_COEFF = 6.0;
 	private static final double I_COEFF = 0;
 	private static final double D_COEFF = 20.0;
 	private static final double F_COEFF = 1.9;
+	*/
+	
+	// PIDF values - comp.bot
+	private static final double P_COEFF = 0.0;
+	private static final double I_COEFF = 0.0;
+	private static final double D_COEFF = 0.0;
+	private static final double F_COEFF = 1.0;
 	
 	// static initializer
 	public static void initialize()
@@ -99,7 +107,7 @@ public class AutoDriveAssembly {
 		mFrontLeft.set(0);
 		mFrontRight.set(0);
 		mBackLeft.set(0);
-		mBackLeft.set(0);
+		mBackRight.set(0);
 		
 	}
 		
@@ -125,7 +133,7 @@ public class AutoDriveAssembly {
 		mFrontLeft.set(0);
 		mFrontRight.set(0);
 		mBackLeft.set(0);
-		mBackLeft.set(0);
+		mBackRight.set(0);
 		
 	}
 
@@ -249,7 +257,7 @@ public class AutoDriveAssembly {
 	}
 
 	public static void autoStop() {
-		drive(0.0, 0.0, 0.0);
+		//drive(0.0, 0.0, 0.0);
 		resetMotors();
 	}
 		
