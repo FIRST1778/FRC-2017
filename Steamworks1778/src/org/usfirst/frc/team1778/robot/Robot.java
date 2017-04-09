@@ -65,7 +65,7 @@ public class Robot extends IterativeRobot {
  
     	// debug only
     	AutoDriveAssembly.getDistanceInches();
-    	//getGyroAngle();
+    	getGyroAngle();
    	
     }
 
