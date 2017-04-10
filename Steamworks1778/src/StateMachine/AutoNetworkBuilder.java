@@ -160,15 +160,13 @@ public class AutoNetworkBuilder {
 		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true, 0.0);
-		//DistanceEvent dist1 = new DistanceEvent(60.0);  // 60 inches = 5 ft
 		TimeEvent timer1a = new TimeEvent(1.25);  // timer event
 		driveState.addAction(driveForward);
-		//driveState.addEvent(dist1);
 		driveState.addEvent(timer1a);
 		*/
 		
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100, true, 0.0);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(10.0);  // drive forward timer event
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
@@ -204,19 +202,19 @@ public class AutoNetworkBuilder {
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
 
+		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(1.29);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
+		*/
 		
-		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100, true, 0.0);
-		TimeEvent timer2 = new TimeEvent(4.0);  // drive forward timer event - 4 seconds to settle
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
+		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
-		*/
 		
 		AutoState turnRightState = new AutoState("<Turn Right State>");
 		TurnAction turnRightAction = new TurnAction("<Turn right action>", 60.0, 0.3, false);   // don't reset gyro - use absolute heading 60 deg
@@ -234,8 +232,8 @@ public class AutoNetworkBuilder {
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
 		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, false, 60.0);  // don't reset gyro - use absolute heading (60 deg) 
-		//TimeEvent timer4 = new TimeEvent(3.0);
-		TimeEvent timer4 = new TimeEvent(1.0);
+		TimeEvent timer4 = new TimeEvent(3.0);
+		//TimeEvent timer4 = new TimeEvent(1.0);
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer4);
 		
@@ -320,14 +318,14 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100, true, 0.0);
-		TimeEvent timer2 = new TimeEvent(4.0);  // drive forward timer event
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
+		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
 		
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-59.0, 0.3, false);
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(-59.0, false, GyroAngleEvent.AnglePolarity.kLessThan);  // don't reset gyro - use heading -60 deg
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-60.0, 0.3, false);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(-60.0, false, GyroAngleEvent.AnglePolarity.kLessThan);  // don't reset gyro - use heading -60 deg
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 		
@@ -340,9 +338,9 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, false, -59.0);   // don't reset gyro - use heading -60 deg
-		//TimeEvent timer4 = new TimeEvent(2.0); 
-		TimeEvent timer4 = new TimeEvent(1.0); 
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, false, -60.0);   // don't reset gyro - use heading -60 deg
+		TimeEvent timer4 = new TimeEvent(3.0); 
+		//TimeEvent timer4 = new TimeEvent(1.0); 
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer4);
 		
@@ -383,30 +381,32 @@ public class AutoNetworkBuilder {
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
 
+		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.4, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
+		*/
 		
-		/*
 		AutoState driveState = new AutoState("<Drive Magic State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100, true, 0.0);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
-		*/
 		
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-145, 0.4, true);     // don't reset gyro - use -145 deg heading
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(-145, true, GyroAngleEvent.AnglePolarity.kLessThan);
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-145, 0.4, false);     // don't reset gyro - use -145 deg heading
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(-145, false, GyroAngleEvent.AnglePolarity.kLessThan);
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
 		
 		// Shoot state - keep shooting until end of auto (do not leave state)
 		AutoState shootState = new AutoState("<Shoot state - auto>");
 		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO_BLUE);
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true, 0.0);  // reset gyro 
 		shootState.addAction(shootAct);
+		shootState.addAction(driveForward4);
 				
 		// connect each event with a state to move to
 		camState.associateNextState(driveState);
@@ -436,30 +436,32 @@ public class AutoNetworkBuilder {
 		camState.addAction(camAct);		
 		camState.addEvent(timer1);
 
+		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.4, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
+		*/
 		
-		/*
 		AutoState driveState = new AutoState("<Drive Magic State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100, true, 0.0);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
-		*/
 		
 		AutoState turnRightState = new AutoState("<Turn Right State>");
-		TurnAction turnRightAction = new TurnAction("<Turn Right action>",145, 0.4, true);     // don't reset gyro - use 145 deg heading
-		GyroAngleEvent gyroRight = new GyroAngleEvent(145, true, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		TurnAction turnRightAction = new TurnAction("<Turn Right action>",145, 0.4, false);     // don't reset gyro - use 145 deg heading
+		GyroAngleEvent gyroRight = new GyroAngleEvent(145, false, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
 		
 		// Shoot state - keep shooting until end of auto (do not leave state)
 		AutoState shootState = new AutoState("<Shoot state - auto>");
 		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO_RED);
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true, 0.0);  // reset gyro 
 		shootState.addAction(shootAct);
+		shootState.addAction(driveForward4);
 				
 		// connect each event with a state to move to
 		camState.associateNextState(driveState);

@@ -140,45 +140,39 @@ public class BallManagement {
 		if (!initialized)
 			initialize();
 		
-		// if out of range, just return...
-		
+		// if out of range, just return...	
 		if ((newIndex > MOTOR_HIGH) || (newIndex < MOTOR_OFF))
 			return;
 		
-		// if turning off motors...
-		
-		if (newIndex == MOTOR_OFF) {
-			stopFeeding();  // turn off feeder & agitator motors
-			shooterMotor.set(motorSettings[MOTOR_OFF]);	  // turn off shooter
-			
-			// reset trigger init time
-			initTriggerTime = Utility.getFPGATime();		
-
-			return;
-		}
-		
-		// if turning on motors...
-		
+		// report on what strength we're setting
 		//System.out.println("Motor Strength = " + motorSettings[newIndex]);
 		double shooter_rpm = motorSettings[newIndex] * NATIVE_TO_RPM_FACTOR;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/ShooterRpm_Target", shooter_rpm);		
-		
+
+		// set motor to the specified value
 		shooterMotor.set(motorSettings[newIndex]);	
-		
-		// if shooter is not off and we're not feeding (i.e. motor is spinning up from being off)
-		if ((newIndex != MOTOR_OFF) && (!feeding))
-		{
-			// spawn a wait thread to ensure agitator and feeder are turned on only AFTER a certain period
-			new Thread() {
-				public void run() {
-					try {
-						Thread.sleep(1000);  // wait one second before starting to feed
-						startFeeding();		 // start feeder motors
-					} catch (Exception e) {
-						e.printStackTrace();
+
+		// if turning off motors...
+		if (newIndex == MOTOR_OFF) {
+			stopFeeding();  // turn off feeder & agitator motors			
+		}
+		// if turning on motors...
+		else  {	
+			// if shooter motor is on and we're not yet feeding (i.e. motor is spinning up from being off)
+			if (!feeding)
+			{
+				// spawn a wait thread to ensure agitator and feeder are turned on only AFTER a certain period
+				new Thread() {
+					public void run() {
+						try {
+							Thread.sleep(1000);  // wait one second before starting to feed
+							startFeeding();		 // start feeder motors
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
-				}
-			}.start();
+				}.start();
+			}
 		}
 		
 		// reset trigger init time
@@ -201,12 +195,14 @@ public class BallManagement {
 	}
 	
 	public static void stopFeeding() {
+		//System.out.println("stopping feeder & agitator...");
 		
         double feederLevel = 0;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/FeederLevel", feederLevel);		
         feederMotor.set(feederLevel);	
         
         double agitatorLevel = AGITATOR_OFF;  // setting half will turn off continuous servo
+        //double agitatorLevel = 0;
 		InputOutputComm.putDouble(InputOutputComm.LogTable.kMainLog,"BallMgmt/AgitatorLevel", agitatorLevel);		
         agitatorServo.set(agitatorLevel);
         
