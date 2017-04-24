@@ -111,6 +111,7 @@ public class BallManagement {
 		
 		// set PID(F) for shooter motor (one profile only)
 		shooterMotor.setProfile(0);
+		
 		shooterMotor.setP(3.45);
 		shooterMotor.setI(0);
 		shooterMotor.setD(0.5);
