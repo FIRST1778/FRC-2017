@@ -83,19 +83,20 @@ public class AutoNetworkBuilder {
 		autoNets.add(AutoChooser.DEPOSIT_GEAR_CENTER, createDepositGearCenter());	
 		autoNets.add(AutoChooser.DEPOSIT_GEAR_RIGHT, createDepositGearRight());	
 
-		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_BLUE_LEFT, createDriveAndShootBlueLeft());	
-		autoNets.add(AutoChooser.DRIVE_AND_SHOOT_RED_RIGHT, createDriveAndShootRedRight());	
 		autoNets.add(AutoChooser.TURNING_FOREVER, createTurningForeverNetwork());
-		//autoNets.add(AutoChooser.DEPOSIT_GEAR_AND_SHOOT_RED_CENTER, createDepositGearAndShootRedCenter());	
-		//autoNets.add(AutoChooser.DEPOSIT_GEAR_AND_SHOOT_BLUE_CENTER, createDepositGearAndShootBlueCenter());	
+		autoNets.add(AutoChooser.PACING_FOREVER, createPacingForeverNetwork());
 
 		// debug networks
-		//autoNets.add(AutoChooser.PACING_FOREVER, createPacingForeverNetwork());
 		//autoNets.add(AutoChooser.DRIVE_AND_SHOOT_NEAR, createDriveAndShootNear());	
 		//autoNets.add(AutoChooser.DRIVE_AND_SHOOT_MEDIUM, createDriveAndShootMedium());	
 
 		//autoNets.add(AutoChooser.SHOOT_AND_DRIVE_BLUE_LEFT, createShootAndDriveBlueLeft());	
 		//autoNets.add(AutoChooser.SHOOT_AND_DRIVE_RED_RIGHT, createShootAndDriveRedRight());	
+		//autoNets.add(AutoChooser.DRIVE_AND_SHOOT_BLUE_LEFT, createDriveAndShootBlueLeft());	
+		//autoNets.add(AutoChooser.DRIVE_AND_SHOOT_RED_RIGHT, createDriveAndShootRedRight());	
+
+		//autoNets.add(AutoChooser.DEPOSIT_GEAR_AND_SHOOT_RED_CENTER, createDepositGearAndShootRedCenter());	
+		//autoNets.add(AutoChooser.DEPOSIT_GEAR_AND_SHOOT_BLUE_CENTER, createDepositGearAndShootBlueCenter());	
 	
 		// add the networks to the prefs object
 		int counter = 0;
@@ -217,22 +218,22 @@ public class AutoNetworkBuilder {
 		driveState.addEvent(timer2);
 		*/
 		
+		/*
 		AutoState turnRightState = new AutoState("<Turn Right State>");
 		TurnAction turnRightAction = new TurnAction("<Turn right action>", 60.0, 0.3, false);   // don't reset gyro - use absolute heading 60 deg
 		GyroAngleEvent gyroRight = new GyroAngleEvent(60.0, false, GyroAngleEvent.AnglePolarity.kGreaterThan);
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
-		
-		/*
-		AutoState turnRightState = new AutoState("<Turn Right State>");
-		TurnMagicAction turnRightMagicAction = new TurnMagicAction("<Turn right magic action>", 12.0, -12.0, 0.3);
-		TimeEvent timer3 = new TimeEvent(2.0);  // turn timer event - 2 seconds to settle
-		turnRightState.addAction(turnRightMagicAction);
-		turnRightState.addEvent(timer3);
 		*/
 		
+		AutoState turnRightState = new AutoState("<Turn Right State>");
+		TurnPIDAction turnPidAction = new TurnPIDAction("<Turn right PID action>", 60.0, 0.3, true);
+		TimeEvent timer3 = new TimeEvent(5.0);  // timer event - allow PID time to settle
+		turnRightState.addAction(turnPidAction);
+		turnRightState.addEvent(timer3);
+		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, false, 60.0);  // don't reset gyro - use absolute heading (60 deg) 
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, true, 0.0);  // don't reset gyro - use absolute heading (60 deg) 
 		//TimeEvent timer4 = new TimeEvent(3.0);
 		TimeEvent timer4 = new TimeEvent(1.0);   // don't drive all the way to the peg - just check alignment
 		driveState2.addAction(driveForward2);
@@ -324,22 +325,22 @@ public class AutoNetworkBuilder {
 		driveState.addEvent(timer2);
 		*/
 		
+		/*
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
 		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-60.0, 0.3, false);
 		GyroAngleEvent gyroLeft = new GyroAngleEvent(-60.0, false, GyroAngleEvent.AnglePolarity.kLessThan);  // don't reset gyro - use heading -60 deg
 		turnLeftState.addAction(turnLeftAction);
 		turnLeftState.addEvent(gyroLeft);
-		
-		/*
-		AutoState turnLeftState = new AutoState("<Turn Left State>");
-		TurnMagicAction turnLeftMagicAction = new TurnMagicAction("<Turn left magic action>", -12.0, 12.0, 0.3);
-		TimeEvent timer3 = new TimeEvent(2.0);  // turn timer event - 2 seconds to settle
-		turnLeftState.addAction(turnLeftMagicAction);
-		turnLeftState.addEvent(timer3);
 		*/
 		
+		AutoState turnLeftState = new AutoState("<Turn Left State>");
+		TurnPIDAction turnPidAction = new TurnPIDAction("<Turn left PID action>", -60.0, 0.3, true);
+		TimeEvent timer3 = new TimeEvent(5.0);  // timer event - allow PID time to settle
+		turnLeftState.addAction(turnPidAction);
+		turnLeftState.addEvent(timer3);
+		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, false, -60.0);   // don't reset gyro - use heading -60 deg
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, true, 0.0);   // don't reset gyro - use heading -60 deg
 		//TimeEvent timer4 = new TimeEvent(3.0); 
 		TimeEvent timer4 = new TimeEvent(1.0);    // don't drive all the way to the peg - just check alignment
 		driveState2.addAction(driveForward2);
@@ -365,119 +366,334 @@ public class AutoNetworkBuilder {
 		
 		return autoNet;
 	}
-		
-
-	// **** DRIVE AND SHOOT BLUE LEFT SIDE (NEAR) Network ***** 
-	// 1) Move camera
-	// 2) drive forward for a number of sec
-	// 3) Turn LEFT a number of degrees
-	// 4) Shoot at high goal until end of auto
-	private static AutoNetwork createDriveAndShootBlueLeft() {
-		
-		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Left Side) Network>");
 				
-		AutoState camState = new AutoState("<Camera Move>");
-		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
-		TimeEvent timer1 = new TimeEvent(0.1);  // timer event
+	// **** Turning Network ***** 
+	// 1) move camera
+	// 2) Turn RIGHT 90 degrees a number of times
+	// 3) Turn LEFT 90 degrees a number of times
+	// 4) go back to step 2 
+	private static AutoNetwork createTurningForeverNetwork() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Turning Forever Network>");
+		
+		AutoState camState = new AutoState("<Move Camera>");
+		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.GEAR_CAM_POS);
+		TimeEvent timer0 = new TimeEvent(0.1);  // timer event
 		camState.addAction(camAct);
-		camState.addEvent(timer1);
+		camState.addEvent(timer0);
+		
+		AutoState turnState0 = new AutoState("<Turn Left State 0>");
+		TurnPIDAction turnPidAction0 = new TurnPIDAction("<Turn Left PID action 0>", -45.0, 0.3, true);
+		TimeEvent timer1 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		turnState0.addAction(turnPidAction0);
+		turnState0.addEvent(timer1);
 
-		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.4, true, 0.0);
-		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
-		driveState.addAction(driveForward);
-		driveState.addEvent(timer2);
+		AutoState turnState1 = new AutoState("<Turn Right State 1>");
+		TurnPIDAction turnPidAction1 = new TurnPIDAction("<Turn right PID action 1>", 45.0, 0.3, true);
+		TimeEvent timer2 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		turnState1.addAction(turnPidAction1);
+		turnState1.addEvent(timer2);
+						
+		AutoState turnState2 = new AutoState("<Turn Left State 2>");
+		TurnPIDAction turnPidAction2 = new TurnPIDAction("<Turn Left PID action 2>", -45.0, 0.3, true);
+		TimeEvent timer3 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		turnState2.addAction(turnPidAction2);
+		turnState2.addEvent(timer3);
+
+		AutoState turnState3 = new AutoState("<Turn Right State 3>");
+		TurnPIDAction turnPidAction3 = new TurnPIDAction("<Turn right PID action 3>", 45.0, 0.3, true);
+		TimeEvent timer4 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		turnState3.addAction(turnPidAction3);
+		turnState3.addEvent(timer4);
 		
-		/*
-		AutoState driveState = new AutoState("<Drive Magic State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
-		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
-		driveState.addAction(driveForwardMagic);
-		driveState.addEvent(timer2);
-		*/
+		AutoState turnState4 = new AutoState("<Turn Left State 4>");
+		TurnPIDAction turnPidAction4 = new TurnPIDAction("<Turn left PID action 4>", -45.0, 0.3, true);
+		TimeEvent timer5 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		turnState4.addAction(turnPidAction4);
+		turnState4.addEvent(timer5);
 		
-		AutoState turnLeftState = new AutoState("<Turn Left State>");
-		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-145, 0.4, false);     // don't reset gyro - use -145 deg heading
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(-145, false, GyroAngleEvent.AnglePolarity.kLessThan);
-		turnLeftState.addAction(turnLeftAction);
-		turnLeftState.addEvent(gyroLeft);
+		AutoState turnState5 = new AutoState("<Turn Right State 5>");
+		TurnPIDAction turnPidAction5 = new TurnPIDAction("<Turn right PID action 5>", 45.0, 0.3, true);
+		TimeEvent timer6 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		turnState5.addAction(turnPidAction5);
+		turnState5.addEvent(timer6);
 		
-		// Shoot state - keep shooting until end of auto (do not leave state)
-		AutoState shootState = new AutoState("<Shoot state - auto>");
-		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO_BLUE);
-		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true, 0.0);  // reset gyro 
-		shootState.addAction(shootAct);
-		shootState.addAction(driveForward4);
-				
+		AutoState turnState6 = new AutoState("<Turn Left State 6>");
+		TurnPIDAction turnPidAction6 = new TurnPIDAction("<Turn left PID action 6>", -45.0, 0.3, true);
+		TimeEvent timer7 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		turnState6.addAction(turnPidAction6);
+		turnState6.addEvent(timer7);
+
+		AutoState turnState7 = new AutoState("<Turn Right State 7>");
+		TurnPIDAction turnPidAction7 = new TurnPIDAction("<Turn Right PID action 7>", 45.0, 0.3, true);
+		TimeEvent timer8 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		turnState7.addAction(turnPidAction7);
+		turnState7.addEvent(timer8);
+
+		AutoState turnState8 = new AutoState("<Turn Left State 8>");
+		TurnPIDAction turnPidAction8 = new TurnPIDAction("<Turn left PID action 8>", -45.0, 0.3, true);
+		TimeEvent timer9 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		turnState4.addAction(turnPidAction8);
+		turnState4.addEvent(timer9);
+		
 		// connect each event with a state to move to
-		camState.associateNextState(driveState);
-		driveState.associateNextState(turnLeftState);
-		turnLeftState.associateNextState(shootState);
+		camState.associateNextState(turnState0);
+		turnState0.associateNextState(turnState1);
+		turnState1.associateNextState(turnState2);
+		turnState2.associateNextState(turnState3);
+		turnState3.associateNextState(turnState4);
+		turnState4.associateNextState(turnState5);
+		turnState5.associateNextState(turnState6);
+		turnState6.associateNextState(turnState7);
+		turnState7.associateNextState(turnState8);
+		turnState8.associateNextState(turnState0);   // go back to right turning
 						
 		autoNet.addState(camState);
-		autoNet.addState(driveState);
-		autoNet.addState(turnLeftState);
-		autoNet.addState(shootState);
-		
+		autoNet.addState(turnState0);
+		autoNet.addState(turnState1);
+		autoNet.addState(turnState2);
+		autoNet.addState(turnState3);
+		autoNet.addState(turnState4);
+		autoNet.addState(turnState5);
+		autoNet.addState(turnState6);
+		autoNet.addState(turnState7);
+		autoNet.addState(turnState8);
+				
 		return autoNet;
 	}
-	
-	// **** DRIVE AND SHOOT RED RIGHT SIDE (Near) Network ***** 
-	// 1) move camera
+
+	// **** Pacing Forever Network - Pace back and forth forever ***** 
+	// This network uses absolute headings, and does NOT reset the gyro!
+	//
+	// 1) be idle for a number of sec
 	// 2) drive forward for a number of sec
-	// 3) Turn RIGHT a number of degrees
-	// 4) Shoot at high goal until end of auto 
-	private static AutoNetwork createDriveAndShootRedRight() {
+	// 3) Turn to 180 deg heading
+	// 4) drive forward for a number of sec
+	// 5) Turn to 0 deg heading
+	// 6) Go back to state 2
+	private static AutoNetwork createPacingForeverNetwork() {
 		
-		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Right Side) Network>");
-
-		AutoState camState = new AutoState("<Camera Move>");
-		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
+		AutoNetwork autoNet = new AutoNetwork("<Pacing Forever Network>");
+		
+		AutoState idleState = new AutoState("<Idle State 1>");
+		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
 		TimeEvent timer1 = new TimeEvent(0.1);  // timer event
-		camState.addAction(camAct);		
-		camState.addEvent(timer1);
+		idleState.addAction(startIdle);
+		idleState.addEvent(timer1);
 
-		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.4, true, 0.0);
+		AutoState driveState1 = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward1 = new DriveForwardAction("<Drive Forward Action 1>", 0.3, false, 0);
 		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
-		driveState.addAction(driveForward);
-		driveState.addEvent(timer2);
+		driveState1.addAction(driveForward1);
+		driveState1.addEvent(timer2);
 		
 		/*
-		AutoState driveState = new AutoState("<Drive Magic State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
-		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
-		driveState.addAction(driveForwardMagic);
-		driveState.addEvent(timer2);
+		AutoState driveState1 = new AutoState("<Drive Magic State 1>");
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
+		TimeEvent timer2 = new TimeEvent(5.0);  // drive forward timer event
+		driveState1.addAction(driveForwardMagic);
+		driveState1.addEvent(timer2);
 		*/
 		
-		AutoState turnRightState = new AutoState("<Turn Right State>");
-		TurnAction turnRightAction = new TurnAction("<Turn Right action>",145, 0.4, false);     // don't reset gyro - use 145 deg heading
-		GyroAngleEvent gyroRight = new GyroAngleEvent(145, false, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		// turn right 180 degrees.  Do it in two 90 degree turns (for PID)
+		AutoState turnRightState0 = new AutoState("<Turn right State 0>");
+		TurnPIDAction turnRightPidAction0 = new TurnPIDAction("<Turn right PID action 0>", 90.0, 0.3, true);
+		TimeEvent timer3 = new TimeEvent(5.0);  // allow PID time to settle
+		turnRightState0.addAction(turnRightPidAction0);
+		turnRightState0.addEvent(timer3);
+
+		AutoState turnRightState1 = new AutoState("<Turn right State 1>");
+		TurnPIDAction turnRightPidAction1 = new TurnPIDAction("<Turn right PID action 0>", 90.0, 0.3, true);
+		TimeEvent timer4 = new TimeEvent(5.0);  // allow PID time to settle
+		turnRightState1.addAction(turnRightPidAction1);
+		turnRightState1.addEvent(timer4);
+		
+		/*
+		AutoState turnRightState = new AutoState("<Turn to 180 deg>");
+		TurnAction turnRightAction = new TurnAction("<Turn to 180 deg action>", 180, 0.3, false);
+		GyroAngleEvent gyroRight = new GyroAngleEvent(175, false, GyroAngleEvent.AnglePolarity.kGreaterThan);  // gyro angle event for -90 deg
 		turnRightState.addAction(turnRightAction);
 		turnRightState.addEvent(gyroRight);
+		*/
+		
+		AutoState driveState2 = new AutoState("<Drive State 2>");
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.3, false, 180);
+		TimeEvent timer5 = new TimeEvent(2.0);  // drive forward timer event
+		driveState2.addAction(driveForward2);
+		driveState2.addEvent(timer5);
+		
+		/*
+		AutoState driveState2 = new AutoState("<Drive Magic State 2>");
+		DriveForwardMagicAction driveForwardMagic2 = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
+		TimeEvent timer3 = new TimeEvent(5.0);  // drive forward timer event
+		driveState2.addAction(driveForwardMagic2);
+		driveState2.addEvent(timer3);
+		*/
+		
+		// turn left 180 degrees.  Do it in two 90 degree turns (for PID)
+		AutoState turnLeftState0 = new AutoState("<Turn left State 0>");
+		TurnPIDAction turnLeftPidAction0 = new TurnPIDAction("<Turn left PID action 0>", -90.0, 0.3, true);
+		TimeEvent timer6 = new TimeEvent(5.0);  // allow PID time to settle
+		turnLeftState0.addAction(turnLeftPidAction0);
+		turnLeftState0.addEvent(timer6);
+
+		AutoState turnLeftState1 = new AutoState("<Turn left State 1>");
+		TurnPIDAction turnLeftPidAction1 = new TurnPIDAction("<Turn left PID action 1>", -90.0, 0.3, true);
+		TimeEvent timer7 = new TimeEvent(5.0);  // allow PID time to settle
+		turnLeftState1.addAction(turnLeftPidAction1);
+		turnLeftState1.addEvent(timer7);
+		
+		/*
+		AutoState turnLeftState = new AutoState("<Turn to 0 deg>");
+		TurnAction turnLeftAction = new TurnAction("<Turn to 0 deg action>", 5, 0.3, false);
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(5, false, GyroAngleEvent.AnglePolarity.kLessThan);  // gyro angle event for +90 deg
+		turnLeftState.addAction(turnLeftAction);
+		turnLeftState.addEvent(gyroLeft);
+		*/
+		
+		// connect each event with a state to move to
+		// last state loops back!
+		idleState.associateNextState(driveState1);
+		driveState1.associateNextState(turnRightState0);
+		turnRightState0.associateNextState(turnRightState1);
+		turnRightState1.associateNextState(driveState2);
+		driveState2.associateNextState(turnLeftState0);
+		turnLeftState0.associateNextState(turnLeftState1);
+		turnLeftState1.associateNextState(driveState1);
+						
+		autoNet.addState(idleState);
+		autoNet.addState(driveState1);
+		autoNet.addState(turnRightState0);
+		autoNet.addState(turnRightState1);
+		autoNet.addState(driveState2);
+		autoNet.addState(turnLeftState0);
+		autoNet.addState(turnLeftState1);
+				
+		return autoNet;
+	}
+	
+	
+		
+	/*****************************************************************************************************/
+	/**** DEBUG NETWORKS **** Networks below this are used only for debug - disable during competition ***/
+	/*****************************************************************************************************/	
+
+	
+	// **** DRIVE AND SHOOT (NEAR) Network ***** 
+	// 1) Move camera
+	// 2) drive forward for a number of sec
+	// 3) Calibrate shooter
+	// 4) Shoot at high goal until end of auto
+	private static AutoNetwork createDriveAndShootNear() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Near) Network>");
+
+		double x = NEAR_TARGET_X;
+		double y = NEAR_TARGET_Y; 
+				
+		AutoState camState = new AutoState("<Camera Move>");
+		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		camState.addAction(camAct);
+		camState.addEvent(timer1);
+		
+		AutoState targetCalState = new AutoState("<Cal Target State 1>");
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y);  
+		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
+		targetCalState.addAction(calTarget);
+		targetCalState.addEvent(calEvent1);
+		
+		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
+		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
+		targetCalState2.addAction(calTarget2);
+		targetCalState2.addEvent(calEvent2);
+		
+		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
+		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
+		targetCalState3.addAction(calTarget3);
+		targetCalState3.addEvent(calEvent3);
 		
 		// Shoot state - keep shooting until end of auto (do not leave state)
-		AutoState shootState = new AutoState("<Shoot state - auto>");
-		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO_RED);
-		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true, 0.0);  // reset gyro 
+		AutoState shootState = new AutoState("<Shoot state - low>");
+		ShootAction shootAct = new ShootAction("<Shoot Action - low>", BallManagement.MOTOR_LOW);
 		shootState.addAction(shootAct);
-		shootState.addAction(driveForward4);
 				
 		// connect each event with a state to move to
-		camState.associateNextState(driveState);
-		driveState.associateNextState(turnRightState);
-		turnRightState.associateNextState(shootState);
+		camState.associateNextState(targetCalState);
+		targetCalState.associateNextState(targetCalState2);
+		targetCalState2.associateNextState(targetCalState3);
+		targetCalState3.associateNextState(shootState);
 						
 		autoNet.addState(camState);
-		autoNet.addState(driveState);
-		autoNet.addState(turnRightState);
+		autoNet.addState(targetCalState);
+		autoNet.addState(targetCalState2);
+		autoNet.addState(targetCalState3);
+		autoNet.addState(shootState);
+		
+		return autoNet;
+	}
+
+	// **** DRIVE AND SHOOT (MEDIUM) Network ***** 
+	// 1) Move camera
+	// 2) drive forward for a number of sec
+	// 3) Calibrate shooter
+	// 4) Shoot at high goal until end of auto
+	private static AutoNetwork createDriveAndShootMedium() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Medium) Network>");
+		
+		double x = MEDIUM_TARGET_X;
+		double y = MEDIUM_TARGET_Y; 
+				
+		AutoState camState = new AutoState("<Camera Move>");
+		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
+		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
+		camState.addAction(camAct);
+		camState.addEvent(timer1);
+		
+		AutoState targetCalState = new AutoState("<Cal Target State 1>");
+		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y);  
+		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
+		targetCalState.addAction(calTarget);
+		targetCalState.addEvent(calEvent1);
+		
+		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
+		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
+		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
+		targetCalState2.addAction(calTarget2);
+		targetCalState2.addEvent(calEvent2);
+		
+		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
+		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
+		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
+		targetCalState3.addAction(calTarget3);
+		targetCalState3.addEvent(calEvent3);
+		
+		// Shoot state - keep shooting until end of auto (do not leave state)
+		AutoState shootState = new AutoState("<Shoot state - medium>");
+		ShootAction shootAct = new ShootAction("<Shoot Action - medium>", BallManagement.MOTOR_MEDIUM);
+		shootState.addAction(shootAct);
+				
+		// connect each event with a state to move to
+		camState.associateNextState(targetCalState);
+		targetCalState.associateNextState(targetCalState2);
+		targetCalState2.associateNextState(targetCalState3);
+		targetCalState3.associateNextState(shootState);
+						
+		autoNet.addState(camState);
+		autoNet.addState(targetCalState);
+		autoNet.addState(targetCalState2);
+		autoNet.addState(targetCalState3);
 		autoNet.addState(shootState);
 		
 		return autoNet;
 	}
 	
-	
+	/*****************************************************************************************/
+	/**** LEGACY NETWORKS **** Networks below this are for reference only and are not used ***/
+	/*****************************************************************************************/
 	// **** DEPOSIT GEAR AND SHOOT BLUE CENTER Network ***** 
 	// 1) move camera down
 	// 2) drive forward for a number of sec, then stop
@@ -609,95 +825,117 @@ public class AutoNetworkBuilder {
 		
 		return autoNet;
 	}
-	
-	// **** Turning Network ***** 
-	// 1) move camera
-	// 2) Turn RIGHT 90 degrees a number of times
-	// 3) Turn LEFT 90 degrees a number of times
-	// 4) go back to step 2 
-	private static AutoNetwork createTurningForeverNetwork() {
+
+	// **** DRIVE AND SHOOT BLUE LEFT SIDE (NEAR) Network ***** 
+	// 1) Move camera
+	// 2) drive forward for a number of sec
+	// 3) Turn LEFT a number of degrees
+	// 4) Shoot at high goal until end of auto
+	private static AutoNetwork createDriveAndShootBlueLeft() {
 		
-		AutoNetwork autoNet = new AutoNetwork("<Turning Forever Network>");
-		
-		AutoState camState = new AutoState("<Move Camera>");
-		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.GEAR_CAM_POS);
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Blue Left Side) Network>");
+				
+		AutoState camState = new AutoState("<Camera Move>");
+		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
 		TimeEvent timer1 = new TimeEvent(0.1);  // timer event
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
-		
-		AutoState turnRightState = new AutoState("<Turn Right State>");
-		TurnPIDAction turnRightPidAction = new TurnPIDAction("<Turn right PID action>", 90.0, 0.3, true);
-		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
-		turnRightState.addAction(turnRightPidAction);
-		turnRightState.addEvent(timer2);
-						
-		AutoState turnRightState2 = new AutoState("<Turn Right State 2>");
-		TurnPIDAction turnRightPidAction2 = new TurnPIDAction("<Turn right PID action 2>", 90.0, 0.3, true);
-		TimeEvent timer3 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
-		turnRightState2.addAction(turnRightPidAction2);
-		turnRightState2.addEvent(timer3);
 
-		AutoState turnRightState3 = new AutoState("<Turn Right State 3>");
-		TurnPIDAction turnRightPidAction3 = new TurnPIDAction("<Turn right PID action 3>", 90.0, 0.3, true);
-		TimeEvent timer4 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
-		turnRightState3.addAction(turnRightPidAction3);
-		turnRightState3.addEvent(timer4);
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.4, true, 0.0);
+		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
 		
-		AutoState turnRightState4 = new AutoState("<Turn Right State 4>");
-		TurnPIDAction turnRightPidAction4 = new TurnPIDAction("<Turn right PID action 4>", 90.0, 0.3, true);
-		TimeEvent timer5 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
-		turnRightState4.addAction(turnRightPidAction4);
-		turnRightState4.addEvent(timer5);
+		/*
+		AutoState driveState = new AutoState("<Drive Magic State 1>");
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
+		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
+		driveState.addAction(driveForwardMagic);
+		driveState.addEvent(timer2);
+		*/
 		
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
-		TurnPIDAction turnLeftPidAction = new TurnPIDAction("<Turn left PID action>", -90.0, 0.3, true);
-		TimeEvent timer6 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
-		turnLeftState.addAction(turnLeftPidAction);
-		turnLeftState.addEvent(timer6);
+		TurnAction turnLeftAction = new TurnAction("<Turn left action>",-145, 0.4, false);     // don't reset gyro - use -145 deg heading
+		GyroAngleEvent gyroLeft = new GyroAngleEvent(-145, false, GyroAngleEvent.AnglePolarity.kLessThan);
+		turnLeftState.addAction(turnLeftAction);
+		turnLeftState.addEvent(gyroLeft);
 		
-		AutoState turnLeftState2 = new AutoState("<Turn Left State 2>");
-		TurnPIDAction turnLeftPidAction2 = new TurnPIDAction("<Turn left PID action 2>", -90.0, 0.3, true);
-		TimeEvent timer7 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
-		turnLeftState2.addAction(turnLeftPidAction2);
-		turnLeftState2.addEvent(timer7);
-
-		AutoState turnLeftState3 = new AutoState("<Turn Left State 3>");
-		TurnPIDAction turnLeftPidAction3 = new TurnPIDAction("<Turn left PID action 3>", -90.0, 0.3, true);
-		TimeEvent timer8 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
-		turnLeftState3.addAction(turnLeftPidAction3);
-		turnLeftState3.addEvent(timer8);
-
-		AutoState turnLeftState4 = new AutoState("<Turn Left State 4>");
-		TurnPIDAction turnLeftPidAction4 = new TurnPIDAction("<Turn left PID action 4>", -90.0, 0.3, true);
-		TimeEvent timer9 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
-		turnLeftState4.addAction(turnLeftPidAction4);
-		turnLeftState4.addEvent(timer9);
-		
+		// Shoot state - keep shooting until end of auto (do not leave state)
+		AutoState shootState = new AutoState("<Shoot state - auto>");
+		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO_BLUE);
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true, 0.0);  // reset gyro 
+		shootState.addAction(shootAct);
+		shootState.addAction(driveForward4);
+				
 		// connect each event with a state to move to
-		camState.associateNextState(turnRightState);
-		turnRightState.associateNextState(turnRightState2);
-		turnRightState2.associateNextState(turnRightState3);
-		turnRightState3.associateNextState(turnRightState4);
-		turnRightState4.associateNextState(turnLeftState);
-		turnLeftState.associateNextState(turnLeftState2);
-		turnLeftState2.associateNextState(turnLeftState3);
-		turnLeftState3.associateNextState(turnLeftState4);
-		turnLeftState4.associateNextState(turnRightState);   // go back to right turning
+		camState.associateNextState(driveState);
+		driveState.associateNextState(turnLeftState);
+		turnLeftState.associateNextState(shootState);
 						
 		autoNet.addState(camState);
-		autoNet.addState(turnRightState);
-		autoNet.addState(turnRightState2);
-		autoNet.addState(turnRightState3);
-		autoNet.addState(turnRightState4);
+		autoNet.addState(driveState);
 		autoNet.addState(turnLeftState);
-		autoNet.addState(turnLeftState2);
-		autoNet.addState(turnLeftState3);
-		autoNet.addState(turnLeftState4);
-				
+		autoNet.addState(shootState);
+		
 		return autoNet;
 	}
 	
-	
+	// **** DRIVE AND SHOOT RED RIGHT SIDE (Near) Network ***** 
+	// 1) move camera
+	// 2) drive forward for a number of sec
+	// 3) Turn RIGHT a number of degrees
+	// 4) Shoot at high goal until end of auto 
+	private static AutoNetwork createDriveAndShootRedRight() {
+		
+		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Red Right Side) Network>");
+
+		AutoState camState = new AutoState("<Camera Move>");
+		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
+		TimeEvent timer1 = new TimeEvent(0.1);  // timer event
+		camState.addAction(camAct);		
+		camState.addEvent(timer1);
+
+		AutoState driveState = new AutoState("<Drive State 1>");
+		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.4, true, 0.0);
+		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
+		driveState.addAction(driveForward);
+		driveState.addEvent(timer2);
+		
+		/*
+		AutoState driveState = new AutoState("<Drive Magic State 1>");
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
+		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event
+		driveState.addAction(driveForwardMagic);
+		driveState.addEvent(timer2);
+		*/
+		
+		AutoState turnRightState = new AutoState("<Turn Right State>");
+		TurnAction turnRightAction = new TurnAction("<Turn Right action>",145, 0.4, false);     // don't reset gyro - use 145 deg heading
+		GyroAngleEvent gyroRight = new GyroAngleEvent(145, false, GyroAngleEvent.AnglePolarity.kGreaterThan);
+		turnRightState.addAction(turnRightAction);
+		turnRightState.addEvent(gyroRight);
+		
+		// Shoot state - keep shooting until end of auto (do not leave state)
+		AutoState shootState = new AutoState("<Shoot state - auto>");
+		ShootAction shootAct = new ShootAction("<Shoot Action - auto>", BallManagement.MOTOR_AUTO_RED);
+		DriveForwardAction driveForward4 = new DriveForwardAction("<Drive Forward Action 4 -reset>", 0.0, true, 0.0);  // reset gyro 
+		shootState.addAction(shootAct);
+		shootState.addAction(driveForward4);
+				
+		// connect each event with a state to move to
+		camState.associateNextState(driveState);
+		driveState.associateNextState(turnRightState);
+		turnRightState.associateNextState(shootState);
+						
+		autoNet.addState(camState);
+		autoNet.addState(driveState);
+		autoNet.addState(turnRightState);
+		autoNet.addState(shootState);
+		
+		return autoNet;
+	}
+
 	// **** SHOOT AND DRIVE BLUE LEFT SIDE (NEAR) Network ***** 
 	// 1) Move camera
 	// 2) Shoot at high goal for a number of sec
@@ -823,126 +1061,7 @@ public class AutoNetworkBuilder {
 		
 		return autoNet;
 	}
-		
-	/*****************************************************************************************************/
-	/**** DEBUG NETWORKS **** Networks below this are used only for debug - disable during competition ***/
-	/*****************************************************************************************************/	
 	
-	// **** DRIVE AND SHOOT (NEAR) Network ***** 
-	// 1) Move camera
-	// 2) drive forward for a number of sec
-	// 3) Calibrate shooter
-	// 4) Shoot at high goal until end of auto
-	private static AutoNetwork createDriveAndShootNear() {
-		
-		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Near) Network>");
-
-		double x = NEAR_TARGET_X;
-		double y = NEAR_TARGET_Y; 
-				
-		AutoState camState = new AutoState("<Camera Move>");
-		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
-		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
-		camState.addAction(camAct);
-		camState.addEvent(timer1);
-		
-		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y);  
-		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
-		targetCalState.addAction(calTarget);
-		targetCalState.addEvent(calEvent1);
-		
-		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
-		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
-		targetCalState2.addAction(calTarget2);
-		targetCalState2.addEvent(calEvent2);
-		
-		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
-		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
-		targetCalState3.addAction(calTarget3);
-		targetCalState3.addEvent(calEvent3);
-		
-		// Shoot state - keep shooting until end of auto (do not leave state)
-		AutoState shootState = new AutoState("<Shoot state - low>");
-		ShootAction shootAct = new ShootAction("<Shoot Action - low>", BallManagement.MOTOR_LOW);
-		shootState.addAction(shootAct);
-				
-		// connect each event with a state to move to
-		camState.associateNextState(targetCalState);
-		targetCalState.associateNextState(targetCalState2);
-		targetCalState2.associateNextState(targetCalState3);
-		targetCalState3.associateNextState(shootState);
-						
-		autoNet.addState(camState);
-		autoNet.addState(targetCalState);
-		autoNet.addState(targetCalState2);
-		autoNet.addState(targetCalState3);
-		autoNet.addState(shootState);
-		
-		return autoNet;
-	}
-
-	// **** DRIVE AND SHOOT (MEDIUM) Network ***** 
-	// 1) Move camera
-	// 2) drive forward for a number of sec
-	// 3) Calibrate shooter
-	// 4) Shoot at high goal until end of auto
-	private static AutoNetwork createDriveAndShootMedium() {
-		
-		AutoNetwork autoNet = new AutoNetwork("<Drive and Shoot (Medium) Network>");
-		
-		double x = MEDIUM_TARGET_X;
-		double y = MEDIUM_TARGET_Y; 
-				
-		AutoState camState = new AutoState("<Camera Move>");
-		CameraAction camAct = new CameraAction("<Camera Move>",CameraControl.BOILER_CAM_POS);
-		TimeEvent timer1 = new TimeEvent(0.5);  // timer event
-		camState.addAction(camAct);
-		camState.addEvent(timer1);
-		
-		AutoState targetCalState = new AutoState("<Cal Target State 1>");
-		CalibrateTargetAction calTarget = new CalibrateTargetAction("<Cal Target Action 1 - COARSE>", x, y, 5, 5, CAL_SPEED_COARSE_X, CAL_SPEED_COARSE_Y);  
-		CalibratedEvent calEvent1 = new CalibratedEvent(x, y, 5, 5);
-		targetCalState.addAction(calTarget);
-		targetCalState.addEvent(calEvent1);
-		
-		AutoState targetCalState2 = new AutoState("<Cal Target State 2>");
-		CalibrateTargetAction calTarget2 = new CalibrateTargetAction("<Cal Target Action 2 - FINE>", x, y, 1, 1, CAL_SPEED_FINE_X, CAL_SPEED_FINE_Y); 
-		CalibratedEvent calEvent2 = new CalibratedEvent(x, y, 1, 1);
-		targetCalState2.addAction(calTarget2);
-		targetCalState2.addEvent(calEvent2);
-		
-		AutoState targetCalState3 = new AutoState("<Cal Target State 3>");
-		CalibrateTargetAction calTarget3 = new CalibrateTargetAction("<Cal Target Action 3 - EXTRAFINE>", x, y, 1, 10, CAL_SPEED_EXTRAFINE_X, CAL_SPEED_EXTRAFINE_Y); 
-		CalibratedEvent calEvent3 = new CalibratedEvent(x, y, 1, 10);
-		targetCalState3.addAction(calTarget3);
-		targetCalState3.addEvent(calEvent3);
-		
-		// Shoot state - keep shooting until end of auto (do not leave state)
-		AutoState shootState = new AutoState("<Shoot state - medium>");
-		ShootAction shootAct = new ShootAction("<Shoot Action - medium>", BallManagement.MOTOR_MEDIUM);
-		shootState.addAction(shootAct);
-				
-		// connect each event with a state to move to
-		camState.associateNextState(targetCalState);
-		targetCalState.associateNextState(targetCalState2);
-		targetCalState2.associateNextState(targetCalState3);
-		targetCalState3.associateNextState(shootState);
-						
-		autoNet.addState(camState);
-		autoNet.addState(targetCalState);
-		autoNet.addState(targetCalState2);
-		autoNet.addState(targetCalState3);
-		autoNet.addState(shootState);
-		
-		return autoNet;
-	}
-	
-	/*****************************************************************************************/
-	/**** LEGACY NETWORKS **** Networks below this are for reference only and are not used ***/
-	/*****************************************************************************************/
 	
 	// ****  [FOLLOW TARGET] Network - mainly for autotargeting testing - does not shoot ***** 
 	// 1) be idle for a number of sec
@@ -1254,83 +1373,6 @@ public class AutoNetworkBuilder {
 				
 		return autoNet;
 	}
-
-	// **** Pacing Forever Network - Pace back and forth forever ***** 
-	// This network uses absolute headings, and does NOT reset the gyro!
-	//
-	// 1) be idle for a number of sec
-	// 2) drive forward for a number of sec
-	// 3) Turn to 180 deg heading
-	// 4) drive forward for a number of sec
-	// 5) Turn to 0 deg heading
-	// 6) Go back to state 2
-	private static AutoNetwork createPacingForeverNetwork() {
-		
-		AutoNetwork autoNet = new AutoNetwork("<Pacing Forever Network>");
-		
-		AutoState idleState = new AutoState("<Idle State 1>");
-		IdleAction startIdle = new IdleAction("<Start Idle Action 1>");
-		TimeEvent timer1 = new TimeEvent(0.1);  // timer event
-		idleState.addAction(startIdle);
-		idleState.addEvent(timer1);
-
-		AutoState driveState1 = new AutoState("<Drive State 1>");
-		DriveForwardAction driveForward1 = new DriveForwardAction("<Drive Forward Action 1>", 0.3, false, 0);
-		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
-		driveState1.addAction(driveForward1);
-		driveState1.addEvent(timer2);
-		
-		/*
-		AutoState driveState1 = new AutoState("<Drive Magic State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
-		TimeEvent timer2 = new TimeEvent(5.0);  // drive forward timer event
-		driveState1.addAction(driveForwardMagic);
-		driveState1.addEvent(timer2);
-		*/
-		
-		AutoState turnRightState = new AutoState("<Turn to 180 deg>");
-		TurnAction turnRightAction = new TurnAction("<Turn to 180 deg action>", 180, 0.3, false);
-		GyroAngleEvent gyroRight = new GyroAngleEvent(175, false, GyroAngleEvent.AnglePolarity.kGreaterThan);  // gyro angle event for -90 deg
-		turnRightState.addAction(turnRightAction);
-		turnRightState.addEvent(gyroRight);
-	
-		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.3, false, 180);
-		TimeEvent timer3 = new TimeEvent(2.0);  // drive forward timer event
-		driveState2.addAction(driveForward2);
-		driveState2.addEvent(timer3);
-		
-		/*
-		AutoState driveState2 = new AutoState("<Drive Magic State 2>");
-		DriveForwardMagicAction driveForwardMagic2 = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
-		TimeEvent timer3 = new TimeEvent(5.0);  // drive forward timer event
-		driveState2.addAction(driveForwardMagic2);
-		driveState2.addEvent(timer3);
-		*/
-		
-		AutoState turnLeftState = new AutoState("<Turn to 0 deg>");
-		TurnAction turnLeftAction = new TurnAction("<Turn to 0 deg action>", 5, 0.3, false);
-		GyroAngleEvent gyroLeft = new GyroAngleEvent(5, false, GyroAngleEvent.AnglePolarity.kLessThan);  // gyro angle event for +90 deg
-		turnLeftState.addAction(turnLeftAction);
-		turnLeftState.addEvent(gyroLeft);
-				
-		// connect each event with a state to move to
-		// last state loops back!
-		idleState.associateNextState(driveState1);
-		driveState1.associateNextState(turnRightState);
-		turnRightState.associateNextState(driveState2);
-		driveState2.associateNextState(turnLeftState);
-		turnLeftState.associateNextState(driveState1);
-						
-		autoNet.addState(idleState);
-		autoNet.addState(driveState1);
-		autoNet.addState(turnRightState);
-		autoNet.addState(driveState2);
-		autoNet.addState(turnLeftState);
-				
-		return autoNet;
-	}
-
 	
 	// **** SPINNY Network - Spin X revolutions in one direction, pause, Spin X revolutions back ***** 
 	// 1) be idle for a number of sec

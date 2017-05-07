@@ -9,7 +9,7 @@ public class TurnController {
 
 	private static PIDController pidCtrl;
 	
-	private static final double kP = 0.001;
+	private static final double kP = 0.5;
 	private static final double kI = 0;
 	private static final double kD = 0;
 	private static final double kF = 0;
