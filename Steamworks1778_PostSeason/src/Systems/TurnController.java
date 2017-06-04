@@ -9,10 +9,23 @@ public class TurnController {
 
 	private static PIDController pidCtrl;
 	
-	private static final double kP = 0.5;
-	private static final double kI = 0;
-	private static final double kD = 0;
-	private static final double kF = 0;
+	// comp.bot - not yet tuned
+	//private static final double kP = 0.01;
+	//private static final double kI = 0.015;
+	//private static final double kD = 0.1;
+	//private static final double kF = 0;     // F not needed for PID position control
+	
+	// proto.bot - tuned version 1
+	private static final double kP = 0.03;
+	private static final double kI = 0.01;
+	private static final double kD = 0.175;
+	private static final double kF = 0;     // F not needed for PID position control
+
+	// proto.bot - tuned version 2
+	//private static final double kP = 0.04;
+	//private static final double kI = 0;
+	//private static final double kD = 0.175;
+	//private static final double kF = 0;     // F not needed for PID position control
 	
 	private static final double maxSpeed = 0.5;
 	

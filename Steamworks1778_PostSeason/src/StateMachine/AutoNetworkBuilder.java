@@ -162,14 +162,14 @@ public class AutoNetworkBuilder {
 		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true, 0.0);
-		TimeEvent timer1a = new TimeEvent(1.25);  // timer event
+		TimeEvent timer1a = new TimeEvent(10.0);  // timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer1a);
 		*/
 		
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
-		TimeEvent timer2 = new TimeEvent(10.0);  // drive forward timer event
+		TimeEvent timer2 = new TimeEvent(20.0);  // drive forward timer event
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
 		
@@ -383,56 +383,56 @@ public class AutoNetworkBuilder {
 		camState.addEvent(timer0);
 		
 		AutoState turnState0 = new AutoState("<Turn Left State 0>");
-		TurnPIDAction turnPidAction0 = new TurnPIDAction("<Turn Left PID action 0>", -45.0, 0.3, true);
-		TimeEvent timer1 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		TurnPIDAction turnPidAction0 = new TurnPIDAction("<Turn Left PID action 0>", -90.0, 0.5, true);
+		TimeEvent timer1 = new TimeEvent(10.0);  // drive forward timer event - allow PID time to settle
 		turnState0.addAction(turnPidAction0);
 		turnState0.addEvent(timer1);
 
 		AutoState turnState1 = new AutoState("<Turn Right State 1>");
-		TurnPIDAction turnPidAction1 = new TurnPIDAction("<Turn right PID action 1>", 45.0, 0.3, true);
-		TimeEvent timer2 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		TurnPIDAction turnPidAction1 = new TurnPIDAction("<Turn right PID action 1>", 90.0, 0.5, true);
+		TimeEvent timer2 = new TimeEvent(10.0);  // drive forward timer event - allow PID time to settle
 		turnState1.addAction(turnPidAction1);
 		turnState1.addEvent(timer2);
 						
 		AutoState turnState2 = new AutoState("<Turn Left State 2>");
-		TurnPIDAction turnPidAction2 = new TurnPIDAction("<Turn Left PID action 2>", -45.0, 0.3, true);
-		TimeEvent timer3 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		TurnPIDAction turnPidAction2 = new TurnPIDAction("<Turn Left PID action 2>", -90.0, 0.5, true);
+		TimeEvent timer3 = new TimeEvent(10.0);  // drive forward timer event - allow PID time to settle
 		turnState2.addAction(turnPidAction2);
 		turnState2.addEvent(timer3);
 
 		AutoState turnState3 = new AutoState("<Turn Right State 3>");
-		TurnPIDAction turnPidAction3 = new TurnPIDAction("<Turn right PID action 3>", 45.0, 0.3, true);
-		TimeEvent timer4 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		TurnPIDAction turnPidAction3 = new TurnPIDAction("<Turn right PID action 3>", 90.0, 0.5, true);
+		TimeEvent timer4 = new TimeEvent(10.0);  // drive forward timer event - allow PID time to settle
 		turnState3.addAction(turnPidAction3);
 		turnState3.addEvent(timer4);
 		
 		AutoState turnState4 = new AutoState("<Turn Left State 4>");
-		TurnPIDAction turnPidAction4 = new TurnPIDAction("<Turn left PID action 4>", -45.0, 0.3, true);
-		TimeEvent timer5 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		TurnPIDAction turnPidAction4 = new TurnPIDAction("<Turn left PID action 4>", -90.0, 0.5, true);
+		TimeEvent timer5 = new TimeEvent(10.0);  // drive forward timer event - allow PID time to settle
 		turnState4.addAction(turnPidAction4);
 		turnState4.addEvent(timer5);
 		
 		AutoState turnState5 = new AutoState("<Turn Right State 5>");
-		TurnPIDAction turnPidAction5 = new TurnPIDAction("<Turn right PID action 5>", 45.0, 0.3, true);
-		TimeEvent timer6 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		TurnPIDAction turnPidAction5 = new TurnPIDAction("<Turn right PID action 5>", 90.0, 0.5, true);
+		TimeEvent timer6 = new TimeEvent(10.0);  // drive forward timer event - allow PID time to settle
 		turnState5.addAction(turnPidAction5);
 		turnState5.addEvent(timer6);
 		
 		AutoState turnState6 = new AutoState("<Turn Left State 6>");
-		TurnPIDAction turnPidAction6 = new TurnPIDAction("<Turn left PID action 6>", -45.0, 0.3, true);
-		TimeEvent timer7 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		TurnPIDAction turnPidAction6 = new TurnPIDAction("<Turn left PID action 6>", -90.0, 0.5, true);
+		TimeEvent timer7 = new TimeEvent(10.0);  // drive forward timer event - allow PID time to settle
 		turnState6.addAction(turnPidAction6);
 		turnState6.addEvent(timer7);
 
 		AutoState turnState7 = new AutoState("<Turn Right State 7>");
-		TurnPIDAction turnPidAction7 = new TurnPIDAction("<Turn Right PID action 7>", 45.0, 0.3, true);
-		TimeEvent timer8 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		TurnPIDAction turnPidAction7 = new TurnPIDAction("<Turn Right PID action 7>", 90.0, 0.5, true);
+		TimeEvent timer8 = new TimeEvent(10.0);  // drive forward timer event - allow PID time to settle
 		turnState7.addAction(turnPidAction7);
 		turnState7.addEvent(timer8);
 
 		AutoState turnState8 = new AutoState("<Turn Left State 8>");
-		TurnPIDAction turnPidAction8 = new TurnPIDAction("<Turn left PID action 8>", -45.0, 0.3, true);
-		TimeEvent timer9 = new TimeEvent(20.0);  // drive forward timer event - allow PID time to settle
+		TurnPIDAction turnPidAction8 = new TurnPIDAction("<Turn left PID action 8>", -90.0, 0.5, true);
+		TimeEvent timer9 = new TimeEvent(10.0);  // drive forward timer event - allow PID time to settle
 		turnState4.addAction(turnPidAction8);
 		turnState4.addEvent(timer9);
 		
@@ -481,19 +481,19 @@ public class AutoNetworkBuilder {
 		idleState.addAction(startIdle);
 		idleState.addEvent(timer1);
 
+		/*
 		AutoState driveState1 = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward1 = new DriveForwardAction("<Drive Forward Action 1>", 0.3, false, 0);
 		TimeEvent timer2 = new TimeEvent(2.0);  // drive forward timer event
 		driveState1.addAction(driveForward1);
 		driveState1.addEvent(timer2);
+		*/
 		
-		/*
 		AutoState driveState1 = new AutoState("<Drive Magic State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 120.0, 150, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(5.0);  // drive forward timer event
 		driveState1.addAction(driveForwardMagic);
 		driveState1.addEvent(timer2);
-		*/
 		
 		// turn right 180 degrees.  Do it in two 90 degree turns (for PID)
 		AutoState turnRightState0 = new AutoState("<Turn right State 0>");
@@ -516,19 +516,19 @@ public class AutoNetworkBuilder {
 		turnRightState.addEvent(gyroRight);
 		*/
 		
+		/*
 		AutoState driveState2 = new AutoState("<Drive State 2>");
 		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.3, false, 180);
 		TimeEvent timer5 = new TimeEvent(2.0);  // drive forward timer event
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer5);
-		
-		/*
-		AutoState driveState2 = new AutoState("<Drive Magic State 2>");
-		DriveForwardMagicAction driveForwardMagic2 = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 100);
-		TimeEvent timer3 = new TimeEvent(5.0);  // drive forward timer event
-		driveState2.addAction(driveForwardMagic2);
-		driveState2.addEvent(timer3);
 		*/
+		
+		AutoState driveState2 = new AutoState("<Drive Magic State 2>");
+		DriveForwardMagicAction driveForwardMagic2 = new DriveForwardMagicAction("<Drive Forward Magic Action>", 120.0, 150, true, 0.0);
+		TimeEvent timer5 = new TimeEvent(5.0);  // drive forward timer event
+		driveState2.addAction(driveForwardMagic2);
+		driveState2.addEvent(timer5);
 		
 		// turn left 180 degrees.  Do it in two 90 degree turns (for PID)
 		AutoState turnLeftState0 = new AutoState("<Turn left State 0>");
