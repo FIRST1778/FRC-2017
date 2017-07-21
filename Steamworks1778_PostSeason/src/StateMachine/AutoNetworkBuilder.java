@@ -162,13 +162,13 @@ public class AutoNetworkBuilder {
 		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true, 0.0);
-		TimeEvent timer1a = new TimeEvent(10.0);  // timer event
+		TimeEvent timer1a = new TimeEvent(5.0);  // timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer1a);
 		*/
 		
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 150, true, 0.0);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 60.0, 300, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(20.0);  // drive forward timer event
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
@@ -204,19 +204,19 @@ public class AutoNetworkBuilder {
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
 
+		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(1.29);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
+		*/
 		
-		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 65.0, 150, true, 0.0);
-		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 64.0, 300, true, 0.0);
+		TimeEvent timer2 = new TimeEvent(2.5);  // drive forward timer event - allow PID time to settle
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
-		*/
 		
 		/*
 		AutoState turnRightState = new AutoState("<Turn Right State>");
@@ -227,15 +227,15 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState turnRightState = new AutoState("<Turn Right State>");
-		TurnPIDAction turnPidAction = new TurnPIDAction("<Turn right PID action>", 60.0, 0.3, true);
-		TimeEvent timer3 = new TimeEvent(5.0);  // timer event - allow PID time to settle
+		TurnPIDAction turnPidAction = new TurnPIDAction("<Turn right PID action>", 55.0, 0.3, true);
+		TimeEvent timer3 = new TimeEvent(2.5);  // timer event - allow PID time to settle
 		turnRightState.addAction(turnPidAction);
 		turnRightState.addEvent(timer3);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, true, 0.0);  // don't reset gyro - use absolute heading (60 deg) 
-		//TimeEvent timer4 = new TimeEvent(3.0);
-		TimeEvent timer4 = new TimeEvent(1.0);   // don't drive all the way to the peg - just check alignment
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.20, true, 0.0);  // don't reset gyro - use absolute heading (60 deg) 
+		TimeEvent timer4 = new TimeEvent(3.0);
+		//TimeEvent timer4 = new TimeEvent(1.0);   // don't drive all the way to the peg - just check alignment
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer4);
 		
@@ -311,19 +311,19 @@ public class AutoNetworkBuilder {
 		camState.addAction(camAct);
 		camState.addEvent(timer1);
 
+		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
 		DriveForwardAction driveForward = new DriveForwardAction("<Drive Forward Action>", 0.3, true, 0.0);
 		TimeEvent timer2 = new TimeEvent(2.1);  // drive forward timer event
 		driveState.addAction(driveForward);
 		driveState.addEvent(timer2);
+		*/
 		
-		/*
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 72.0, 150, true, 0.0);
-		TimeEvent timer2 = new TimeEvent(3.0);  // drive forward timer event - allow PID time to settle
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 64.0, 300, true, 0.0);
+		TimeEvent timer2 = new TimeEvent(2.5);  // drive forward timer event - allow PID time to settle
 		driveState.addAction(driveForwardMagic);
 		driveState.addEvent(timer2);
-		*/
 		
 		/*
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
@@ -334,15 +334,15 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
-		TurnPIDAction turnPidAction = new TurnPIDAction("<Turn left PID action>", -60.0, 0.3, true);
-		TimeEvent timer3 = new TimeEvent(5.0);  // timer event - allow PID time to settle
+		TurnPIDAction turnPidAction = new TurnPIDAction("<Turn left PID action>", -55.0, 0.3, true);
+		TimeEvent timer3 = new TimeEvent(2.5);  // timer event - allow PID time to settle
 		turnLeftState.addAction(turnPidAction);
 		turnLeftState.addEvent(timer3);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, true, 0.0);   // don't reset gyro - use heading -60 deg
-		//TimeEvent timer4 = new TimeEvent(3.0); 
-		TimeEvent timer4 = new TimeEvent(1.0);    // don't drive all the way to the peg - just check alignment
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.20, true, 0.0);   // don't reset gyro - use heading -60 deg
+		TimeEvent timer4 = new TimeEvent(3.0); 
+		//TimeEvent timer4 = new TimeEvent(1.0);    // don't drive all the way to the peg - just check alignment
 		driveState2.addAction(driveForward2);
 		driveState2.addEvent(timer4);
 		

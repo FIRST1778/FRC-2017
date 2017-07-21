@@ -22,33 +22,29 @@ public class AutoDriveAssembly {
 	// used as angle baseline (if we don't reset gyro)
 	private static double initialAngle = 0.0;
 	
-	// protobot encoder variables
-	public static final boolean RIGHT_REVERSE = true;
-	public static final boolean LEFT_REVERSE = false;
-	//private static final int ENCODER_PULSES_PER_REV = 250;  // E4P-250 - on the protobot front motors
-	private static final int ENCODER_PULSES_PER_REV = 250;  // E4P-250  - on the competition bot front motors
-	private static final double INCHES_PER_REV = (6 * 3.14159);   // 6-in diameter wheel
-		
-	// PIDF values - protobot tuned version 1
-	//private static final double P_COEFF = 6.0;
-	//private static final double I_COEFF = 0;
-	//private static final double D_COEFF = 20.0;
-	//private static final double F_COEFF = 1.9;
+	// original encoder variables
+	//private static final int ENCODER_PULSES_PER_REV = 250;  // E4P-250  - on the proto bot front motors
+	//private static final double INCHES_PER_REV = (6 * 3.14159);   // 6-in diameter wheel
 
-	// PIDF values - protobot tuned version 2
-	private static final double P_COEFF = 20.0;
-	private static final double I_COEFF = 0.1;
-	private static final double D_COEFF = 0;
-	private static final double F_COEFF = 1.9;
-
+	// grayhill encoder variables
+	public static final boolean RIGHT_REVERSE_MOTOR = true;		// comp-bot PID motor polarity - right
+	public static final boolean LEFT_REVERSE_MOTOR = false;		// comp-bot PID motor polarity - left
 	
-	// PIDF values - comp.bot
-	/*
-	private static final double P_COEFF = 0.0;
-	private static final double I_COEFF = 0.0;
-	private static final double D_COEFF = 0.0;
-	private static final double F_COEFF = 1.0;
-	*/
+	//public static final boolean RIGHT_REVERSE_MOTOR = false;  // proto-bot PID motor polarity - right
+	//public static final boolean LEFT_REVERSE_MOTOR = true;	// proto-bot PID motor polarity - left
+	
+	public static final boolean RIGHT_REVERSE_SENSOR = false;	// encoder polarity - right
+	public static final boolean LEFT_REVERSE_SENSOR = true;		// encoder polarity - left
+	
+	public static final int ENCODER_PULSES_PER_REV = 256;  // 63R  - on the competition bot front motors
+	//public static final double INCHES_PER_REV = (6 * 3.14159);   // 6-in diameter wheel (theoretical)
+	public static final double INCHES_PER_REV = (5.9 * 3.14159);   // 5.9-in diameter wheel (worn)
+			
+	// PIDF values - comp.bot version tuned 7/20/2017
+	private static final double P_COEFF = 20.0;
+	private static final double I_COEFF = 0.0;  // Integral not needed for closed loop position control
+	private static final double D_COEFF = 16.0;
+	private static final double F_COEFF = 0.0;  // Feedforward not used for closed loop position control
 	
 	// static initializer
 	public static void initialize()
@@ -57,17 +53,19 @@ public class AutoDriveAssembly {
 			
 			// instantiate motor control objects
 	        mFrontLeft = new CANTalon(HardwareIDs.LEFT_FRONT_TALON_ID);
-	        mFrontLeft.reverseOutput(LEFT_REVERSE);	   // left motor PID not inverted
+	        mFrontLeft.reverseOutput(LEFT_REVERSE_MOTOR);	   // left motor PID polarity (magic motion mode only)
 			mBackLeft = new CANTalon(HardwareIDs.LEFT_REAR_TALON_ID);
+	        mBackLeft.reverseOutput(false);	   // left back motor feedback polarity (follower mode only)
 
 			mFrontRight = new CANTalon(HardwareIDs.RIGHT_FRONT_TALON_ID);
-	        mFrontRight.reverseOutput(RIGHT_REVERSE);  // right motor PID output inverted
+	        mFrontRight.reverseOutput(RIGHT_REVERSE_MOTOR);  // right motor PID polarity (magic motion mode only)
 	        mBackRight = new CANTalon(HardwareIDs.RIGHT_REAR_TALON_ID);
+	        mBackRight.reverseOutput(true);  // right back motor feedback polarity (follower mode only)
 
 	        // configure left front motor encoder and PID
 	        mFrontLeft.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 	        mFrontLeft.configEncoderCodesPerRev(ENCODER_PULSES_PER_REV);
-	        mFrontLeft.reverseSensor(LEFT_REVERSE);   // left motor encoder not inverted
+	        mFrontLeft.reverseSensor(LEFT_REVERSE_SENSOR);   // left motor encoder polarity
 	        mFrontLeft.setProfile(0);
 	        mFrontLeft.setP(P_COEFF);
 	        mFrontLeft.setI(I_COEFF);
@@ -79,7 +77,7 @@ public class AutoDriveAssembly {
 	        // configure right front motor encoder and PID
 	        mFrontRight.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 	        mFrontRight.configEncoderCodesPerRev(ENCODER_PULSES_PER_REV);
-	        mFrontRight.reverseSensor(RIGHT_REVERSE);   // right motor encoder inverted
+	        mFrontRight.reverseSensor(RIGHT_REVERSE_SENSOR);   // right motor encoder polarity
 	        mFrontRight.setProfile(0);
 	        mFrontRight.setP(P_COEFF);
 	        mFrontRight.setI(I_COEFF);
@@ -153,11 +151,11 @@ public class AutoDriveAssembly {
 			initialize();
 		
 		// for auto - brake mode enabled
-	    mFrontLeft.enableBrakeMode(true);
-		mFrontRight.enableBrakeMode(true);
-		mBackLeft.enableBrakeMode(true);
-		mBackRight.enableBrakeMode(true);
-		InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/BrakeMode", true);
+	    mFrontLeft.enableBrakeMode(false);
+		mFrontRight.enableBrakeMode(false);
+		mBackLeft.enableBrakeMode(false);
+		mBackRight.enableBrakeMode(false);
+		InputOutputComm.putBoolean(InputOutputComm.LogTable.kMainLog,"Auto/BrakeMode", false);
 		
         // configure left and right front motors for magic motion (closed-loop position control)
 		mFrontRight.changeControlMode(CANTalon.TalonControlMode.MotionMagic);
