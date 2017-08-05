@@ -34,6 +34,12 @@ public class BallManagement {
 	
 	private static final double DEAD_ZONE_THRESHOLD = 0.05;
 	
+	// Shooter PIDF values - comp.bot version - not yet tuned
+	private static final double P_COEFF = 3.45;
+	private static final double I_COEFF = 0.0;
+	private static final double D_COEFF = 0.0;
+	private static final double F_COEFF = 9.175; 
+	
 	public static final int MOTOR_OFF = 0;
 	public static final int MOTOR_AUTO_BLUE = 1;
 	public static final int MOTOR_AUTO_RED = 2;
@@ -112,10 +118,10 @@ public class BallManagement {
 		// set PID(F) for shooter motor (one profile only)
 		shooterMotor.setProfile(0);
 		
-		shooterMotor.setP(3.45);
-		shooterMotor.setI(0);
-		shooterMotor.setD(0.5);
-		shooterMotor.setF(9.175);
+		shooterMotor.setP(P_COEFF);
+		shooterMotor.setI(I_COEFF);
+		shooterMotor.setD(D_COEFF);
+		shooterMotor.setF(F_COEFF);
 		
 		// make sure all motors are off
 		resetMotors();
