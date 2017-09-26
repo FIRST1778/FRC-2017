@@ -213,9 +213,9 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 64.0, 300, true, 0.0);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 61.5, 300, true, 0.0);
 		//TimeEvent timer2 = new TimeEvent(2.5);  // drive forward timer event - allow PID time to settle
-		ClosedLoopPositionEvent pos1 = new ClosedLoopPositionEvent(64.0, 0.5, 1.0);
+		ClosedLoopPositionEvent pos1 = new ClosedLoopPositionEvent(61.5, 0.5, 1.0);
 		driveState.addAction(driveForwardMagic);
 		//driveState.addEvent(timer2);
 		driveState.addEvent(pos1);
@@ -229,15 +229,15 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState turnRightState = new AutoState("<Turn Right State>");
-		TurnPIDAction turnPidAction = new TurnPIDAction("<Turn right PID action>", 55.0, 0.3, true);
+		TurnPIDAction turnPidAction = new TurnPIDAction("<Turn right PID action>", 50.0, 0.35, true);
 		//TimeEvent timer3 = new TimeEvent(2.5);  // timer event - allow PID time to settle
-		ClosedLoopAngleEvent angle1 = new ClosedLoopAngleEvent(55.0,1.0,1.0);
+		ClosedLoopAngleEvent angle1 = new ClosedLoopAngleEvent(50.0,2.0,1.0);
 		turnRightState.addAction(turnPidAction);
 		//turnRightState.addEvent(timer3);
 		turnRightState.addEvent(angle1);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.20, true, 0.0);  // don't reset gyro - use absolute heading (60 deg) 
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, true, 0.0);  // don't reset gyro - use absolute heading (60 deg) 
 		TimeEvent timer4 = new TimeEvent(3.0);
 		//TimeEvent timer4 = new TimeEvent(1.0);   // don't drive all the way to the peg - just check alignment
 		driveState2.addAction(driveForward2);
@@ -324,9 +324,9 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState driveState = new AutoState("<Drive State 1>");
-		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 64.0, 300, true, 0.0);
+		DriveForwardMagicAction driveForwardMagic = new DriveForwardMagicAction("<Drive Forward Magic Action>", 79.0, 300, true, 0.0);
 		//TimeEvent timer2 = new TimeEvent(2.5);  // drive forward timer event - allow PID time to settle
-		ClosedLoopPositionEvent pos1 = new ClosedLoopPositionEvent(64.0, 0.5, 1.0);
+		ClosedLoopPositionEvent pos1 = new ClosedLoopPositionEvent(79.0, 0.5, 1.0);
 		driveState.addAction(driveForwardMagic);
 		//driveState.addEvent(timer2);
 		driveState.addEvent(pos1);
@@ -340,15 +340,15 @@ public class AutoNetworkBuilder {
 		*/
 		
 		AutoState turnLeftState = new AutoState("<Turn Left State>");
-		TurnPIDAction turnPidAction = new TurnPIDAction("<Turn left PID action>", -55.0, 0.3, true);
+		TurnPIDAction turnPidAction = new TurnPIDAction("<Turn left PID action>", -62.5, 0.35, true);
 		//TimeEvent timer3 = new TimeEvent(2.5);  // timer event - allow PID time to settle
-		ClosedLoopAngleEvent angle1 = new ClosedLoopAngleEvent(-55.0,1.0,1.0);
+		ClosedLoopAngleEvent angle1 = new ClosedLoopAngleEvent(-62.5,2.0,1.0);
 		turnLeftState.addAction(turnPidAction);
 		//turnLeftState.addEvent(timer3);
 		turnLeftState.addEvent(angle1);
 		
 		AutoState driveState2 = new AutoState("<Drive State 2>");
-		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.20, true, 0.0);   // don't reset gyro - use heading -60 deg
+		DriveForwardAction driveForward2 = new DriveForwardAction("<Drive Forward Action 2>", 0.25, true, 0.0);   // don't reset gyro - use heading -60 deg
 		TimeEvent timer4 = new TimeEvent(3.0); 
 		//TimeEvent timer4 = new TimeEvent(1.0);    // don't drive all the way to the peg - just check alignment
 		driveState2.addAction(driveForward2);
